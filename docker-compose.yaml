@@ -1,0 +1,59 @@
+version: "3.7"
+
+x-db-envvars: &db-envvars
+  # DB_HOST: postgres
+  # DB_NAME: transcendence
+
+  POSTGRES_DB: postgres
+  POSTGRES_DB_HOST: db
+  POSTGRES_DB_PORT: 5432
+
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+
+x-default-envvars: &default-envvars
+  <<: *db-envvars
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: "./Dockerfile"
+    volumes:
+      - ./frontend/:/app
+      - /app/node_modules
+    environment:
+      <<: *default-envvars
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: "./Dockerfile"
+    volumes:
+      - ./backend/:/app
+      - /app/node_modules
+    environment:
+      <<: *default-envvars
+    ports:
+      - "3001:3000"
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    ports:
+      - "6432:5432"
+    volumes:
+      - transcendence:/var/lib/postgresql/data
+    environment:
+      <<: *db-envvars
+
+volumes:
+  transcendence:
+  app:

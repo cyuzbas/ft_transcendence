@@ -1,19 +1,20 @@
-import { Entity, Column} from "typeorm";
-import { BaseEntity } from "src/base-entity";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+
+@Entity()
+export class User {
+ 
+  @PrimaryGeneratedColumn()
+	public id?: number;
+
+  @Column({ name: 'intra_ID', unique: true })
+  intraID: string;
+
+  @Column({nullable: true })
+	public avatar: string;
 
 
-@Entity('User')
-export class User extends BaseEntity{
-    
-@Column({type: 'integer'})
-user_id: number
+  @Column({ unique: true, nullable: true })
+	public username: string;
 
-@Column({type: 'varchar'})
-password: string
-
-@Column({type: 'varchar'})
-nick_name: string
-
-@Column({type: 'bool'})
-is_online: boolean
 }
+export default User;

@@ -1,44 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-// import { OAuth2Client } from 'oauth2-client';
-
-
-
-
-
-
-// const clientId = 'u-s4t2ud-abe60458fc8bed380ffb209bcfe0eaaf653fa06e185f7ac4f0fb307132134bfe';
-// const clientSecret = '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';
-// const authorizationUrl = 'http://localhost:3000';
-
-// const oauth2Client = new OAuth2Client({
-//   clientId,
-//   clientSecret,
-//   authorizationUrl,
-// });
-
-// // Kullanıcıyı yetkilendirme sayfasına yönlendirme
-// function redirectToAuthorization() {
-//   const authorizationUri = oauth2Client.getAuthorizationUri();
-//   window.location.href = authorizationUri;
-// }
-
-// // Yetkilendirme kodunu alıp erişim tokenini alma
-// async function exchangeCodeForToken(code: string) {
-//   const token = await oauth2Client.getToken(code);
-//   // Erişim tokeni ile işlemler yapabilirsiniz
-//   console.log('Access Token:', token.access_token);
-// }
-
-// // Örnek kullanım
-// redirectToAuthorization(); // Kullanıcıyı yetkilendirme sayfasına yönlendirir
-
-// // Yönlendirme sonrası, URL parametresinden yetkilendirme kodunu alarak token alımını gerçekleştirir
-// const urlParams = new URLSearchParams(window.location.search);
-// const code = urlParams.get('code');
-// if (code) {
-//   exchangeCodeForToken(code);
-// }
 
 
 
@@ -50,6 +11,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [response, setResponse] = useState('');
 
+
+
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
     console.log('Email value is:', event.target.value);
@@ -60,9 +23,28 @@ const Login = () => {
     console.log('Password value is:', event.target.value);
   };
 
+  const statusdenem= async () => {
+    const response = await axios.get("http://localhost:3001/auth/status");
+
+    console.log(response)
+  }
+
+  const goToIntra= async () =>{
+    window.location.href = 'http://localhost:3001/auth/login';}
+  //   try{
+
+  //   const response = await axios.get('http://localhost:3001/auth/login');
+  //   window.location.href = response.data.authUr;
+  //   console.log(response);}
+  //   catch(error){
+  //     console.log(error);
+  //   }
+  // }
+
   const handleClick = async () => {
     console.log('Email:', email);
     console.log('Password:', password);
+    console.log('response ', response)
     try {
         const data = { is_online: 'false', password: password, nick_name: email }; // Göndermek istediğiniz JSON veri
         const options = {
@@ -104,11 +86,13 @@ const Login = () => {
             Login
           </button>
           <button>
-            
-         <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-abe60458fc8bed380ffb209bcfe0eaaf653fa06e185f7ac4f0fb307132134bfe&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code ">
-      42 Intra Login
-    </a>
-  </button>
+            <a href='http://localhost:3001/auth/login'> 42 Intra Login </a>
+          </button>
+          <button onClick={statusdenem}>status</button>
+          <button ><a href='http://localhost:3001/auth/status'>adsa</a></button>
+          <button><a href='http://localhost:3001/auth/logout'>logut</a></button>
+
+          <button onClick={goToIntra}>deneme</button>
 
         </div>
       </div>

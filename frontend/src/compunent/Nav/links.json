@@ -1,0 +1,28 @@
+{
+    "links": [
+        {
+            "label": "Home",
+            "href": "/"
+        },
+        {
+            "label": "Game",
+            "href": "/game"
+        },
+        {
+            "label": "Profile",
+            "href": "/profile"
+        },
+        {
+            "label": "ChatRoom",
+            "href": "/chatroom"
+        },
+        {
+            "label": "Status",
+            "href": "/status"
+        },
+        {
+            "label": "login/logout",
+            "href": "http://localhost:3001/auth/logout"
+        }
+    ]
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './nav.module.css';
 import * as data from './links.json';
 import logo from '../../img/intra.png'
-import { log } from 'console';
+
 const linksString = JSON.stringify(data);
 const links = JSON.parse(linksString).links;
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {UserI} from './user.interface'
 import User from './user.entity'
-import { Repository, getConnection } from 'typeorm';
+import { Repository } from 'typeorm';
 import {CreateUserDTO} from '../dto/create-user-dto'
 
 
@@ -28,5 +28,10 @@ export class UserService {
 		});
 	}
 
-
+	async findByAllUser(): Promise<UserI[]> {
+		console.log("find icinde!!\n");
+		const users: User[] = await this.userRepository.find();
+		console.log(users);
+		return users as UserI[];
+	}
 }

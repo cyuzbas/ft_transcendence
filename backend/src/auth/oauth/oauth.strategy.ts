@@ -28,6 +28,8 @@ export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
 				headers: { Authorization: `Bearer ${accessToken}` },
 			})
 			.toPromise();
+      console.log("valide than promise");
+
       console.log(accessToken);
 		const intraID = data.data.id;
     const username = data.data.first_name;

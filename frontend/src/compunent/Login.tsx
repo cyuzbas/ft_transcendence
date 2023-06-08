@@ -24,7 +24,7 @@ const Login = () => {
   };
 
   const statusdenem= async () => {
-    const response = await axios.get("http://localhost:3001/auth/status");
+    const response = await axios.get('http://localhost:3001/auth/status');
 
     console.log(response)
   }

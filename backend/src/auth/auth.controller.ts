@@ -3,12 +3,10 @@ import { Request, Response } from 'express';
 import { UserService } from '../user/user.service';
 import { AuthenticatedGuard, OAuthGuard } from './oauth/oauth.guard';
 import { AuthService } from './auth.service';
-import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
 export class AuthController {
-	constructor(private userService: UserService, private readonly jwtService: JwtService,  private authService: AuthService) {}
-	public jwtToken = {access_token: ''}; 
+	constructor(private userService: UserService,  private authService: AuthService) {}
 	
 	@Get('login')
 	@UseGuards(OAuthGuard)
@@ -19,25 +17,31 @@ export class AuthController {
 
 
 	@Get('logout')
-	async logout(@Req() req: any) {
-		console.log("bastaaaaa \n\n" +req);
-		req.logOut();
-		console.log("sonda\n\n " + req);
-		return '!';
+	@UseGuards(AuthenticatedGuard)
+	async logout(@Req() req, @Res() res) {
+		req.logout(() => {
+			// Oturum sonlandırıldıktan sonra yapılacak işlemler
+			res.redirect('http://localhost:3000/login'); // Örnek olarak, login sayfasına yönlendirme yapabilirsiniz
+		  });
 	}
 
 	@Get('redirect')
 	@UseGuards(OAuthGuard)
 	async callback(@Req() req, @Res() res)
 	{
-		console.log("burad " + req.user.intraID);
+		// console.log("burad " + req.user.intraID);
 		// console.log(res);
-		const jwtToken = this.authService.createToken(req.user.intraID);
-		res.cookie("jwt", jwtToken);
-		// res.cookie("jwtToken", jwtToken, {httpOnly:true});
+		const user = req.user;
+		req.login(user, (err) => {
+			if(err){
+				console.log("Login Error");
+			}
+			else
+				console.log("Login succes");
+		});
 		res.cookie('authToken',req.user.intraID);
 		// res.redirect('http://localhost:3000/')
-		res.redirect(`http://localhost:3000/?token=${jwtToken}`);
+		res.redirect(`http://localhost:3000/`);
 		// return res.json(req.user);
 	}
 

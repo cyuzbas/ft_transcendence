@@ -1,6 +1,9 @@
 import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import './HomePage.css';
+import Friend from './friend';
+
+
     const authToken = document.cookie
   .split('; ')
   .find(row => row.startsWith('authToken='))
@@ -44,10 +47,8 @@ import './HomePage.css';
         <div className="MyRank container">MyRank</div>
         <div className="Chat container">Chat</div>
         <div className="AllRanks container">Allranks</div>
-        <div className="FriendSection container">Friend
-            <div className="friend">Test</div>
-            <div className="friend">Test</div>
-            <div className="friend">Test</div>
+        <div className="FriendSection container">
+            <Friend/>
         </div>
     </div>
     )

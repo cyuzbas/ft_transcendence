@@ -7,8 +7,13 @@ import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
 export class AuthController {
+<<<<<<< Updated upstream
 	constructor(private userService: UserService, private readonly jwtService: JwtService,  private authService: AuthService) {}
 	public jwtToken = {access_token: ''}; 
+=======
+	constructor(private userService: UserService,  
+		private authService: AuthService) {}
+>>>>>>> Stashed changes
 	
 	@Get('login')
 	@UseGuards(OAuthGuard)

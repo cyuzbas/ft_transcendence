@@ -8,7 +8,11 @@
             "label": "Game",
             "href": "/game"
         },
-       
+        
+        {
+            "label": "friends",
+            "href" : "/friend"
+         },
         {
             "label": "ChatRoom",
             "href": "/chatroom"

@@ -9,10 +9,6 @@ export class AuthController {
 
 	constructor(private userService: UserService,  
 		private authService: AuthService) {}
-
-
-	constructor(private userService: UserService,  private authService: AuthService) {}
-
 	
 	@Get('login')
 	@UseGuards(OAuthGuard)

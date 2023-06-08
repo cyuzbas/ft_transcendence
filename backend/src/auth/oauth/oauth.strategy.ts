@@ -10,12 +10,16 @@ export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
   constructor(
     private readonly authService: AuthService,
     private readonly httpService: HttpService,
+    private readonly config: ConfigService
   ) {
     super({
       authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
       tokenURL: 'https://api.intra.42.fr/oauth/token',
+      clientID: config.get("intraId"),
+      clientSecret: config.get("secretKey"),
       callbackURL: 'http://localhost:3001/auth/redirect',
     });
+
   }
  
 	  async validate(accessToken: string) {

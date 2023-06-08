@@ -31,6 +31,7 @@
     "@nestjs/typeorm": "^9.0.1",
     "client-oauth2": "^4.3.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
     "express-session": "^1.17.3",
     "google-auth-library": "^8.8.0",
     "http-proxy-middleware": "^2.0.6",

@@ -15,10 +15,11 @@ export class UserService {
 
 
   async createUser(userData: CreateUserDTO): Promise<UserI> {
-		const newUser = this.userRepository.create(userData);
-		const createdUser: UserI = await this.userRepository.save(newUser);
+	const newUser = this.userRepository.create(userData);
+	const createdUser: UserI = await this.userRepository.save(newUser);
 
-		return createdUser;
+
+	return createdUser;
 	}
 
 	async findByIntraID(intraIDToFind: string): Promise<UserI> {

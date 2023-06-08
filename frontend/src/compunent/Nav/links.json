@@ -19,11 +19,15 @@
         },
         {
             "label": "Status",
-            "href": "/status"
+            "href": "http://localhost:3001/auth/status"
         },
         {
-            "label": "login Page",
+            "label": "login",
             "href": "/login"
+        },
+        {
+            "label": "logout",
+            "href": "http://localhost:3001/auth/logout"
         }
     ]
 }

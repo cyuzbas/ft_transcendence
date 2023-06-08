@@ -12,9 +12,10 @@ import { PassportModule } from '@nestjs/passport';
 
 
 @Module({
-  imports: [TypeOrmModule.forRoot(config), PassportModule.register({session:true}), 
-    UserModule,  AuthModule, UserModule,
-		ConfigModule.forRoot({ isGlobal: true }),],
+  imports: [TypeOrmModule.forRoot(config), 
+            PassportModule.register({session:true}), 
+            UserModule,  AuthModule, UserModule,
+		        ConfigModule.forRoot({ isGlobal: true }),],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { OAuthStrategy } from './oauth/oauth.strategy';
 import { UserModule } from '../user/user.module';
@@ -12,9 +12,9 @@ import { SessionSerializer } from './serializer';
 @Module({
   imports: [
     HttpModule,
-    UserModule,
-    PassportModule.register({ session: true }),
-    JwtModule.register({secret: 'example'}),
+		JwtModule.register({}),
+		forwardRef(() => UserModule),
+		PassportModule.register({ session: true }),
   ],
   providers: [AuthService, OAuthStrategy, SessionSerializer], 
   controllers: [AuthController],

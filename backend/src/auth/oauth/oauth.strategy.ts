@@ -14,6 +14,8 @@ export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
     super({
       authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
       tokenURL: 'https://api.intra.42.fr/oauth/token',
+      clientID: 'u-s4t2ud-8b8dca27634bd870dbf549f91fe73169d9bf670b2843208aad550ba0529f728e',
+      clientSecret: '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',
       callbackURL: 'http://localhost:3001/auth/redirect',
     });
   }

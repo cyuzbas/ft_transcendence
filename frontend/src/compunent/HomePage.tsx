@@ -1,7 +1,7 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
-
-const authToken = document.cookie
+import React, { useState,useEffect } from 'react';
+import axios from 'axios';
+import './HomePage.css';
+    const authToken = document.cookie
   .split('; ')
   .find(row => row.startsWith('authToken='))
   ?.split('=')[1];
@@ -33,14 +33,23 @@ const authToken = document.cookie
       fetchData();
     }, []);
   
-
     return (
-      <div>
-        {/* <Image source={{uri:data.avatar}} style={{width: 400, height: 400, borderRadius:200}} /> */}
-        <img src={data.avatar} style={{margin:50,width:200, height:200, borderRadius:150}} alt="" />
+    <div className='PageMain'>
+        <div className="Menu container">menu</div>
+        <div className="ProfileInfo container">
+        <img src={data.avatar} style={{margin:50,width:200, height:170, borderRadius:20}} alt="" />
         <h1> {data.username}</h1>
         <h1> {data.intraID}</h1>
-      </div>
+        </div>
+        <div className="MyRank container">MyRank</div>
+        <div className="Chat container">Chat</div>
+        <div className="AllRanks container">Allranks</div>
+        <div className="FriendSection container">Friend
+            <div className="friend">Test</div>
+            <div className="friend">Test</div>
+            <div className="friend">Test</div>
+        </div>
+    </div>
     )
- }
- export default HomePage;
+};
+export default HomePage;

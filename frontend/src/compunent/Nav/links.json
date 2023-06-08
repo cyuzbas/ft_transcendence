@@ -8,10 +8,7 @@
             "label": "Game",
             "href": "/game"
         },
-        {
-            "label": "Profile",
-            "href": "/profile"
-        },
+       
         {
             "label": "ChatRoom",
             "href": "/chatroom"
@@ -21,8 +18,8 @@
             "href": "/status"
         },
         {
-            "label": "login/logout",
-            "href": "http://localhost:3001/auth/logout"
+            "label": "login Page",
+            "href": "/login"
         }
     ]
 }

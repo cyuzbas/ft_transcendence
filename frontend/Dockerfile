@@ -1,22 +1,19 @@
-# pull official base image
-FROM node:latest
+FROM node:19
 
-# set working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+# Copy the package.json and package-lock.json files
+COPY package*.json ./
 
-# install app dependencies
-COPY package.json ./
-#COPY package-lock.json ./
+# Copy all the project files
+COPY . .
 
-RUN npm install --silent
-RUN npm install react-scripts@3.4.1 -g --silent
-# RUN npm install  @types/oauth2-client
-
+# Install the dependencies
+RUN npm install
 # add app
 COPY . ./
 
+EXPOSE 8080
 # start app
 CMD ["npm", "start"]

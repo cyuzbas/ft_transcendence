@@ -1,29 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import {User } from './user.entity'
+import {UserI} from './user.interface'
+import User from './user.entity'
+import { Repository, getConnection } from 'typeorm';
 import {CreateUserDTO} from '../dto/create-user-dto'
-import { UserDTO } from 'src/dto/task.dto';
+
+
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(User) private UserRepository: Repository<User>){}
+  constructor(
+	@InjectRepository(User)
+	private userRepository: Repository<User>,){}
 
-    public async createOne(createUserRequest: CreateUserDTO){
-        const user: User = new User();
-        user.is_online  = createUserRequest.is_online;
-        user.nick_name = createUserRequest.nick_name;
-        user.password = createUserRequest.password;
-        user.user_id = createUserRequest.user_id;
 
-        await this.UserRepository.save(user);
+  async createUser(userData: CreateUserDTO): Promise<UserI> {
+		const newUser = this.userRepository.create(userData);
+		const createdUser: UserI = await this.userRepository.save(newUser);
 
-        const userDTO = new UserDTO();
-        userDTO.is_online = user.is_online;
-        userDTO.nick_name = user.nick_name;
-        userDTO.password = user.password;
-        userDTO.user_id = user.user_id;
+		return createdUser;
+	}
 
-        return userDTO;
-    }
+	async findByIntraID(intraIDToFind: string): Promise<UserI> {
+		return await this.userRepository.findOne({
+			where: { intraID: intraIDToFind },
+		});
+	}
+
+
 }

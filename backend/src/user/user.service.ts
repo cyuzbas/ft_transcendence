@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {UserI} from './user.interface'
 import User from './user.entity'
-import { Repository } from 'typeorm';
+import { Repository, getConnection } from 'typeorm';
 import {CreateUserDTO} from '../dto/create-user-dto'
+import { UpdateUserProfileDto } from './updateUserProfil.dto';
+import { log } from 'console';
 
 
 
@@ -16,22 +18,53 @@ export class UserService {
 
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);
+	newUser.friends = []
 	const createdUser: UserI = await this.userRepository.save(newUser);
 
 
 	return createdUser;
 	}
 
-	async findByIntraID(intraIDToFind: string): Promise<UserI> {
+	async findByintraId(intraIdToFind: string): Promise<UserI> {
 		return await this.userRepository.findOne({
-			where: { intraID: intraIDToFind },
+			where: { intraId: intraIdToFind },
 		});
 	}
 
 	async findByAllUser(): Promise<UserI[]> {
-		console.log("find icinde!!\n");
 		const users: User[] = await this.userRepository.find();
-		console.log(users);
 		return users as UserI[];
 	}
+
+	async findByID(idToFind: number): Promise<UserI> {
+		return await this.userRepository.findOne({
+			where: { id: idToFind },
+		});
+	}
+
+	async findId(intrabyId: string): Promise<number>{
+		const user  = await this.userRepository.findOne({
+			where: {intraId: intrabyId}
+		})
+		return user.id;
+	}
+
+	async updateUserProfile(updateUserInfo: UpdateUserProfileDto): Promise<UserI | undefined> {
+		try {
+		  const id = await this.findId(updateUserInfo.intraId); // findId fonksiyonunun tamamlanmasını bekleyin
+		  console.log(id + " da " + updateUserInfo.avatar);
+	  
+		  await this.userRepository.update(id, {
+			username: updateUserInfo.username,
+			avatar: updateUserInfo.avatar
+		  });
+		  
+		  console.log("kaydetme başarılı");
+		  return await this.findByID(updateUserInfo.id);
+		} catch (error) {
+		  console.log("hata: " + error);
+		  return undefined;
+		}
+	  }
+	  
 }

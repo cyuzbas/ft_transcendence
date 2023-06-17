@@ -31,10 +31,11 @@ export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
       console.log("valide than promise");
 
       console.log(accessToken);
-		const intraID = data.data.id;
+		const intraId = data.data.id;
     const username = data.data.first_name;
     const avatar = data.data.image.link;
-		const validateUserDto = { intraID, username, avatar };
+    const avatarSmall = data.data.image.versions.micro
+		const validateUserDto = { intraId, username, avatar, avatarSmall };
     console.log(validateUserDto)
     return await this.authService.validateUser(validateUserDto);
   }

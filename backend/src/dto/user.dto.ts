@@ -1,3 +1,3 @@
 export class ValidateUserDto {
-	intraID: string;
+	intraId: string;
 }

@@ -22,6 +22,7 @@
   "dependencies": {
     "@nest-middlewares/cors": "^7.0.1",
     "@nestjs/axios": "^2.0.0",
+    "@nestjs/class-validator": "^0.13.4",
     "@nestjs/common": "^9.4.2",
     "@nestjs/config": "^2.3.2",
     "@nestjs/core": "^9.0.0",

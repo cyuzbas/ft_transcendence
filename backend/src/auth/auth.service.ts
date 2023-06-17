@@ -11,7 +11,7 @@ export class AuthService {
 
   async validateUser(createUserDto: CreateUserDTO): Promise<UserI> {
 	
-		const user = await this.userService.findByIntraID(createUserDto.intraID);
+		const user = await this.userService.findByintraId(createUserDto.intraId);
 		if(user)
 		{
 			console.log("old user");

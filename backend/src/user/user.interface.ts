@@ -1,7 +1,9 @@
 
 export interface UserI {
 	id?: number;
-	intraID?: string;
+	intraId?: string;
 	username?: string;
 	avatar?: string;
+	avatarSmall?: string
+	friends?: UserI[]
 }

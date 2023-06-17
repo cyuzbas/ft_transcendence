@@ -1,6 +1,8 @@
-import { Controller, Get, Body, Param } from '@nestjs/common';
+import { Controller, Get, Req, Param, UseGuards, Post, Body } from '@nestjs/common';
 import { CreateUserDTO } from 'src/dto/create-user-dto';
 import { UserService } from './user.service';
+import { UserDTO } from 'src/dto/task.dto';
+import { UpdateUserProfileDto } from './updateUserProfil.dto';
 
 
 
@@ -13,8 +15,13 @@ export class UserController {
         return this.userService.findByAllUser();
     }
     @Get(':intraId')
-    getUserByIntraId(@Param('intraId') id: string){
-        return this.userService.findByIntraID(id)
+    getUserByintraId(@Param('intraId') id: string){
+        return this.userService.findByintraId(id)
+    }
+
+    @Post('update-user-profile')
+    async updateUserProfile(@Body() userDTO: UpdateUserProfileDto){
+        return await this.userService.updateUserProfile(userDTO);
     }
 
   

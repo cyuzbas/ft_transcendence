@@ -1,5 +1,6 @@
 export class CreateUserDTO{
-    intraID: string;
+    intraId: string;
     avatar: string;
     username: string;
+    avatarSmall:string;
 }

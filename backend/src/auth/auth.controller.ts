@@ -31,8 +31,6 @@ export class AuthController {
 	@UseGuards(OAuthGuard)
 	async callback(@Req() req, @Res() res)
 	{
-		// console.log("burad " + req.user.intraID);
-		// console.log(res);
 		const user = req.user;
 		req.login(user, (err) => {
 			if(err){
@@ -41,17 +39,18 @@ export class AuthController {
 			else
 				console.log("Login succes");
 		});
-		res.cookie('authToken',req.user.intraID);
-		// res.redirect('http://localhost:3000/')
+
 		res.redirect(`http://localhost:3000/`);
-		// return res.json(req.user);
 	}
 
 
 	@Get('status')
 	@UseGuards(AuthenticatedGuard)
-	status(@Req() req: Request) {
-		return req.user;
+	status(@Req() req) {
+		if(!req.user)
+			window.location.href = '/login'
+		else
+			return req.user;
 	}
 
 }

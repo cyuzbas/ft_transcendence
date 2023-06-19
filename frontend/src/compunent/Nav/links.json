@@ -11,7 +11,7 @@
         
         {
             "label": "friends",
-            "href" : "/friend"
+            "href" : "http://localhost:3001/user/addFriends"
          },
         {
             "label": "ChatRoom",

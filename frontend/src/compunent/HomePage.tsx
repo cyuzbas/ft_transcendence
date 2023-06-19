@@ -25,9 +25,22 @@ import Friend from './friend';
   
     useEffect(() => {
       const fetchData = async () => {
+
+        // try{
+        // const friendResponse = await axios.get('http://localhost:3001/user/friends');
+          
+        // console.log(friendResponse.data+ " frontend");
+        // }
+        // catch(error){
+        //   console.log(error + " friends eerorrr!!");
+        // }
+
+
         try {
         const response = await axios.get(`http://localhost:3001/user/${authToken}`)
         setData(response.data);
+
+       
         } catch (error) {
           console.error(error);
         }

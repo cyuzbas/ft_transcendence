@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {UserI} from './user.interface'
-import User from './user.entity'
+import {User} from './user.entity'
 import { Repository } from 'typeorm';
 import {CreateUserDTO} from '../dto/create-user-dto'
 
@@ -13,6 +13,25 @@ export class UserService {
 	@InjectRepository(User)
 	private userRepository: Repository<User>,){}
 
+
+
+	async addFriend(): Promise<boolean>{
+		console.log("Add friends");
+		const cicek = new User();
+		cicek.id = 24;
+		cicek.username = "cicek";
+
+		const user = await this.userRepository.findOne({
+			where: {id: 2}
+		})
+		
+		// if(user){
+		// 	console.log("user var " + user.intraID);
+		// 	user.friends.push(cicek);
+		// 	return true;
+		// }
+		return false;
+	}
 
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);

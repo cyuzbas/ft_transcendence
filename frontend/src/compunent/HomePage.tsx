@@ -55,26 +55,53 @@ import swal from 'sweetalert';
         }
       });
     }
-
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+
+    async function postimage() {
+      if(selectedFile){
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      try {
+        const response = await axios.post(
+          "http://localhost:3001/user/avatar",
+          formData,
+          {
+            withCredentials: true,
+          }
+        );
+
+        console.log(response.data)
+        setUser(response.data)
+    }
+    catch(error){
+      console.error(error);
+    }
+  }
+  }
+
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files && event.target.files.length > 0) {
         setSelectedFile(event.target.files[0]);
       }
     };
-    
+
+
   
     return (
     <div className='PageMain'>
         <div className="Menu container">menu</div>
         <div className="ProfileInfo container">
-        <img src={user.avatar} style={{margin:50,width:200, height:170, borderRadius:20}} alt="" />
+        {/* <img src={imageUrl} alt="Avatar" style={{margin:50,width:200, height:170, borderRadius:20}} alt="" /> */}
+        {/* <img src={user.avatar} alt="Avatar" /> */}
+        <img src="http://localhost:3001/2.png" alt="Logo" />
+
         <h5> {user.intraId} intra</h5>
         <h5>{user.username}</h5>
         <button onClick={showAlert}> Change username</button>
         <input type='file' onChange={handleFileChange} accept='image/*' />
-        <button onClick={showAlert} > Change photo</button>
+        <button onClick={postimage} > Change photo</button>
         </div>
         <div className="MyRank container">MyRank</div>
         <div className="Chat container">Chat</div>

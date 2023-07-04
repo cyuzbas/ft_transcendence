@@ -16,6 +16,7 @@ export class UserService {
 	private userRepository: Repository<User>,){}
 
 
+
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);
 	newUser.friends = []
@@ -49,6 +50,20 @@ export class UserService {
 		return user.id;
 	}
 
+	async updataAvatar(path: string, user: User): Promise<UserI>{
+		try{
+			await this.userRepository.update(user,{
+				avatar: path
+			});
+			console.log("succes update avatar");
+			return user;
+		}
+		catch(error){
+			console.error(error + "error update avatar");
+			return null;
+		}
+	}
+
 	async updateUserProfile(updateUserInfo: UpdateUserProfileDto): Promise<UserI | undefined> {
 		try {
 		  const id = await this.findId(updateUserInfo.intraId); // findId fonksiyonunun tamamlanmasını bekleyin
@@ -56,7 +71,6 @@ export class UserService {
 	  
 		  await this.userRepository.update(id, {
 			username: updateUserInfo.username,
-			avatar: updateUserInfo.avatar
 		  });
 		  
 		  console.log("kaydetme başarılı");

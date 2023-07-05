@@ -51,17 +51,11 @@ export class UserService {
 	}
 
 	async updataAvatar(path: string, user: User): Promise<UserI>{
-		try{
 			await this.userRepository.update(user,{
-				avatar: path
+				avatar: "http://localhost:3001/user/avatar/" + path
 			});
 			console.log("succes update avatar");
 			return user;
-		}
-		catch(error){
-			console.error(error + "error update avatar");
-			return null;
-		}
 	}
 
 	async updateUserProfile(updateUserInfo: UpdateUserProfileDto): Promise<UserI | undefined> {

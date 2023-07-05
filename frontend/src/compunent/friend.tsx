@@ -10,7 +10,6 @@ type User = {
     avatar: string;
     username: string;
     intraId: string;
-    avatarSmall:string
   };
   
   
@@ -43,7 +42,7 @@ type User = {
     {Array.isArray(users) ? (
       users.map((user, index) => (
         <div className="text-image-component" key={user.intraId}>
-             <img src={user.avatarSmall} className="image" />
+             <img src={user.avatar} className="image" style={{margin:5,width:50, height:50, borderRadius:20}}/>
             <div className="text">{user.username}</div>
             <img src={logo}  className="image2" />
         </div>

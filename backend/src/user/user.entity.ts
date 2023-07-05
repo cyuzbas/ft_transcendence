@@ -19,7 +19,7 @@ export class User {
 	public avatarSmall: string;
 
 
-  @Column({ unique: true, nullable: true })
+  @Column({ nullable: true })
 	public username: string;
 
   @ManyToMany(() => User, { cascade: true })

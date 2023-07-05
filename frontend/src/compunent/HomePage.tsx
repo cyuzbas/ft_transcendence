@@ -5,11 +5,6 @@ import Friend from './friend';
 import { UserContext } from './Context/context';
 import swal from 'sweetalert';
 
-  type Data = {
-    avatar: string,
-    username: string,
-    intraId: string
-  };
   
   const HomePage: React.FC = () => {
 
@@ -22,7 +17,7 @@ import swal from 'sweetalert';
         try {
         const response = await axios.get('http://localhost:3001/auth/status', {withCredentials: true})
         setUser(response.data);
-        console.log(response.data.intraId + " asdasd")
+        console.log(response.data.avatar + " asdasd")
         } catch (error) {
           window.location.href = '/login'
         }
@@ -42,10 +37,10 @@ import swal from 'sweetalert';
         if (willDelete) {
           try{
           const response = await axios.post("http://localhost:3001/user/update-user-profile",{
-            username:"veli",
+            username:"cicek",
             avatar: user.avatar,
             intraId: user.intraId
-          })
+          }, {withCredentials:true})
 
           swal("Saved!", "Your imaginary file has been saved!" + user.intraId + "asdasd", "success");
         }
@@ -56,29 +51,23 @@ import swal from 'sweetalert';
       });
     }
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
+    
 
     async function postimage() {
-      if(selectedFile){
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-      try {
-        const response = await axios.post(
-          "http://localhost:3001/user/avatar",
-          formData,
-          {
-            withCredentials: true,
-          }
-        );
 
-        console.log(response.data)
-        setUser(response.data)
-    }
-    catch(error){
-      console.error(error);
+      if(selectedFile){
+        const formData = new FormData()
+	  const imageName = user.username+'.png'
+	  formData.append('avatar', selectedFile)
+	  const headers = { 'Content-Type': 'multipart/form-data'};
+	  await axios
+		  .post(`http://localhost:3001/user/avatar/${imageName}`, 
+		  formData, {withCredentials: true , headers })
+		  .then((res) => {user.avatar = res.data.avatar})
+		  .catch(err => {})
     }
   }
-  }
+	  
 
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,15 +82,16 @@ import swal from 'sweetalert';
     <div className='PageMain'>
         <div className="Menu container">menu</div>
         <div className="ProfileInfo container">
-        {/* <img src={imageUrl} alt="Avatar" style={{margin:50,width:200, height:170, borderRadius:20}} alt="" /> */}
-        {/* <img src={user.avatar} alt="Avatar" /> */}
-        <img src="http://localhost:3001/2.png" alt="Logo" />
+        <img src={user.avatar} alt="Avatar" style={{margin:50,width:200, height:170, borderRadius:20}} />
+        {/* <img src={user.avatar} /> */}
+
+        {/* <img src={"undefined:undefined/upload/1688581369566-219674372.png"} alt="Logo" /> */}
 
         <h5> {user.intraId} intra</h5>
         <h5>{user.username}</h5>
         <button onClick={showAlert}> Change username</button>
         <input type='file' onChange={handleFileChange} accept='image/*' />
-        <button onClick={postimage} > Change photo</button>
+        <button  onClick={postimage} > Change photo</button>
         </div>
         <div className="MyRank container">MyRank</div>
         <div className="Chat container">Chat</div>

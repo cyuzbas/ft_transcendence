@@ -10,12 +10,18 @@ import { ConfigModule } from '@nestjs/config';
 
 import { PassportModule } from '@nestjs/passport';
 
+import { MulterModule } from '@nestjs/platform-express';
+
 
 @Module({
   imports: [TypeOrmModule.forRoot(config), 
             PassportModule.register({session:true}), 
             UserModule,  AuthModule, UserModule,
-		        ConfigModule.forRoot({ isGlobal: true }),],
+		        ConfigModule.forRoot({ isGlobal: true }),
+            MulterModule.register({
+              dest: './upload',
+            }),
+        ],
   controllers: [AppController],
   providers: [AppService],
 })

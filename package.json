@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "class-validator": "^0.14.0",
-    "simple-oauth2": "^5.0.0"
-  }
-}

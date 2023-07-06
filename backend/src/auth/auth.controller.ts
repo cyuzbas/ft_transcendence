@@ -21,6 +21,7 @@ export class AuthController {
 	@Get('logout')
 	@UseGuards(AuthenticatedGuard)
 	async logout(@Req() req, @Res() res) {
+		console.log("logout backend " + req.user.username)
 		req.logout(() => {
 			// Oturum sonlandırıldıktan sonra yapılacak işlemler
 			res.redirect('http://localhost:3000/login'); // Örnek olarak, login sayfasına yönlendirme yapabilirsiniz
@@ -47,6 +48,8 @@ export class AuthController {
 	@Get('status')
 	@UseGuards(AuthenticatedGuard)
 	status(@Req() req) {
+
+		console.log("backend "+ req.user.username)
 		if(!req.user)
 			window.location.href = '/login'
 		else

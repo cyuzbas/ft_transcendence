@@ -17,7 +17,8 @@ import swal from 'sweetalert';
         try {
         const response = await axios.get('http://localhost:3001/auth/status', {withCredentials: true})
         setUser(response.data);
-        console.log(response.data.avatar + " asdasd")
+        console.log(user.username)
+        console.log(user.intraId)
         } catch (error) {
           window.location.href = '/login'
         }

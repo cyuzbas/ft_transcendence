@@ -12,6 +12,9 @@ import { PassportModule } from '@nestjs/passport';
 
 import { MulterModule } from '@nestjs/platform-express';
 
+import { APP_GUARD } from '@nestjs/core';
+import { AuthenticatedGuard } from './auth/oauth/oauth.guard';
+
 
 @Module({
   imports: [TypeOrmModule.forRoot(config), 
@@ -23,6 +26,7 @@ import { MulterModule } from '@nestjs/platform-express';
             }),
         ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, {provide:APP_GUARD,
+                            useClass: AuthenticatedGuard,}],
 })
 export class AppModule {}

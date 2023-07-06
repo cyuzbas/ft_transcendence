@@ -8,7 +8,7 @@ import { Express } from 'express';
 import { UserService } from './user.service';
 import { UpdateUserProfileDto } from './updateUserProfil.dto';
 import { join } from 'path';
-
+import {AuthenticatedGuard} from '../auth/oauth/oauth.guard'
 import * as fs  from "fs";
 
 @Controller('user')

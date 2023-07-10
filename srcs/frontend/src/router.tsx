@@ -23,6 +23,7 @@ export function Router() {
       <Routes>
 
         <Route index element={<Home />} />
+        <Route path='/friends' element={<Friends/>} />
         <Route path='/login' element={<Login />} />
         <Route path='/friend' element={<Friends />} />
         <Route path='/lobby' element={<Lobby />} />

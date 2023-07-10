@@ -33,16 +33,44 @@ export function useUser() {
     return useContext(UserContext);
 }
 
+
+
+
 type UserProviderProps = {
   children: ReactNode;
 }
 
 export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User>({
-    userName: 'idil',
+    userName: '',
     avatar: '',
     intraId: '',
+    status:'',
+    userRole:'',
   });
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+      const response = await axios.get('http://localhost:3001/auth/status', {withCredentials: true})
+      console.log("onceden " + user.userName);
+      setUser(response.data);
+      console.log("sonrasinda  "+ user.userName + " asdasd " + JSON.stringify(response.data) + "    bundan sonra" + window.location.pathname);
+      console.log(response.data.avatar + " asdasd")
+      } catch (error) {
+        if(!window.location.pathname.match('/login'))
+          window.location.href = '/login'
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+
+
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

@@ -123,14 +123,15 @@ export class UserService {
 		const user = await this.userRepository.findOne({
 			where: { userName: userName }
 		});
-
+		if(!user)
+			return
 		user.status = status;
 		await this.userRepository.save(user);
 	}
 
 	async getAllUsersStatus(): Promise<UserDto[]> {
 		const users = await this.userRepository.find();
-
+		
 		const userData = users.map(({ id, userName, status }) => {
 			return {
 				id,

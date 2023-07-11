@@ -99,7 +99,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         };
         
         // try {
-            const response = await axios.post<DmRoomUser>(`http://localhost:8080/chat/contact`, newRoom);
+            const response = await axios.post<DmRoomUser>(`http://localhost:3001/chat/contact`, newRoom);
             setDmRooms(prev => [...prev, response.data]);
             socket.emit('newDmRoom', response.data.contact);
             return response.data as DmRoomUser;

@@ -109,7 +109,8 @@ export class UserService {
 		const user = await this.userRepository.findOne({ 
 			where: { userName: userName } 
 		});
-
+		if(!user)
+			return 
 		const { id, status } = user;
 		return {
 			id,

@@ -30,6 +30,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
 
 		const user = await this.userService.findUserByUserName(userSocket.name);
+		if(!user)
+			return
 		client.join(user.id.toString());
 		client.emit('userId', user.id);
 

@@ -41,7 +41,9 @@ export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User>({
     userName: 'unknown',
     avatar: '',
-    intraId: '',
+    intraId: '', 
+    status: '',
+    userRole: '',
   });
 
   return (

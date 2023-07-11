@@ -1,6 +1,9 @@
-import React, { useEffect, useState} from 'react'
+
 // import '../index.css';
 import axios from 'axios';
+import { UserContext } from '../../contexts'
+import React, { useContext,useState , useEffect } from 'react';
+
 
 type User = {
     avatar: string;
@@ -8,15 +11,20 @@ type User = {
     intraId: string;
   };
   
+
+
   
 export function Friends() {
     const [users, setUsers] = useState<User[]>([]);
+    const {user, setUser} = useContext(UserContext)
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("naber, " + user.userName);
       try {
         const response = await axios.get('http://localhost:3001/user/all');
         setUsers(response.data);
+
         console.log("response fetch datA!");
         console.log(response.data.user);
         Array.isArray(users) ? (

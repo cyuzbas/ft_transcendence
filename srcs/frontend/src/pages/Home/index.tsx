@@ -9,23 +9,10 @@ import swal from 'sweetalert';
   export function Home (){
 
   
-    const {user, setUser} = useContext(UserContext)
+    const {user} = useContext(UserContext)
   
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-        const response = await axios.get('http://localhost:3001/auth/status', {withCredentials: true})
-        setUser(response.data);
-        console.log(response.data.avatar + " asdasd")
-        } catch (error) {
-          window.location.href = '/login'
-        }
-      };
-  
-      fetchData();
-    }, []);
-
+    
     async function showAlert(){
       swal({
         title: "Are you sure?",

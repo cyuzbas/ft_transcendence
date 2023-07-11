@@ -2,7 +2,7 @@ import { ReactNode, createContext, useContext, useEffect, useState } from "react
 import { io, Socket } from "socket.io-client";
 import { useUser } from "../UserContext/provider";
 import { ChatRoomUser, DmRoomUser, Room, RoomType, RoomUser, UserRole } from "../ChatContext/types";
-import { UserContext } from '../../contexts';
+import { UserContext } from '..';
 
 
 export const GENERAL_CHAT = {
@@ -32,15 +32,16 @@ export function useSocket() {
 export function SocketProvider({ children }: {children: ReactNode}) {
 	const [isConnected, setIsConnected] = useState(socket.connected);
 	const [room, setRoom] = useState<RoomUser>(GENERAL_CHAT);
-	// const { user } = useUser();
+	const { user } = useUser();
 
-    const {user} = useContext(UserContext)
-
-
-	useEffect(() => {
-		if(isConnected) // not necessary in final product?
+    // const {user} = useContext(UserContext)
+		
+		
+		useEffect(() => {
+			if(isConnected) // not necessary in final product?
 			socket.disconnect();
-		if(user.userName !== 'unKnown') {
+			if(user.userName !== 'unknown') {
+			// console.log(user);
 			socket.auth = { name: user.userName };
 			socket.connect();
 		}

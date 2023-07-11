@@ -209,8 +209,21 @@ export class ChatService {
 			
 		await this.roomUserRepository.delete(roomUser);
 	}
+	
+	async updateRoom(updatedRoom: RoomDto): Promise<void> {
+		const room = await this.roomRepository.findOne({
+			where: { roomId: updatedRoom.roomId }
+		});
+
+		room.password = updatedRoom.password;
+		room.type = updatedRoom.type;
+		await this.roomRepository.save(room);
 		
-	async UpdateRoomUser(roomName: string, userName: string, updatedRoomUser: RoomUserDto) {
+		console.log(updatedRoom)
+		console.log(room)
+	}
+
+	async updateRoomUser(roomName: string, userName: string, updatedRoomUser: RoomUserDto) {
 		const roomUser = await this.roomUserRepository
 		.createQueryBuilder('roomUser')
 		.leftJoinAndSelect('roomUser.room', 'room')
@@ -323,11 +336,11 @@ export class ChatService {
 		.leftJoinAndSelect('messages.user', 'user')
 		.where('room.roomName = :roomName', {roomName})
 		.getOne()
-		console.log(room)
+		
 		const messageData = room.messages.map(({ user, room, ...message }) => {
-			// const { userName } = user;
+			const { userName } = user;
 			return {
-				userName: "idil", // check (sender !== null)??
+				userName, // check (sender !== null)??
 				...message,
 			}
 		});
@@ -343,8 +356,8 @@ export class ChatService {
 			.where('room.roomName = :roomName', { roomName: GENERAL_CHAT })
 			.andWhere('user.userName = :userName', { userName })
 			.getOne();
-		console.log(userName)
-		console.log(roomUser)
+		// console.log(userName)
+		// console.log(roomUser)
 		const { userRole, unreadMessages, isBanned, isKicked, isMuted } = roomUser;
 		const { roomId, roomName, type } = roomUser.room
 

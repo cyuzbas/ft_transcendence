@@ -1,30 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FormAddContact } from "./formAddContact";
-import { useUser } from "../../../contexts/UserContext/provider";
-import { DmRoomUser, RoomUser } from "../../../contexts/ChatContext/types";
 import { useSocket } from "../../../contexts/SocketContext/provider";
 import { ClickableList } from "./clickableList";
 import { useChat } from "../../../contexts/ChatContext/provider";
 
 export const DirectMessages = () => {
 	const [popupVisibility, setPopupVisibility] = useState<boolean>(false);
-    const { user } = useUser();
-    const { socket } = useSocket();
     const { setRoom } = useSocket();
-    const { dmRooms, setDmRooms } = useChat();
+    const { dmRooms } = useChat();
     
-    useEffect(() => {
-        function onNewDMessage(newDmRoom: DmRoomUser) { //should i join them to room in server for unread messages?
-            if (!dmRooms.find(roomUser => roomUser.contact === newDmRoom.contact))
-                setDmRooms(prev => [...prev, newDmRoom]);
-        };
-
-        socket.on('newDMessage', onNewDMessage);
-        return () => {
-            socket.off('newDMessage');
-        }
-    },[socket, user]);
-
     return (
         <>
 			<h3>
@@ -46,3 +30,19 @@ export const DirectMessages = () => {
         </>
     )
 }
+
+
+
+
+
+// useEffect(() => {
+//     function onNewDMessage(newDmRoom: DmRoomUser) { //should i join them to room in server for unread messages?
+//         if (!dmRooms.find(roomUser => roomUser.contact === newDmRoom.userName))
+//             setDmRooms(prev => [...prev, newDmRoom]);
+//     };
+
+//     socket.on('newDMessage', onNewDMessage);
+//     return () => {
+//         socket.off('newDMessage');
+//     }
+// },[socket, user]);

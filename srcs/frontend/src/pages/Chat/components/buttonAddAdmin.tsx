@@ -1,6 +1,8 @@
-import { Member, UserRole } from "../../../contexts/ChatContext/types";
-import { useChat } from "../../../contexts/ChatContext/provider";
-import { useSocket } from "../../../contexts/SocketContext/provider";
+// import { Member, UserRole } from "../chat.types";
+// import { useChat } from "../chat.provider";
+// import { useSocket } from "../../../contexts/SocketProvider";
+import { Member, UserRole, useChat } from "../../../contexts/ChatContext";
+import { useSocket } from "../../../contexts/SocketContext";
 
 export const AddAdminButton: React.FC<{ member: Member }> = ({ member }) => {
   const { socket, room } = useSocket();

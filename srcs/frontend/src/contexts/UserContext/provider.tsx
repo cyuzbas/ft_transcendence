@@ -39,7 +39,7 @@ type UserProviderProps = {
 
 export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User>({
-    userName: 'idil',
+    userName: 'unknown',
     avatar: '',
     intraId: '',
   });

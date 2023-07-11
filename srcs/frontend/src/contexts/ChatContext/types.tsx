@@ -1,3 +1,5 @@
+import { User } from "../UserContext";
+
 export enum RoomType {
 	PUBLIC = 'public',
 	PRIVATE = 'private',
@@ -37,13 +39,13 @@ export type RoomUser = {
 };
 
 // Base User type
-export type User = {
-	id: number;
-	userName: string;
-	status: string;
-	avatar: string;
-	intraId: string;
-};
+// export type User = {
+// 	id: number;
+// 	userName: string;
+// 	status: string;
+// 	avatar: string;
+// 	intraId: string;
+// };
 
 // UserRoles type
 export type RoomUserDetails = {

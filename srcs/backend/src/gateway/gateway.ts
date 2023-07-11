@@ -24,25 +24,26 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		private userService: UserService){}
 
 	async handleConnection(client: Socket) {
-		// const userSocket = client.handshake.auth;
-		// this.logger.debug(`Client connected: [${userSocket.name}] - ${client.id}`);
-		// this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
+		// console.log('here')
+		const userSocket = client.handshake.auth;
+		this.logger.debug(`Client connected: [${userSocket.name}] - ${client.id}`);
+		this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
 
-		// const user = await this.userService.findUserByUserName(userSocket.name);
-	// 	client.join(user.id.toString());
-	// 	client.emit('userId', user.id);
+		const user = await this.userService.findUserByUserName(userSocket.name);
+		client.join(user.id.toString());
+		client.emit('userId', user.id);
 
-		// await this.userService.updateStatus(userSocket.name, 'online');
-	// 	this.onUserUpdate();
+		await this.userService.updateStatus(userSocket.name, 'online');
+		this.onUserUpdate();
 	}
 	
 	async handleDisconnect(client: Socket) {
-		// const userSocket = client.handshake.auth;
-		// this.logger.debug(`Client disconnected: [${userSocket.name}] - ${client.id}`);
-		// this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
-		// // console.log(client.rooms);
-		// // await this.userService.updateStatus(userSocket.name, 'offline');
-		// this.onUserUpdate();
+		const userSocket = client.handshake.auth;
+		this.logger.debug(`Client disconnected: [${userSocket.name}] - ${client.id}`);
+		this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
+		// console.log(client.rooms);
+		await this.userService.updateStatus(userSocket.name, 'offline');
+		this.onUserUpdate();
 	}
 	
 	@SubscribeMessage('userUpdate') // unneccesary? to have event, only server uses it now

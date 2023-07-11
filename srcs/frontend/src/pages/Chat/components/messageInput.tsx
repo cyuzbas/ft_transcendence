@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useUser } from "../../../contexts/UserContext/provider";
+// import { useUser } from "../../../contexts/UserProvider";
 import { useSocket } from "../../../contexts/SocketContext/provider";
+import { useUser } from "../../../contexts";
 
 export function MessageInput(){
   const [message, setMessage] = useState<string>('');

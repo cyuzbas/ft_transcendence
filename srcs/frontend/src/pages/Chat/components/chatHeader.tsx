@@ -1,8 +1,9 @@
 import axios from "axios";
-import { GENERAL_CHAT, useSocket } from "../../../contexts/SocketContext/provider";
+import { GENERAL_CHAT, useSocket } from "../../../contexts/SocketContext/provider"
 import { DmRoomUser, RoomType, RoomUser } from "../../../contexts/ChatContext/types";
-import { useUser } from "../../../contexts/UserContext/provider";
+// import { useUser } from "../../../contexts/UserProvider";
 import { useChat } from "../../../contexts/ChatContext/provider";
+import { useUser } from "../../../contexts";
 
 type Props = {
 	expanded: boolean,
@@ -25,10 +26,12 @@ export const ChatHeader = ({ expanded, setExpanded }: Props) => {
 		// also emit event leave room??
 		socket.emit('newMessage', {
 			userName: user.userName,
-			content: `has left the chat...`,
+			content: `left the chat...`,
 			roomName: room.roomName,
 		});
-	
+
+		socket.emit('memberUpdate', room.roomName);
+		// socket.emit('leaveRoom')!!!!!!!!!!!
 		setRoom(GENERAL_CHAT);
 	}
 

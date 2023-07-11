@@ -31,12 +31,17 @@ export class ChatController {
 		return await this.chatService.addChatRoomUser(roomName, userName, userRole);
 	}
 
+	@Put('room')
+	async UpdateRoom(@Body() updatedRoom: RoomDto): Promise<void> {
+		return await this.chatService.updateRoom(updatedRoom);
+	}
+
 	@Put('roomuser/:roomName/:userName')
 	async UpdateRoomUser(
 		@Param('roomName') roomName: string,
 		@Param('userName') userName: string,
 		@Body() updatedRoomUser: RoomUserDto): Promise<RoomUserDto[]> {
-		await this.chatService.UpdateRoomUser(roomName, userName, updatedRoomUser);
+		await this.chatService.updateRoomUser(roomName, userName, updatedRoomUser);
 		return await this.chatService.getRoomMembers(roomName);
 	}
 

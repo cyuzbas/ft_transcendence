@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useSocket } from "../../../contexts/SocketContext/provider";
-import { useUser } from "../../../contexts/UserContext/provider";
+// import { useUser } from "../../../contexts/UserProvider";
 import { useChat } from "../../../contexts/ChatContext/provider";
-import { Member, User } from "../../../contexts/ChatContext/types";
+import { Member } from "../../../contexts/ChatContext/types";
+import { User, useUser } from "../../../contexts";
 
 export const UnBlockButton: React.FC<{ member: User }> = ({ member }) => {
 	const { user } = useUser();
@@ -14,8 +15,9 @@ export const UnBlockButton: React.FC<{ member: User }> = ({ member }) => {
 
 	const handleClick = async(e: React.MouseEvent, member: User) => {
 		e.stopPropagation();
-		const response = await axios.put(`${URL}/user/unblock/${user.userName}/${member.userName}`);
+		const response = await axios.put(`${URL}/users/unblock/${user.userName}/${member.userName}`);
 		setBlocked(response.data);
+		//emit unblock
 	};
 
 	return (

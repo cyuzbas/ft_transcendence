@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { Room, RoomType, RoomUser } from "../../../contexts/ChatContext/types";
 import axios from "axios";
-import { useUser } from "../../../contexts/UserContext/provider";
+// import { useUser } from "../../../contexts/UserProvider";
 import { useSocket } from "../../../contexts/SocketContext/provider";
-import { useChat } from "../../../contexts/ChatContext/provider";;
+import { useChat } from "../../../contexts/ChatContext/provider";
+import { useUser } from "../../../contexts";
 
 type createChannelProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -29,7 +30,7 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 		};
 		
 		try {
-			const response = await axios.post('http://localhost:3001/chat/channel', newChatRoom)
+			const response = await axios.post('http://localhost:8080/chat/channel', newChatRoom)
 			setChatRooms(prevRooms => [...prevRooms, response.data])
 			setRoom({...response.data, userRole: 'owner'});
 			setPopupVisibility(false);

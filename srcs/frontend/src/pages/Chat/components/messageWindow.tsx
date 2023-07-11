@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react"
-import { Message, RoomType } from "../../../contexts/ChatContext/types";
+import { Message, RoomType } from "../../../contexts/ChatContext/types"
 import { useSocket } from "../../../contexts/SocketContext/provider";
-import { useUser } from "../../../contexts/UserContext/provider";
 import { useChat } from "../../../contexts/ChatContext/provider";
+import { useUser } from "../../../contexts";
 
 export const MessageWindow = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
@@ -14,20 +14,17 @@ export const MessageWindow = () => {
     const onMessage = (newMessage: Message) => {
       const isBlocked = blocked
         .some(blocked => blocked.userName === newMessage.userName);
-
-      if (!isBlocked) { // does not work with both conditions???
-        if (newMessage.roomName === room.roomName) { // should i leave room if joining another room? should join in loop for unread
-          setMessages(prevMessages => [...prevMessages, newMessage]);
-        } else {
-          handleUnreadMessage(newMessage.roomName);
-        }
-      };
+      if (!isBlocked && newMessage.roomName === room.roomName) {
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+      } else {
+        handleUnreadMessage(newMessage.roomName);
+      }
     };
     socket.on('onMessage', onMessage);
     return () => {
       socket.off('onMessage');
     }
-  }, [room, socket, user])
+  }, [room, socket, user, blocked])
 
   useEffect(() => {
       lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });

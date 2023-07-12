@@ -1,6 +1,13 @@
 import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import './HomePage.css';
+import Navbar from './Nav/NavBar';
+import SideBar from './Nav/Sidebar';
+import Home from './Home'
+import Game from './Profile'
+import {Routes, Route, NavLink } from 'react-router-dom'
+
+
     const authToken = document.cookie
   .split('; ')
   .find(row => row.startsWith('authToken='))
@@ -34,22 +41,27 @@ import './HomePage.css';
     }, []);
   
     return (
-    <div className='PageMain'>
-        <div className="Menu container">menu</div>
-        <div className="ProfileInfo container">
-        <img src={data.avatar} style={{margin:50,width:200, height:170, borderRadius:20}} alt="" />
-        <h1> {data.username}</h1>
-        <h1> {data.intraID}</h1>
-        </div>
-        <div className="MyRank container">MyRank</div>
-        <div className="Chat container">Chat</div>
-        <div className="AllRanks container">Allranks</div>
-        <div className="FriendSection container">Friend
-            <div className="friend">Test</div>
-            <div className="friend">Test</div>
-            <div className="friend">Test</div>
-        </div>
-    </div>
+      <React.Fragment>
+        <section>
+          <div className='NavContent'>
+              <Navbar/>
+          </div>
+        </section>
+        <section>
+          <div className='FullPage'>
+            <div className='SideContent'>
+                <SideBar/>
+            </div>
+            <div className='MainContent'>
+            <Routes>
+              <Route path='/' element={<Home/>} /> 
+              <Route path='/game' element={<Game/>} />
+            </Routes>
+              {/* <Home/> */}
+            </div>
+          </div>
+       </section>
+      </React.Fragment>
     )
 };
 export default HomePage;

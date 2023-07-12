@@ -8,13 +8,14 @@ import Avatar from '../../img/default.png';
 const Styles = styled.div`
   .navbar { background-color: rgb(88, 110, 124); }
   a, .navbar-nav, .navbar-light .nav-link {
+	z-index: 2;
     color: rgb(178,225,255);
     &:hover { color: white; }
   }
   .icon{
-	width: 50px;
+	width: 40px;
 	border-radius: 50%;
-	margin-left: 10px;
+	margin-left: 20px;
 }	
   .brand{
 	font-size: x-large;
@@ -32,21 +33,27 @@ const Styles = styled.div`
     right: 20%;
   }
   .avatar{
-	width: 50px;
+	width: 35px;
 	border-radius: 50%;
 	margin-right: 15px; 
+	margin-left: 15px; 
 }
 `;
-export const NavigationBar = () => (
+const NavigationBar = () => (
   <Styles>
     <Navbar>
-      <Navbar.Brand href="/"><img src={Intra} alt="Ft-icon" className='icon'/><text className='brand'>PONG</text></Navbar.Brand>
-      <Form className="form-center">
+	    <Navbar.Brand href="/home">
+        <img src={Intra} alt="Ft-icon" className='icon'/>
+        <text className='brand'>PONG</text>
+      </Navbar.Brand>
+      {/* <Form className="form-center">
         <FormControl type="text" placeholder="Search" className="" />
-      </Form>
+      </Form> */}
         <Nav className="ms-auto">
-          <Nav.Item><Nav.Link href="/profile"> <img src={Avatar} className='avatar' /></Nav.Link></Nav.Item> 
+          <Nav.Item><Nav.Link href="/home"><text className='userName'>user.name</text><img src={Avatar} className='avatar' /></Nav.Link></Nav.Item> 
         </Nav>
     </Navbar>
   </Styles>
 )
+
+export default NavigationBar;

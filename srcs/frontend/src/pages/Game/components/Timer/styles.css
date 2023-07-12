@@ -1,0 +1,21 @@
+.timer {
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  top: 0;
+}
+
+.timer h1 {
+  font-size: 300px;
+  font-family: sans-serif;
+  color: var(--foreground-color);
+  user-select: none;
+}

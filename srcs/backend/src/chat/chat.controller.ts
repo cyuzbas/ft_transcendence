@@ -79,7 +79,7 @@ export class ChatController {
 		return await this.chatService.checkPassword(room);
 	}
 	
-	@Get('defaultchat/:userName')
+	@Get('generalchat/:userName')
 	async getDefaultChatRoomUser(@Param('userName') userName: string): Promise<RoomUserDto> {
 		return await this.chatService.getDefaultChatRoomUser(userName);
 	}

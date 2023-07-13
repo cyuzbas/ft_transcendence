@@ -7,8 +7,8 @@ import { useChat } from "../../../contexts/ChatContext/provider";
 
 export const Channels = () => {
 	const [popupVisibility, setPopupVisibility] = useState<boolean>(false);
-	const { setRoom } = useSocket();
-	const { chatRooms } = useChat();
+	// const { setRoom } = useSocket();
+	const { setRoom, chatRooms } = useChat();
 	
 	return (
 		<>

@@ -9,13 +9,14 @@ import { Channels } from "./components/channels";
 import { DirectMessages } from "./components/directMessages";
 import { UserInfo } from "./components/userInfo";
 import { Member, RoomType } from '../../contexts/ChatContext/types';
-import { ChatProvider } from '../../contexts/ChatContext/provider';
+import { ChatProvider, useChat } from '../../contexts/ChatContext/provider';
 import { useEffect } from 'react';
 
 export const Chat = () => {
 	const [expanded, setExpanded] = useState<boolean>(true);
 	const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-	const { socket, isConnected, room } = useSocket();
+	const { socket, isConnected } = useSocket();
+	const { room } = useChat();
 
 	useEffect(() => {
 		setSelectedMember(null);

@@ -6,8 +6,8 @@ import { useChat } from "../../../contexts/ChatContext/provider";
 
 export const DirectMessages = () => {
 	const [popupVisibility, setPopupVisibility] = useState<boolean>(false);
-    const { setRoom } = useSocket();
-    const { dmRooms } = useChat();
+    // const { setRoom } = useSocket();
+    const { setRoom, dmRooms } = useChat();
     
     return (
         <>

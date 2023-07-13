@@ -16,8 +16,8 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 	const [description, setDescription] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const { user } = useUser();
-	const { URL, setRoom } = useSocket();
-	const { setChatRooms } = useChat();
+	const { URL } = useSocket();
+	const { setRoom, setChatRooms } = useChat();
 
 	const handleSubmit = async(e: React.FormEvent) => {
 		e.preventDefault();

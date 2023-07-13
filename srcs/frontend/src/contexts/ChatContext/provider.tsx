@@ -1,17 +1,20 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 import axios from "axios";
+import { AxiosResponse } from "axios";
 import { ChatRoomUser, DmRoomUser, Member, Message, Room, RoomType, RoomUser, UserRole } from "./types";
 // import { useUser } from "../../contexts/UserProvider";
 import { useSocket } from "../SocketContext/provider";
 import { User, useUser } from "../UserContext";
 
 export type ChatContextValue = {
+    room: RoomUser,
     chatRooms: ChatRoomUser[],
     dmRooms: DmRoomUser[],
     blocked: User[],
     messages: Message[],
     allUsers: User[],
     members: Member[],
+    setRoom: React.Dispatch<React.SetStateAction<RoomUser | null>>,
     setChatRooms: React.Dispatch<React.SetStateAction<ChatRoomUser[]>>,
     setDmRooms: React.Dispatch<React.SetStateAction<DmRoomUser[]>>,
     setBlocked: React.Dispatch<React.SetStateAction<User[]>>,
@@ -31,6 +34,9 @@ export function useChat() { //try catch blocks check returns
 }
 
 export function ChatProvider({ children }: {children: ReactNode}) {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [room, setRoom] = useState<RoomUser | null>(null)//GENERAL_CHAT);
+
     const [chatRooms, setChatRooms] = useState<ChatRoomUser[]>([]);
     const [dmRooms, setDmRooms] = useState<DmRoomUser[]>([]);
     const [members, setMembers] = useState<Member[]>([])
@@ -38,7 +44,15 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     const [blocked, setBlocked] = useState<User[]>([]);
     const [messages, setMessages] = useState<Message[]>([]);
     const { user } = useUser();
-    const { URL, room, setRoom, socket } = useSocket();
+    const { URL, socket } = useSocket();
+    // const { URL, room, setRoom, socket } = useSocket();
+
+    useEffect(() => {
+        axios.get(`${URL}/chat/generalchat/${user.userName}`)
+        .then((response: AxiosResponse) => { setRoom(response.data) })
+        .catch((error: any) => { console.log(error) });
+        setIsLoading(false);
+    }, [])
 
     const getMyChatRooms = async () => {
         try {
@@ -79,7 +93,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
 
     const getMessages = async() => {
         try {
-            const response = await axios.get(`${URL}/chat/messages/${room.roomName}`);
+            const response = await axios.get(`${URL}/chat/messages/${room?.roomName}`);
             const filteredOnBlocked = response.data
                 .filter((message: Message) => !blocked.some(blocked => blocked.userName === message.userName));
             setMessages(filteredOnBlocked); //add message created time to filter only after?
@@ -120,7 +134,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     const updateRoomUser = async(updatedRoomUser: Member) => {
         try {
             const response = await axios
-                .put<Member[]>(`${URL}/chat/roomuser/${room.roomName}/${updatedRoomUser.userName}`, 
+                .put<Member[]>(`${URL}/chat/roomuser/${room?.roomName}/${updatedRoomUser.userName}`, 
                 updatedRoomUser
             );
         } catch (error) {
@@ -161,11 +175,14 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     };
 
     const clearUnreadMessages = () => { //also api call to clear
-        room.unreadMessages = 0;
+        if (room) {
+
+            room.unreadMessages = 0;
+        }
     }
 
     const getRoomMembers = async() => {
-        const response = await axios.get(`${URL}/chat/members/${room.roomName}`);
+        const response = await axios.get(`${URL}/chat/members/${room?.roomName}`);
         response.data.sort((a: Member, b: Member) => a.userName.localeCompare(b.userName));
         setMembers(response.data);
     }
@@ -193,7 +210,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         function onUserUpdate(users: User[]) {
             users.sort((a, b) =>  a.userName.localeCompare(b.userName));
             setAllUsers(users);
-            socket.emit('memberUpdate', room.roomName);
+            socket.emit('memberUpdate', room?.roomName);
         };
 
         function onMemberInvite() {
@@ -224,12 +241,14 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     // socket.on('onRoomUpdate', onRoomUpdate);
 
 	const value = {
+        room: room!,
         chatRooms,
         dmRooms,
         blocked,
         messages,
         allUsers,
         members,
+        setRoom,
         setChatRooms,
         setDmRooms,
         setBlocked,
@@ -242,6 +261,10 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         handleUnreadMessage,
 	};
     
+    if (isLoading) {
+		return <div>Loading</div>
+	}
+
 	return (
         <ChatContext.Provider value={value}>
 			{children}

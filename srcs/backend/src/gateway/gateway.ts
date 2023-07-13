@@ -24,7 +24,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		private userService: UserService){}
 
 	async handleConnection(client: Socket) {
-		// console.log('here')
 		const userSocket = client.handshake.auth;
 		this.logger.debug(`Client connected: [${userSocket.name}] - ${client.id}`);
 		this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
@@ -32,8 +31,9 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		const user = await this.userService.findUserByUserName(userSocket.name);
 		if(!user)
 			return
+
 		client.join(user.id.toString());
-		client.emit('userId', user.id);
+		// client.emit('userId', user.id);
 
 		await this.userService.updateStatus(userSocket.name, 'online');
 		this.onUserUpdate();
@@ -51,13 +51,17 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 	@SubscribeMessage('userUpdate') // unneccesary? to have event, only server uses it now
 	async onUserUpdate() {
 		const users = await this.userService.getAllUsersStatus();
-		this.server.emit('userStatus', users);
+		this.server.emit('onUserUpdate', users);
 	}
 
 	@SubscribeMessage('memberUpdate') // also leave room?
-	async onMemberUpdate(@MessageBody() roomName: string) {
-		const members = await this.chatService.getRoomMembers(roomName);
-		this.server.to(roomName).emit('memberStatus', members);
+	async onMemberUpdate(@MessageBody() roomName: string, @ConnectedSocket() client: Socket) {
+		// const userSocket = client.handshake.auth;
+		// const members = await this.chatService.getRoomMembers(roomName);
+		// console.log(roomName);
+		// console.log(userSocket.name);
+		// console.log(members);
+		this.server.to(roomName).emit('onMemberUpdate')//, members);
 	}
 
 	@SubscribeMessage('memberInvite') // also leave room?
@@ -71,7 +75,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 	@SubscribeMessage('joinRoom') // also leave room?
 	async onJoinRoom(@MessageBody() room: RoomDto, @ConnectedSocket() client: Socket) {
 		client.join(room.roomName);
-		this.onMemberUpdate(room.roomName)
+		this.onMemberUpdate(room.roomName, client)
 		// const users = await this.chatService.getRoomUsers(room.roomName);
 		// this.server.to(room.roomName).emit('memberStatus', users); //more elegant way?
 	}

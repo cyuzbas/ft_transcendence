@@ -13,7 +13,7 @@ import { ChatProvider } from '../../contexts/ChatContext/provider';
 import { useEffect } from 'react';
 
 export const Chat = () => {
-	const [expanded, setExpanded] = useState<boolean>(false);
+	const [expanded, setExpanded] = useState<boolean>(true);
 	const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 	const { socket, isConnected, room } = useSocket();
 

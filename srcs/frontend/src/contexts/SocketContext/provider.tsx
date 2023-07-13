@@ -31,11 +31,19 @@ export function useSocket() {
 
 export function SocketProvider({ children }: {children: ReactNode}) {
 	const [isConnected, setIsConnected] = useState(socket.connected);
-	const [room, setRoom] = useState<RoomUser>(GENERAL_CHAT);
+	const [room, setRoom] = useState<RoomUser>(generalchat())//GENERAL_CHAT);
 	const { user } = useUser();
 
     // const {user} = useContext(UserContext)
-		
+		function generalchat() {
+			return {
+				roomId: 1,
+				roomName: 'Transcendence',
+				unreadMessages: 0,
+				type: RoomType.PUBLIC,
+				userRole: UserRole.MEMBER,
+			}
+		}
 		
 		useEffect(() => {
 			if(isConnected) // not necessary in final product?
@@ -60,19 +68,19 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 		  	setIsConnected(false);
 		}
 
-		function onUserId(id: number) {
+		// function onUserId(id: number) {
 			// console.log('userId', id);
 			// socket.emit()
-		}
+		// }
 		
 		socket.on('connect', onConnect);
 		socket.on('disconnect', onDisconnect);
-		socket.on('userId', onUserId);
+		// socket.on('userId', onUserId);
 	
 		return () => {
 		  	socket.off('connect', onConnect);
 		  	socket.off('disconnect', onDisconnect);
-			socket.off('userId');
+			// socket.off('userId');
 		 	socket.disconnect();
 		};
 	}, [user]);

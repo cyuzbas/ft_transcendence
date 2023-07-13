@@ -16,7 +16,7 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 	const [description, setDescription] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const { user } = useUser();
-	const { setRoom } = useSocket();
+	const { URL, setRoom } = useSocket();
 	const { setChatRooms } = useChat();
 
 	const handleSubmit = async(e: React.FormEvent) => {
@@ -30,12 +30,13 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 		};
 		
 		try {
-			const response = await axios.post('http://localhost:8080/chat/channel', newChatRoom)
+			const response = await axios.post(`${URL}/chat/channel`, newChatRoom)
 			setChatRooms(prevRooms => [...prevRooms, response.data])
 			setRoom({...response.data, userRole: 'owner'});
 			setPopupVisibility(false);
 		} catch (error) {
-			alert('Chat room already exists. Please choose a different name.');
+			// alert('Chat room already exists. Please choose a different name.');
+			alert(error);
 		}
 	}
 	

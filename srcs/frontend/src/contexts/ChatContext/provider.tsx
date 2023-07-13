@@ -99,7 +99,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         };
         
         // try {
-            const response = await axios.post<DmRoomUser>(`http://localhost:3001/chat/contact`, newRoom);
+            const response = await axios.post<DmRoomUser>(`${URL}/chat/contact`, newRoom);
             setDmRooms(prev => [...prev, response.data]);
             socket.emit('newDmRoom', response.data.contact);
             return response.data as DmRoomUser;
@@ -137,7 +137,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         }
     }
     
-    const handleUnreadMessage = async(roomName: string) => {
+    const handleUnreadMessage = async(roomName: string) => { // update unread messages and get chatroom || dmrooms
         const foundChatRoom = chatRooms.find(room => room.roomName === roomName);
         const foundDmRoom = dmRooms.find(room => room.roomName === roomName);
         
@@ -159,58 +159,70 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             );
         }
     };
-                
-    useEffect(() => {
-        getMyChatRooms();
-        getMyDmRooms();
-        getBlocked();
-        socket.emit('userUpdate');
-    }, [user]);
+
+    const clearUnreadMessages = () => { //also api call to clear
+        room.unreadMessages = 0;
+    }
+
+    const getRoomMembers = async() => {
+        const response = await axios.get(`${URL}/chat/members/${room.roomName}`);
+        response.data.sort((a: Member, b: Member) => a.userName.localeCompare(b.userName));
+        setMembers(response.data);
+    }
     
     useEffect(() => {
         getMessages();
     }, [room, blocked])
-
-    useEffect(() => {
-        socket.emit('memberUpdate', room.roomName);
-    }, [room])
     
+    useEffect(() => {
+        function onMemberUpdate() {
+            getRoomMembers();
+        };
+    
+        socket.on('onMemberUpdate', onMemberUpdate);
+
+        getRoomMembers();
+        clearUnreadMessages();
+
+        return () => {
+            socket.off('onMemberUpdate');
+        }
+    }, [room])
+                
     useEffect(() => {		
-        function onUserStatus(users: User[]) {
+        function onUserUpdate(users: User[]) {
             users.sort((a, b) =>  a.userName.localeCompare(b.userName));
             setAllUsers(users);
-            socket.emit('memberUpdate', room.roomName); //will capture room old value
-        };
-
-        function onMemberStatus(members: Member[]) {
-            members.sort((a, b) =>  a.userName.localeCompare(b.userName));
-            setMembers(members);
+            socket.emit('memberUpdate', room.roomName);
         };
 
         function onMemberInvite() {
             getMyChatRooms();
         };
-
+        
         function onNewDmRoom() {
             getMyDmRooms();
         }
-
-        // function onRoom
-    
-        socket.on('userStatus', onUserStatus);
-        socket.on('memberStatus', onMemberStatus);
+        
+        socket.on('onUserUpdate', onUserUpdate);
         socket.on('onMemberInvite', onMemberInvite);
         socket.on('onNewDmRoom', onNewDmRoom);
-        // socket.on('onRoomUpdate', onRoomUpdate);
-        
+
+        getMyChatRooms();
+        getMyDmRooms();
+        getBlocked();
+        socket.emit('userUpdate');
+
         return () => {
-            socket.off('userStatus');
-            socket.off('memberStatus');
+            socket.off('onUserUpdate');
             socket.off('onMemberInvite');
             socket.off('onNewDmRoom');
         }
     }, []);
-   
+    
+    // function onRoom
+    // socket.on('onRoomUpdate', onRoomUpdate);
+
 	const value = {
         chatRooms,
         dmRooms,

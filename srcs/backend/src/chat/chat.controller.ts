@@ -2,7 +2,6 @@ import { Post, Body, Controller, Get, Param, Delete, Put } from '@nestjs/common'
 import { ChatService } from './chat.service';
 import { RoomDto } from 'src/dto/room.dto';
 import { MessageDto } from 'src/dto/message.dto';
-import { doc } from 'prettier';
 import { UserRole } from 'src/typeorm/roomUser.entity';
 import { RoomType } from 'src/typeorm/room.entity';
 import { RoomUserDto } from 'src/dto/roomUser.dto';

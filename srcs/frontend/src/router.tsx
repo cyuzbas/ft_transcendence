@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { UserProvider } from './contexts';
+import { ChatProvider, UserProvider } from './contexts';
 import { GameProvider } from './contexts'
 import { GameMode, gameModes } from './pages/Game/logic/types'
 import { Game, Lobby, Home, Chat, Login } from './pages'
@@ -27,8 +27,14 @@ export function Router() {
         <Route path='/login' element={<Login />} />
         <Route path='/friend' element={<Friends />} />
         <Route path='/lobby' element={<Lobby />} />
-        <Route path='/chat' element={<Chat />} />
-
+        <Route 
+          path='/chat' 
+          element={
+            <ChatProvider>
+              <Chat />
+            </ChatProvider>
+          }
+        />
         {gameModes.map((mode: GameMode) => (
           <Route
             key={mode}

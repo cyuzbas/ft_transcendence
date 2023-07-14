@@ -47,12 +47,20 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     const { URL, socket } = useSocket();
     // const { URL, room, setRoom, socket } = useSocket();
 
+    console.log("CHATPROVIDER")
+
     useEffect(() => {
+        console.log("USER", user)
         axios.get(`${URL}/chat/generalchat/${user.userName}`)
-        .then((response: AxiosResponse) => { setRoom(response.data) })
+        .then((response: AxiosResponse) => { 
+            setRoom(response.data)
+            console.log("PUBLICROOM", response.data)
+         })
         .catch((error: any) => { console.log(error) });
         setIsLoading(false);
-    }, [])
+    }, [user])
+
+
 
     const getMyChatRooms = async () => {
         try {
@@ -188,10 +196,14 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     }
     
     useEffect(() => {
+        if (!room) return
+
         getMessages();
     }, [room, blocked])
     
     useEffect(() => {
+        if (!room) return
+
         function onMemberUpdate() {
             getRoomMembers();
         };
@@ -206,7 +218,9 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         }
     }, [room])
                 
-    useEffect(() => {		
+    useEffect(() => {	
+        if (!room) return
+
         function onUserUpdate(users: User[]) {
             users.sort((a, b) =>  a.userName.localeCompare(b.userName));
             setAllUsers(users);
@@ -235,7 +249,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             socket.off('onMemberInvite');
             socket.off('onNewDmRoom');
         }
-    }, []);
+    }, [room]);
     
     // function onRoom
     // socket.on('onRoomUpdate', onRoomUpdate);
@@ -261,9 +275,6 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         handleUnreadMessage,
 	};
     
-    if (isLoading) {
-		return <div>Loading</div>
-	}
 
 	return (
         <ChatContext.Provider value={value}>

@@ -24,40 +24,43 @@ export const Chat = () => {
 
 	if (!isConnected)
 		return <div>not connected</div>
+	
+	if (!room) {
+		return <div>Loading</div>
+	}
+	
 
 	return (
 		<>
-			<ChatProvider>
-				<div>connected: {socket.id}</div>
-				<div id={expanded ? "chat-grid-expanded" : "chat-grid-non-expanded"}>
-					<div id="chat-left-sidebar">
-						<Channels />
-						<DirectMessages />
-					</div>
-					<div id="chat-body">
-						<ChatHeader 
-							expanded={ expanded }
-							setExpanded={ setExpanded }
-						/>
-						<MessageWindow />
-						<MessageInput />
-					</div>
-					{expanded &&
-						<div id="chat-right-sidebar">
-							<button onClick={() => setExpanded(false)}>
-								X
-							</button>
-							{room.type === RoomType.DIRECTMESSAGE || selectedMember ? 
-								<UserInfo
-									selectedMember={selectedMember}
-									setSelectedMember={setSelectedMember} 
-								/> 
-								: 
-								<RoomInfo setSelectedMember={setSelectedMember} /> }
-						</div>
-					}
+			<div>connected: {socket.id}</div>
+			<div id={expanded ? "chat-grid-expanded" : "chat-grid-non-expanded"}>
+				<div id="chat-left-sidebar">
+					<Channels />
+					<DirectMessages />
 				</div>
-			</ChatProvider>
+				<div id="chat-body">
+					<ChatHeader 
+						expanded={ expanded }
+						setExpanded={ setExpanded }
+					/>
+					<MessageWindow />
+					<MessageInput />
+				</div>
+				{expanded &&
+					<div id="chat-right-sidebar">
+						<button onClick={() => setExpanded(false)}>
+							X
+						</button>
+						{room.type === RoomType.DIRECTMESSAGE || selectedMember ? 
+							<UserInfo
+								selectedMember={selectedMember}
+								setSelectedMember={setSelectedMember} 
+							/> 
+							: 
+							<RoomInfo setSelectedMember={setSelectedMember} /> }
+					</div>
+				}
+			</div>
 		</>
 	)
 }

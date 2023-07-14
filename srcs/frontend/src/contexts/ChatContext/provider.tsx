@@ -14,7 +14,7 @@ const GENERAL_CHAT = {
 }
 
 export type ChatContextValue = {
-    isLoading: boolean,
+    // isLoading: boolean,
     room: RoomUser,
     chatRooms: ChatRoomUser[],
     dmRooms: DmRoomUser[],
@@ -22,12 +22,12 @@ export type ChatContextValue = {
     messages: Message[],
     allUsers: User[],
     members: Member[],
-    setRoom: React.Dispatch<React.SetStateAction<RoomUser | null>>,
+    setRoom: React.Dispatch<React.SetStateAction<RoomUser>>,
     setChatRooms: React.Dispatch<React.SetStateAction<ChatRoomUser[]>>,
     setDmRooms: React.Dispatch<React.SetStateAction<DmRoomUser[]>>,
     setBlocked: React.Dispatch<React.SetStateAction<User[]>>,
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
-    getAllPublicRooms: () => Promise<Room[]>,
+    fetchAllPublicRooms: () => Promise<Room[]>,
     createDmRoom: (newContact: string) => Promise<DmRoomUser>,
     addRoomUser: (addRoom: string, addUser: string) => Promise<ChatRoomUser>,
     updateRoomUser: (updatedRoomUser: Member) => Promise<void>,
@@ -42,8 +42,8 @@ export function useChat() {
 }
 
 export function ChatProvider({ children }: {children: ReactNode}) {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [room, setRoom] = useState<RoomUser | null>(GENERAL_CHAT);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [room, setRoom] = useState<RoomUser>(GENERAL_CHAT);
     const [chatRooms, setChatRooms] = useState<ChatRoomUser[]>([]);
     const [dmRooms, setDmRooms] = useState<DmRoomUser[]>([]);
     const [members, setMembers] = useState<Member[]>([])
@@ -61,25 +61,25 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         function onUserUpdate(users: User[]) {
             users.sort((a, b) =>  a.userName.localeCompare(b.userName));
             setAllUsers(users);
-            socket.emit('memberUpdate', room?.roomName);
+            socket.emit('memberUpdate', room.roomName);
         };
 
         function onMemberInvite() {
-            getMyChatRooms();
+            fetchMyChatRooms();
         };
         
         function onNewDmRoom() {
-            getMyDmRooms();
+            fetchMyDmRooms();
         }
         
         socket.on('onUserUpdate', onUserUpdate);
         socket.on('onMemberInvite', onMemberInvite);
         socket.on('onNewDmRoom', onNewDmRoom);
-
-        getMyChatRooms();
-        getMyDmRooms();
-        getBlocked();
         socket.emit('userUpdate');
+
+        fetchMyChatRooms()
+        fetchMyDmRooms();
+        fetchBlocked();
 
         return () => {
             socket.off('onUserUpdate');
@@ -92,70 +92,46 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     useEffect(() => {
         
         function onMemberUpdate() {
-            console.log("MEMBERUPDATE", room)
-            if (room)
-                getRoomMembers();
+            fetchMembers();
         };
-        
+    
         socket.on('onMemberUpdate', onMemberUpdate);
         
-        if (room) {
-            getRoomMembers();
-            getMessages();
-            clearUnreadMessages();
-        }
+        fetchMembers();
+        fetchMessages();
+        clearUnreadMessages();
         
         return () => {
             socket.off('onMemberUpdate');
         }
-    }, [user, room])
+    }, [room])
     
-    // useEffect(() => {
-    //     if (!room) return
-
-    //     getMessages();
-    // }, [room, blocked])
-
-    // useEffect(() => {
-    //     console.log("USER", user)
-    //     axios.get(`${URL}/chat/generalchat/${user.userName}`)
-    //     .then((response: AxiosResponse) => { 
-    //         setRoom(response.data)
-    //         console.log("PUBLICROOM", response.data)
-    //      })
-    //     .catch((error: any) => { console.log(error) });
-    //     setIsLoading(false);
-    // }, [user])
-
-
-	// useEffect(() => {
-	// 	socket.emit('joinRoom', room) // join all rooms in loop, and then only in joining a new room so this runs only 1 time
-	// }, [room])
-
-    const getMyChatRooms = async () => {
-        console.log("FETCH CHATROOMS")
-        console.log("USER", user)
+    const fetchMyChatRooms = async () => {
         try {
             const response = await axios.get(`${URL}/chat/channels/${user.userName}`);
             setChatRooms(response.data);
-            console.log("GENERALCHAT",response.data[0])
-            setRoom(response.data[0])
-            socket.emit('joinRoom', response.data[0])
+            setRoom(response.data[0]);
+            for (const room of response.data) {
+                socket.emit('joinRoom', room);
+            }
         } catch (error) {
             console.log(error);
         }
     };
-
-    const getMyDmRooms = async() => {
+    
+    const fetchMyDmRooms = async() => {
         try {
             const response = await axios.get(`${URL}/chat/contacts/${user.userName}`);
             setDmRooms(response.data);
+            for (const room of response.data) {
+                socket.emit('joinRoom', room);     
+            }
         } catch (error) {
             console.log(error);
         }
     };
 
-    const getAllPublicRooms = async() => {
+    const fetchAllPublicRooms = async() => {
         // try {
             const response = await axios.get(`${URL}/chat/public`);
             return response.data as Room[]
@@ -165,7 +141,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         // }
     };
 
-    const getBlocked = async() => {
+    const fetchBlocked = async() => {
         try {
             const response = await axios.get(`${URL}/users/blocked/${user.userName}`);
             setBlocked(response.data);
@@ -174,16 +150,26 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         }
     };
 
-    const getMessages = async() => {
+    const fetchMessages = async() => {
         try {
             const response = await axios.get(`${URL}/chat/messages/${room?.roomName}`);
             const filteredOnBlocked = response.data
                 .filter((message: Message) => !blocked.some(blocked => blocked.userName === message.userName));
-            setMessages(filteredOnBlocked); //add message created time to filter only after?
+            setMessages(filteredOnBlocked);
         } catch (error) {
             console.log(error);
         }
     };
+
+    const fetchMembers = async() => {
+        try {
+            const response = await axios.get(`${URL}/chat/members/${room?.roomName}`);
+            response.data.sort((a: Member, b: Member) => a.userName.localeCompare(b.userName));
+            setMembers(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const createDmRoom = async(newContact: string): Promise<DmRoomUser> => {
         const sortedString = [user.userName, newContact].sort();
@@ -217,7 +203,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     const updateRoomUser = async(updatedRoomUser: Member) => {
         try {
             const response = await axios
-                .put<Member[]>(`${URL}/chat/roomuser/${room?.roomName}/${updatedRoomUser.userName}`, 
+                .put<Member[]>(`${URL}/chat/roomuser/${room.roomName}/${updatedRoomUser.userName}`, 
                 updatedRoomUser
             );
         } catch (error) {
@@ -263,22 +249,12 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             room.unreadMessages = 0;
         }
     }
-
-    const getRoomMembers = async() => {
-        const response = await axios.get(`${URL}/chat/members/${room?.roomName}`);
-        response.data.sort((a: Member, b: Member) => a.userName.localeCompare(b.userName));
-        setMembers(response.data);
-        console.log(response.data)
-    }
-    
- 
     
     // function onRoom
     // socket.on('onRoomUpdate', onRoomUpdate);
 
 	const value = {
-        isLoading,
-        room: room!,
+        room,
         chatRooms,
         dmRooms,
         blocked,
@@ -290,7 +266,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         setDmRooms,
         setBlocked,
         setMessages,
-        getAllPublicRooms,
+        fetchAllPublicRooms,
         createDmRoom,
         addRoomUser,
         updateRoomUser,
@@ -298,23 +274,9 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         handleUnreadMessage,
 	};
     
-
 	return (
         <ChatContext.Provider value={value}>
 			{children}
 		</ChatContext.Provider>
 	)
 }
-
-
-// const getAllUsersStatus = async() => {
-//     const response = await axios.get(`${URL}/users/status`);
-//     setAllUsers(response.data);
-// }
-
-// const getRoomMembers = async() => {
-//    const response = await axios.get<Member[]>(`${URL}/chat/members/${room.roomName}`);
-//    const sortedMembers = response.data
-//         .sort((a, b) =>  a.userName.localeCompare(b.userName))
-//    setMembers(sortedMembers);
-// };

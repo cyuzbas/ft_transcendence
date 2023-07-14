@@ -23,7 +23,13 @@ export const Channels = () => {
 				renderItem={room => 
 					<p className="roomListBtn">
 						{room.roomName}
-						{room.unreadMessages > 0 && ` ${room.unreadMessages}`}
+						{
+  						room.unreadMessages > 0
+    					? room.unreadMessages < 10
+      				? ` [${room.unreadMessages}]`
+      				: ` [9+]`
+    					: ""
+						}
 					</p>
 				}
 				onClickItem={room => setRoom(room)}

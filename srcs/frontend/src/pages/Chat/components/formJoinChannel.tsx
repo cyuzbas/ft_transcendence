@@ -18,11 +18,11 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
     const [value, setValue] = useState<string>('')
     const { URL } = useSocket();
     const { user } = useUser();
-    const { setRoom, chatRooms, setChatRooms, getAllPublicRooms, addRoomUser } = useChat();
+    const { setRoom, chatRooms, setChatRooms, fetchAllPublicRooms, addRoomUser } = useChat();
         
     useEffect(() => { // do same as contact with gateway?
         const getJoinableRooms = async() => {
-            const allPublicRooms = await getAllPublicRooms();
+            const allPublicRooms = await fetchAllPublicRooms();
             const filteredRooms = allPublicRooms
                 .filter(room => !chatRooms.some(userRoom => userRoom.roomName === room.roomName)) // also weird   
             setJoinableRooms(filteredRooms);

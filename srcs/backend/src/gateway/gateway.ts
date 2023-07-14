@@ -82,6 +82,15 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		// this.server.to(room.roomName).emit('memberStatus', users); //more elegant way?
 	}
 
+	@SubscribeMessage('leaveRoom') // also leave room?
+	async onLeaveRoom(@MessageBody() room: RoomDto, @ConnectedSocket() client: Socket) {
+		client.leave(room.roomName);
+		// console.log("JOIN",room.roomName)
+		this.onMemberUpdate(room.roomName, client)
+		// const users = await this.chatService.getRoomUsers(room.roomName);
+		// this.server.to(room.roomName).emit('memberStatus', users); //more elegant way?
+	}
+
 	@SubscribeMessage('newMessage')
 	async onNewMessage(@MessageBody() message: MessageDto) {
 		const newMessage = await this.chatService.addMessage(message);

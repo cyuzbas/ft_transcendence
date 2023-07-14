@@ -16,7 +16,7 @@ export const Chat = () => {
 	const [expanded, setExpanded] = useState<boolean>(true);
 	const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 	const { socket, isConnected } = useSocket();
-	const { room } = useChat();
+	const { isLoading, room } = useChat();
 
 	useEffect(() => {
 		setSelectedMember(null);
@@ -25,6 +25,8 @@ export const Chat = () => {
 	if (!isConnected)
 		return <div>not connected</div>
 	
+
+	// console.log(room)
 	if (!room) {
 		return <div>Loading</div>
 	}

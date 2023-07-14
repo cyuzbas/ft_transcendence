@@ -2,11 +2,19 @@ import { ReactNode, createContext, useContext, useEffect, useState } from "react
 import axios from "axios";
 import { AxiosResponse } from "axios";
 import { ChatRoomUser, DmRoomUser, Member, Message, Room, RoomType, RoomUser, UserRole } from "./types";
-// import { useUser } from "../../contexts/UserProvider";
 import { useSocket } from "../SocketContext/provider";
 import { User, useUser } from "../UserContext";
 
+const GENERAL_CHAT = {
+	roomId: 1,
+	roomName: 'Transcendence',
+	unreadMessages: 0,
+	type: RoomType.PUBLIC,
+	userRole: UserRole.MEMBER,
+}
+
 export type ChatContextValue = {
+    isLoading: boolean,
     room: RoomUser,
     chatRooms: ChatRoomUser[],
     dmRooms: DmRoomUser[],
@@ -29,14 +37,13 @@ export type ChatContextValue = {
 
 const ChatContext = createContext({} as ChatContextValue);
 
-export function useChat() { //try catch blocks check returns
+export function useChat() {
 	return useContext(ChatContext);
 }
 
 export function ChatProvider({ children }: {children: ReactNode}) {
     const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [room, setRoom] = useState<RoomUser | null>(null)//GENERAL_CHAT);
-
+	const [room, setRoom] = useState<RoomUser | null>(GENERAL_CHAT);
     const [chatRooms, setChatRooms] = useState<ChatRoomUser[]>([]);
     const [dmRooms, setDmRooms] = useState<DmRoomUser[]>([]);
     const [members, setMembers] = useState<Member[]>([])
@@ -45,27 +52,95 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     const [messages, setMessages] = useState<Message[]>([]);
     const { user } = useUser();
     const { URL, socket } = useSocket();
-    // const { URL, room, setRoom, socket } = useSocket();
 
-    console.log("CHATPROVIDER")
+    useEffect(() => {	
+        if (user.userName === "unknown") {
+            return
+        } 
 
+        function onUserUpdate(users: User[]) {
+            users.sort((a, b) =>  a.userName.localeCompare(b.userName));
+            setAllUsers(users);
+            socket.emit('memberUpdate', room?.roomName);
+        };
+
+        function onMemberInvite() {
+            getMyChatRooms();
+        };
+        
+        function onNewDmRoom() {
+            getMyDmRooms();
+        }
+        
+        socket.on('onUserUpdate', onUserUpdate);
+        socket.on('onMemberInvite', onMemberInvite);
+        socket.on('onNewDmRoom', onNewDmRoom);
+
+        getMyChatRooms();
+        getMyDmRooms();
+        getBlocked();
+        socket.emit('userUpdate');
+
+        return () => {
+            socket.off('onUserUpdate');
+            socket.off('onMemberInvite');
+            socket.off('onNewDmRoom');
+        }
+    }, [user]);
+
+    
     useEffect(() => {
-        console.log("USER", user)
-        axios.get(`${URL}/chat/generalchat/${user.userName}`)
-        .then((response: AxiosResponse) => { 
-            setRoom(response.data)
-            console.log("PUBLICROOM", response.data)
-         })
-        .catch((error: any) => { console.log(error) });
-        setIsLoading(false);
-    }, [user])
+        
+        function onMemberUpdate() {
+            console.log("MEMBERUPDATE", room)
+            if (room)
+                getRoomMembers();
+        };
+        
+        socket.on('onMemberUpdate', onMemberUpdate);
+        
+        if (room) {
+            getRoomMembers();
+            getMessages();
+            clearUnreadMessages();
+        }
+        
+        return () => {
+            socket.off('onMemberUpdate');
+        }
+    }, [user, room])
+    
+    // useEffect(() => {
+    //     if (!room) return
+
+    //     getMessages();
+    // }, [room, blocked])
+
+    // useEffect(() => {
+    //     console.log("USER", user)
+    //     axios.get(`${URL}/chat/generalchat/${user.userName}`)
+    //     .then((response: AxiosResponse) => { 
+    //         setRoom(response.data)
+    //         console.log("PUBLICROOM", response.data)
+    //      })
+    //     .catch((error: any) => { console.log(error) });
+    //     setIsLoading(false);
+    // }, [user])
 
 
+	// useEffect(() => {
+	// 	socket.emit('joinRoom', room) // join all rooms in loop, and then only in joining a new room so this runs only 1 time
+	// }, [room])
 
     const getMyChatRooms = async () => {
+        console.log("FETCH CHATROOMS")
+        console.log("USER", user)
         try {
             const response = await axios.get(`${URL}/chat/channels/${user.userName}`);
             setChatRooms(response.data);
+            console.log("GENERALCHAT",response.data[0])
+            setRoom(response.data[0])
+            socket.emit('joinRoom', response.data[0])
         } catch (error) {
             console.log(error);
         }
@@ -193,68 +268,16 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         const response = await axios.get(`${URL}/chat/members/${room?.roomName}`);
         response.data.sort((a: Member, b: Member) => a.userName.localeCompare(b.userName));
         setMembers(response.data);
+        console.log(response.data)
     }
     
-    useEffect(() => {
-        if (!room) return
-
-        getMessages();
-    }, [room, blocked])
-    
-    useEffect(() => {
-        if (!room) return
-
-        function onMemberUpdate() {
-            getRoomMembers();
-        };
-    
-        socket.on('onMemberUpdate', onMemberUpdate);
-
-        getRoomMembers();
-        clearUnreadMessages();
-
-        return () => {
-            socket.off('onMemberUpdate');
-        }
-    }, [room])
-                
-    useEffect(() => {	
-        if (!room) return
-
-        function onUserUpdate(users: User[]) {
-            users.sort((a, b) =>  a.userName.localeCompare(b.userName));
-            setAllUsers(users);
-            socket.emit('memberUpdate', room?.roomName);
-        };
-
-        function onMemberInvite() {
-            getMyChatRooms();
-        };
-        
-        function onNewDmRoom() {
-            getMyDmRooms();
-        }
-        
-        socket.on('onUserUpdate', onUserUpdate);
-        socket.on('onMemberInvite', onMemberInvite);
-        socket.on('onNewDmRoom', onNewDmRoom);
-
-        getMyChatRooms();
-        getMyDmRooms();
-        getBlocked();
-        socket.emit('userUpdate');
-
-        return () => {
-            socket.off('onUserUpdate');
-            socket.off('onMemberInvite');
-            socket.off('onNewDmRoom');
-        }
-    }, [room]);
+ 
     
     // function onRoom
     // socket.on('onRoomUpdate', onRoomUpdate);
 
 	const value = {
+        isLoading,
         room: room!,
         chatRooms,
         dmRooms,

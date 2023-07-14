@@ -58,7 +58,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 	async onMemberUpdate(@MessageBody() roomName: string, @ConnectedSocket() client: Socket) {
 		// const userSocket = client.handshake.auth;
 		// const members = await this.chatService.getRoomMembers(roomName);
-		// console.log(roomName);
+		// if (!roomName) return
+		// console.log("MEMBERUPDAT",roomName);
 		// console.log(userSocket.name);
 		// console.log(members);
 		this.server.to(roomName).emit('onMemberUpdate')//, members);
@@ -75,6 +76,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 	@SubscribeMessage('joinRoom') // also leave room?
 	async onJoinRoom(@MessageBody() room: RoomDto, @ConnectedSocket() client: Socket) {
 		client.join(room.roomName);
+		// console.log("JOIN",room.roomName)
 		this.onMemberUpdate(room.roomName, client)
 		// const users = await this.chatService.getRoomUsers(room.roomName);
 		// this.server.to(room.roomName).emit('memberStatus', users); //more elegant way?

@@ -2,7 +2,6 @@ import { createContext, useState, Dispatch, SetStateAction, ReactNode, useContex
 import { UserRole } from "../ChatContext";
 import axios from "axios";
 import { Navigate } from 'react-router-dom'
-import { Nav } from '../../components';
 import { Login } from "../../pages";
 
 export type User = {
@@ -86,7 +85,6 @@ if(user.isLogged){
   else{
     return(
       <>
-      <Nav/>
       <Login/>
       </>
     )

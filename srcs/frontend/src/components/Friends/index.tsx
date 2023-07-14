@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { UserContext } from '../../contexts'
 import React, { useContext,useState , useEffect } from 'react';
-
+// import logo from './intra.png'
 
 type User = {
     avatar: string;

@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-// import { useUser } from "../../../contexts/UserProvider";
-import { useSocket } from "../../../contexts/SocketContext/provider";
 import { ClickableList } from "./clickableList";
 import { useChat } from "../../../contexts/ChatContext/provider";
 import { User, useUser } from "../../../contexts";
-// import { User } from "../chat.types";
 
 type addContactProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -13,7 +10,6 @@ type addContactProps = {
 export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 	const [unknowContacts, setUnknownContacts] = useState<User[]>([]);
 	const { setRoom, allUsers, dmRooms, createDmRoom } = useChat();
-	const { socket } = useSocket();
 	const { user } = useUser();
 	
 	useEffect(() => {
@@ -25,8 +21,7 @@ export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 	},[allUsers])
 
 	const handleClick = async(newContact: User) => { // prevent e.default()?
-		const newDmRoom =  await createDmRoom(newContact.userName);
-		setRoom(newDmRoom);
+		createDmRoom(newContact.userName);
 		setPopupVisibility(false);
 	}
 

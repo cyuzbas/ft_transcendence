@@ -62,31 +62,34 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		// console.log("MEMBERUPDAT",roomName);
 		// console.log(userSocket.name);
 		// console.log(members);
+		// console.log("MEMBERUPDATE", roomName)
 		this.server.to(roomName).emit('onMemberUpdate')//, members);
 	}
 
 	@SubscribeMessage('memberInvite') // also leave room?
-	async onMemberInvite(@MessageBody() selectedUsers: string[]) {
-		for (const userName of selectedUsers) {
-			const user = await this.userService.findUserByUserName(userName);
-			this.server.to(user.id.toString()).emit('onMemberInvite');
-		}
+	async onMemberInvite(@MessageBody() data: { userName: string, roomName: string }) {
+		// console.log(userName)
+		// for (const userName of selectedUsers) {
+			const user = await this.userService.findUserByUserName(data.userName);
+			this.server.to(user.id.toString()).emit('onMemberInvite', data.roomName);
+		// }
 	}
 	
 	@SubscribeMessage('joinRoom') // also leave room?
-	async onJoinRoom(@MessageBody() room: RoomDto, @ConnectedSocket() client: Socket) {
-		client.join(room.roomName);
+	async onJoinRoom(@MessageBody() roomName: string, @ConnectedSocket() client: Socket) {
+		client.join(roomName);
 		// console.log("JOIN",room.roomName)
-		this.onMemberUpdate(room.roomName, client)
+		this.onMemberUpdate(roomName, client)
 		// const users = await this.chatService.getRoomUsers(room.roomName);
 		// this.server.to(room.roomName).emit('memberStatus', users); //more elegant way?
 	}
 
 	@SubscribeMessage('leaveRoom') // also leave room?
-	async onLeaveRoom(@MessageBody() room: RoomDto, @ConnectedSocket() client: Socket) {
-		client.leave(room.roomName);
+	async onLeaveRoom(@MessageBody() roomName: string, @ConnectedSocket() client: Socket) {
+		client.leave(roomName);
+		// console.log("LEFT", roomName)
 		// console.log("JOIN",room.roomName)
-		this.onMemberUpdate(room.roomName, client)
+		this.onMemberUpdate(roomName, client)
 		// const users = await this.chatService.getRoomUsers(room.roomName);
 		// this.server.to(room.roomName).emit('memberStatus', users); //more elegant way?
 	}

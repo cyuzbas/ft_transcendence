@@ -1,17 +1,8 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 import axios from "axios";
-import { AxiosResponse } from "axios";
-import { ChatRoomUser, DmRoomUser, Member, Message, Room, RoomType, RoomUser, UserRole } from "./types";
+import { ChatRoomUser, DmRoomUser, GENERAL_CHAT, Member, Message, Room, RoomType, RoomUser, UserRole } from "./types";
 import { useSocket } from "../SocketContext/provider";
 import { User, useUser } from "../UserContext";
-
-const GENERAL_CHAT = {
-	roomId: 1,
-	roomName: 'Transcendence',
-	unreadMessages: 0,
-	type: RoomType.PUBLIC,
-	userRole: UserRole.MEMBER,
-}
 
 export type ChatContextValue = {
     // isLoading: boolean,
@@ -28,8 +19,10 @@ export type ChatContextValue = {
     setBlocked: React.Dispatch<React.SetStateAction<User[]>>,
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
     fetchAllPublicRooms: () => Promise<Room[]>,
-    createDmRoom: (newContact: string) => Promise<DmRoomUser>,
-    addRoomUser: (addRoom: string, addUser: string) => Promise<ChatRoomUser>,
+    createChatRoom: (newRoom: Room) => Promise<void>,
+    createDmRoom: (newContact: string) => Promise<void>,
+    addRoomUser: (addRoom: string, addUser: string) => Promise<ChatRoomUser | undefined>,
+    removeRoomUser: () => Promise<void>,
     updateRoomUser: (updatedRoomUser: Member) => Promise<void>,
     updateRoom: (updatedRoom: Room) => Promise<void>,
     handleUnreadMessage: (roomName: string) => Promise<void>
@@ -42,7 +35,6 @@ export function useChat() {
 }
 
 export function ChatProvider({ children }: {children: ReactNode}) {
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [room, setRoom] = useState<RoomUser>(GENERAL_CHAT);
     const [chatRooms, setChatRooms] = useState<ChatRoomUser[]>([]);
     const [dmRooms, setDmRooms] = useState<DmRoomUser[]>([]);
@@ -64,8 +56,11 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             socket.emit('memberUpdate', room.roomName);
         };
 
-        function onMemberInvite() {
-            fetchMyChatRooms();
+        function onMemberInvite(roomName: string) {
+            addRoomUser(roomName, user.userName)
+            // setChatRooms(prev => [...prev, roomUser]);
+            // socket.emit('joinRoom', roomUser.roomName)
+            // fetchMyChatRooms(); //fetchrooms set room to response.data[0], shouldn't happen
         };
         
         function onNewDmRoom() {
@@ -112,7 +107,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             setChatRooms(response.data);
             setRoom(response.data[0]);
             for (const room of response.data) {
-                socket.emit('joinRoom', room);
+                socket.emit('joinRoom', room.roomName);
             }
         } catch (error) {
             console.log(error);
@@ -124,7 +119,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             const response = await axios.get(`${URL}/chat/contacts/${user.userName}`);
             setDmRooms(response.data);
             for (const room of response.data) {
-                socket.emit('joinRoom', room);     
+                socket.emit('joinRoom', room.roomName);
             }
         } catch (error) {
             console.log(error);
@@ -136,8 +131,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             const response = await axios.get(`${URL}/chat/public`);
             return response.data as Room[]
         // } catch (error) {
-        //     console.log(error)
-        //     return [] as Room[]
+            // console.log(error)
         // }
     };
 
@@ -171,7 +165,19 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         }
     }
 
-    const createDmRoom = async(newContact: string): Promise<DmRoomUser> => {
+    const createChatRoom = async(newRoom: Room) => {
+		try {
+			const response = await axios.post(`${URL}/chat/channel`, newRoom)
+			setChatRooms(prevRooms => [...prevRooms, response.data])
+			setRoom(response.data);
+			socket.emit('joinRoom', newRoom.roomName);
+		} catch (error: any) {
+			// alert('Chat room already exists. Please choose a different name.');
+			alert(error);
+		}
+    }
+
+    const createDmRoom = async(newContact: string) => {
         const sortedString = [user.userName, newContact].sort();
         const joinedNames = sortedString.join('');
         
@@ -181,31 +187,56 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             type: RoomType.DIRECTMESSAGE,
         };
         
-        // try {
+        try {
             const response = await axios.post<DmRoomUser>(`${URL}/chat/contact`, newRoom);
             setDmRooms(prev => [...prev, response.data]);
+            setRoom(response.data);
+            socket.emit('joinRoom', newRoom.roomName);
             socket.emit('newDmRoom', response.data.contact);
-            return response.data as DmRoomUser;
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        } catch (error) {
+            console.log(error);
+        }
     };
     
     const addRoomUser = async(addRoom: string, addUser: string) => {
-        // try {
+        try {
             const response = await axios.post(`${URL}/chat/roomuser/${addRoom}/${addUser}/${UserRole.MEMBER}`);
+            // if (addUser === user.userName) {
+                setChatRooms(prevRooms => [...prevRooms, response.data]);
+                // setRoom(response.data);
+                socket.emit('joinRoom', response.data.roomName)
+            // } else {
+                // socket.emit('memberInvite', { ...response.data, userName: addUser});
+                // socket.emit('memberUpdate', room.roomName);        
+            // }
             return response.data as ChatRoomUser;
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        } catch (error) {
+            console.log(error);
+        }
     }
     
+    const removeRoomUser = async() => {
+        try {
+            const response = await axios.put(`${URL}/chat/remove/${room.roomName}/${user.userName}/${room.type}`);
+            if (room.type === RoomType.DIRECTMESSAGE) {
+                setDmRooms(response.data);
+            } else {
+                setChatRooms(response.data)
+            };
+            setRoom(GENERAL_CHAT);
+            socket.emit('leaveRoom', room.roomName);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const updateRoomUser = async(updatedRoomUser: Member) => {
         try {
             const response = await axios
                 .put<Member[]>(`${URL}/chat/roomuser/${room.roomName}/${updatedRoomUser.userName}`, 
                 updatedRoomUser
             );
+            socket.emit('memberUpdate', room.roomName);
         } catch (error) {
             console.log(error);
         }
@@ -223,7 +254,6 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     const handleUnreadMessage = async(roomName: string) => { // update unread messages and get chatroom || dmrooms
         const foundChatRoom = chatRooms.find(room => room.roomName === roomName);
         const foundDmRoom = dmRooms.find(room => room.roomName === roomName);
-        
         if (foundChatRoom) {
             setChatRooms(prevChatRooms =>
                 prevChatRooms.map(room =>
@@ -233,6 +263,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
                 )
             );
         } else if (foundDmRoom) {
+            console.log("UNREADDMESAAGE")
             setDmRooms(prevDmRooms =>
                 prevDmRooms.map(room =>
                     room.roomName === foundDmRoom.roomName
@@ -268,7 +299,9 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         setMessages,
         fetchAllPublicRooms,
         createDmRoom,
+        createChatRoom,
         addRoomUser,
+        removeRoomUser,
         updateRoomUser,
         updateRoom,
         handleUnreadMessage,

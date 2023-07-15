@@ -8,7 +8,7 @@ export const MessageWindow = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const { socket } = useSocket();
   const { user } = useUser();
-  const { room, blocked, messages, setMessages, handleUnreadMessage } = useChat();
+  const { room, blocked, messages, setMessages, handleUnreadMessage, dmRooms, chatRooms } = useChat();
 
   useEffect(() => {
     const onMessage = (newMessage: Message) => {
@@ -24,7 +24,7 @@ export const MessageWindow = () => {
     return () => {
       socket.off('onMessage');
     }
-  }, [room, socket, user, blocked])
+  }, [room, socket, user, blocked, dmRooms, chatRooms])
 
   useEffect(() => {
       lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });

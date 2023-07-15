@@ -4,7 +4,7 @@ import { useChat } from "../../../contexts/ChatContext/provider";
 import { BlockButton } from "./buttonBlock";
 import { UnBlockButton } from "./buttonUnBlock";
 import { AddAdminButton } from "./buttonAddAdmin";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormAddMember } from "./formAddMember";
 import { ChatRoomUser, Member, RoomType, RoomUser, UserRole } from "../../../contexts/ChatContext/types";
 import { BanButton } from "./buttonBan";
@@ -19,29 +19,41 @@ type Props = {
 
 export const RoomInfo = ({ setSelectedMember }: Props) => {
 	const [popupVisibility, setPopupVisibility] = useState<boolean>(false);
+	const [settings, setSettings] = useState<boolean>(false);
 	const { user } = useUser();
 	const { members, room: RoomUser } = useChat();
-	// const { room: RoomUser } = useSocket();
 	const room = RoomUser as ChatRoomUser;
 	
 	const handleMemberClick = (member: Member) => {
 		setSelectedMember(member);
 	}
 
+	useEffect(() => {
+		setSettings(false);
+	}, [room])
+
 	return (
 		<>
 			Room Information {room.roomName}
 			<h3>
 				Members
-				{room.userRole === UserRole.OWNER &&
-					<button onClick={() => setPopupVisibility(!popupVisibility)}>
-						Member+
+				{(room.userRole === UserRole.OWNER || room.userRole === UserRole.ADMIN) &&
+					<button onClick={() => setSettings(!settings)}>
+						Settings
 					</button>
 				}
-				{room.userRole === UserRole.OWNER &&
+			</h3>
+				<div>
+				{settings && (room.userRole === UserRole.OWNER ||
+					room.userRole === UserRole.ADMIN) &&
+					<button onClick={() => setPopupVisibility(!popupVisibility)}>
+						Invite Member
+					</button>
+				}
+				{settings && room.userRole === UserRole.OWNER &&
 					<FormEditPassword />
 				}
-			</h3>
+				</div>
 			{popupVisibility &&
 			<div className="chat-popup">
 				<FormAddMember setPopupVisibility={setPopupVisibility} />
@@ -58,12 +70,12 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 							</>
 						}
 						{member.userName} : {member.userRole !== UserRole.MEMBER && member.userRole}
-						{room.userRole === UserRole.OWNER && 
+						{settings && room.userRole === UserRole.OWNER && 
 							member.userRole !== UserRole.ADMIN &&
 							member.userName !== user.userName && 
 								<AddAdminButton member={member}/>
 						}
-						{(room.userRole === UserRole.OWNER || 
+						{settings && (room.userRole === UserRole.OWNER || 
 							room.userRole === UserRole.ADMIN) &&
 							member.userRole !== UserRole.OWNER &&
 							member.userRole !== UserRole.ADMIN &&

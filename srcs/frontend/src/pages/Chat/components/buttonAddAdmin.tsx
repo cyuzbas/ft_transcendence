@@ -4,19 +4,17 @@
 import { Member, UserRole, useChat } from "../../../contexts/ChatContext";
 import { useSocket } from "../../../contexts/SocketContext";
 
-export const AddAdminButton: React.FC<{ member: Member }> = ({ member }) => {
+export const AddAdminButton: React.FC<{ member: Member }> = ({ member }) => { //send event to addamin? to update realtime settings option
   const { socket } = useSocket();
   const { room, updateRoomUser } = useChat();
 
-  async function handleClick(e: React.MouseEvent, member: Member) {
+  function handleClick(e: React.MouseEvent, member: Member) {
     e.stopPropagation();
 
-    await updateRoomUser({
+    updateRoomUser({
       ...member,
       userRole: UserRole.ADMIN,
     });
-
-    socket.emit('memberUpdate', room.roomName);
   };
 
   return (

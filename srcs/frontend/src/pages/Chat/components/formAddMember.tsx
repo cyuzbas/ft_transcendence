@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-// import { useUser } from "../../../contexts/UserProvider";
 import { useSocket } from "../../../contexts/SocketContext/provider";
-import { ClickableList } from "./clickableList";
 import { useChat } from "../../../contexts/ChatContext/provider";
 import { User, useUser } from "../../../contexts";
-// import { User } from "../chat.types";
 
 type addContactProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -38,11 +35,12 @@ export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
 		e.preventDefault();
 		
 		for (const userName of selectedUsers) {
-			const newRoomUser = await addRoomUser(room.roomName, userName);
+			socket.emit('memberInvite', { userName: userName, roomName: room.roomName })
+			// await addRoomUser(room.roomName, userName);
 		};
 
-		socket.emit('memberInvite', selectedUsers);
-		socket.emit('memberUpdate', room.roomName);
+		// socket.emit('memberInvite', selectedUsers);
+		// socket.emit('memberUpdate', room.roomName);
 		setPopupVisibility(false);
   }
 

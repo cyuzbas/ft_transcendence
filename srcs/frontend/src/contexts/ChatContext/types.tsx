@@ -1,7 +1,5 @@
 import { User } from "../UserContext";
 
-export const GENERAL_CHAT = 'Transcendence'
-
 export enum RoomType {
 	PUBLIC = 'public',
 	PRIVATE = 'private',
@@ -15,6 +13,13 @@ export enum UserRole {
     MEMBER = 'member'
 }
 
+export const GENERAL_CHAT = {
+	roomId: 1,
+	roomName: 'Transcendence',
+	unreadMessages: 0,
+	type: RoomType.PUBLIC,
+	userRole: UserRole.MEMBER,
+}
 export type Message = {
 	id: number,
 	userName: string,

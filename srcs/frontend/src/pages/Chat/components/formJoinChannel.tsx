@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react"
-import { ChatRoomUser, Room, RoomType, RoomUser, UserRole } from "../../../contexts/ChatContext/types"
 import axios from "axios"
-import { useSocket } from "../../../contexts/SocketContext/provider"
-// import { useUser } from "../../../contexts/UserProvider"
+import { useEffect, useState } from "react"
+import { Room, RoomType } from "../../../contexts/ChatContext/types"
 import { ClickableList } from "./clickableList"
 import { useChat } from "../../../contexts/ChatContext/provider"
 import { useUser } from "../../../contexts"
+import { useSocket } from "../../../contexts/SocketContext"
 
 type Props = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -16,15 +15,15 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
     const [selectedRoom, setSelectedRoom] = useState<Room>();
     const [isProtected, setIsProtected] = useState<boolean>(false);
     const [value, setValue] = useState<string>('')
-    const { URL } = useSocket();
-    const { user } = useUser();
     const { setRoom, chatRooms, setChatRooms, fetchAllPublicRooms, addRoomUser } = useChat();
+    const { user } = useUser();
+    const { socket, URL } = useSocket();
         
     useEffect(() => { // do same as contact with gateway?
         const getJoinableRooms = async() => {
             const allPublicRooms = await fetchAllPublicRooms();
             const filteredRooms = allPublicRooms
-                .filter(room => !chatRooms.some(userRoom => userRoom.roomName === room.roomName)) // also weird   
+                .filter(room => !chatRooms.some(userRoom => userRoom.roomName === room.roomName))
             setJoinableRooms(filteredRooms);
         };
     	getJoinableRooms();
@@ -32,8 +31,15 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
 
     const joinRoom = async(room: Room) => {
         const newRoomUser = await addRoomUser(room.roomName, user.userName);
-        setChatRooms(prevRooms => [...prevRooms, newRoomUser]);
-        setRoom(newRoomUser);
+        if (newRoomUser) {
+            setRoom(newRoomUser);
+        }
+        // setRoom(response.data);
+
+        // const newRoomUser = await addRoomUser(room.roomName, user.userName);
+        // setChatRooms(prevRooms => [...prevRooms, newRoomUser]);
+        // setRoom(newRoomUser);
+        // socket.emit('joinRoom', room.roomName)
         setPopupVisibility(false);
     }
 
@@ -49,7 +55,7 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
     const handlePasswordSubmit = async(e: React.FormEvent) => { //make try catch block
         e.preventDefault();
         if (selectedRoom) {
-            const response = await axios.post('http://localhost:8080/chat/password', {
+            const response = await axios.post(`${URL}/chat/password`, {
                 roomName: selectedRoom.roomName,
                 type: RoomType.PROTECTED, // is necessary for RoomDto, make another for this?
                 password: value
@@ -84,5 +90,3 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         </>
     )
 }
-
-        // const response = await axios.post(`${URL}/chat/roomuser/${room.roomName}/${user.userName}/${UserRole.MEMBER}`);

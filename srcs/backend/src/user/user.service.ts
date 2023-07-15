@@ -54,25 +54,19 @@ export class UserService {
 	return createdUser;
 	}
 
-	// async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
-	// 	(await this.userRepository.findOne(user => user.id === userId)).twoFactorAuthenticationSecret = secret;
-	//   }
-	
+	async addAuthSecretKey(key:string,user:UserI){
+		if(!user)
+			return
+		await this.userRepository.update(user.id,{
+			twoFactorAuthSecret: key
+			});
+	}
 
-	// async generateTwoFactorAuthenticationSecret(user: UserI) {
-	// 	const secret = authenticator.generateSecret();
-	
-	// 	const otpauthUrl = authenticator.keyuri(user.userName, 'AUTH_APP_NAME', secret);
-	
-	// 	await this.setTwoFactorAuthenticationSecret(secret, user.id);
-	
-	// 	return {
-	// 	  secret,
-	// 	  otpauthUrl
-	// 	}
-	//   }
-
-
+	async findByintraIdEntitiy(intraId: string): Promise<UserEntity> {
+		return await this.userRepository.findOne({
+			where: { intraId: intraId },
+		});
+	}
 	async findByintraId(intraIdToFind: string): Promise<UserI> {
 		return await this.userRepository.findOne({
 			where: { intraId: intraIdToFind },

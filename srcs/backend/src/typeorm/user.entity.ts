@@ -29,6 +29,12 @@ export class UserEntity {
 	@Column({})
 	isLogged: boolean = false;
 
+	@Column({nullable : true})
+	TwoFactorAuth:boolean = false
+
+	@Column({nullable: true})
+	twoFactorAuthSecret:string
+
 	@OneToMany(() => MessageEntity, message => message.user)
 	messages: MessageEntity[];
 

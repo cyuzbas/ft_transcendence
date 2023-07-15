@@ -1,5 +1,5 @@
 import Particle from './Particle';
-// import fourtytwo from '../../img/ft.png'
+import fourtytwo from '../../img/ft.png'
 import './styles.css'
 
 export function Login(){
@@ -16,7 +16,7 @@ export function Login(){
 				<h1>FT_TRANSCENDENCE</h1>
 			</div>
 			<button className='LoginWith42' onClick={goToLogin} >
-				{/* <img src={fourtytwo} className='ftLogo'></img> */}
+				<img src={fourtytwo} className='ftLogo'></img>
 				<text className='ftLogin-text'>LOGIN WITH 42</text>
 			</button>
 		</div>

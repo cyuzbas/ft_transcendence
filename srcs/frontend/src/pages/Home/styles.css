@@ -1,4 +1,4 @@
-.PageMain {  
+/* .PageMain {  
     background-color: rgb(88, 110, 124);
     display: grid;
     height: 100vh;
@@ -7,14 +7,14 @@
     gap: 10px;
     grid-auto-flow: row;
     grid-template-areas:
-      "ProfileInfo AllRanks AllRanks AllRanks FriendSection FriendSection"
-      "MyRank AllRanks AllRanks AllRanks FriendSection FriendSection"
-      "Chat Chat Chat Chat FriendSection FriendSection"
-      "Chat Chat Chat Chat FriendSection FriendSection";
+      "ProfileInfo ProfileInfo ProfileInfo ProfileInfo ProfileInfo ProfileInfo"
+      "FriendSection FriendSection LeaderBoard LeaderBoard Achievement Achievement"
+      "FriendSection FriendSection LeaderBoard LeaderBoard Achievement Achievement"
+      "FriendSection FriendSection LeaderBoard LeaderBoard Achievement Achievement";
   }
 .container{
     /* margin: 10px; */
-    background: rgb(3, 23, 35);
+    /* background: rgb(3, 23, 35);
 background: -moz-linear-gradient(top, rgba(178,225,255,1) 0%, rgba(102,182,252,1) 100%);
 background: -webkit-linear-gradient(top, rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
 background: linear-gradient(to bottom, rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
@@ -27,12 +27,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2e1ff', end
     background: -ms-linear-gradient(left, rgba(210,227,238,1) 0%, rgba(133,173,204,1) 100%);
     background: linear-gradient(to right, rgba(210,227,238,1) 0%, rgba(133,173,204,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2e3ee', endColorstr='#85adcc', GradientType=1 ); */
-}
-  
-/* .Menu { 
-    grid-area: Menu;
-    margin: 10px 0 0 10px;
-} */
+/* }
+
 .ProfileInfo { 
     grid-area: ProfileInfo; 
     margin-left: 10px;
@@ -68,4 +64,95 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2e1ff', end
     background: -webkit-linear-gradient(top, rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
     background: linear-gradient(to bottom, rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2e1ff', endColorstr='#66b6fc',GradientType=0 ); */
+/* } */
+
+
+/* .PageMain {
+   display: grid; 
+
+   grid-template-rows: 1fr 1fr 1fr;
+   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+   
+   grid-template-areas: 
+	'label0 label0 label0 label0 label0 label0'
+	'label1 label1 label2 label2 label3 label3'
+	'label1 label1 label2 label2 label3 label3';
+   
+   gap: 10px;
+   height: 100vh;
+   width: 100%;
+   
+} 
+
+.container {
+    background: rgb(3, 23, 35);
+    background: -moz-linear-gradient(top, rgba(178,225,255,1) 0%, rgba(102,182,252,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
+    background: linear-gradient(to bottom, rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2e1ff', endColorstr='#66b6fc',GradientType=0 );
 }
+
+#item-0 {
+   grid-area: label0;
+   width: 100%;
+}
+
+#item-1 {
+   grid-area: label1;
+   
+}
+#item-2 {
+    grid-area: label2;
+   
+}
+#item-3 {
+
+   grid-area: label3;
+} */
+
+.PageMain{
+    display: grid; 
+ 
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    
+    grid-template-areas: 
+     'label0 label0 label0 label0 label0 label0'
+     'label1 label1 label2 label2 label3 label3'
+     'label1 label1 label2 label2 label3 label3';
+    
+    gap: 10px;
+    height: 100%;
+    
+ }
+
+ .item {
+    background: rgb(3, 23, 35);
+    background: -moz-linear-gradient(top, rgba(178,225,255,1) 0%, rgba(102,182,252,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
+    background: linear-gradient(to bottom, rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2e1ff', endColorstr='#66b6fc',GradientType=0 );
+ }
+   
+ #item-0 {
+ 
+    grid-area: label0;
+    
+ }
+ #item-1 {
+ 
+    grid-area: label1;
+    
+ }
+ #item-2 {
+ 
+    grid-area: label2;
+    
+ }
+ #item-3 {
+ 
+    grid-area: label3;
+    
+ }
+
+

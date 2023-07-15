@@ -69,25 +69,39 @@ export function Home() {
 
 
   return (
-    <div className='PageMain'>
-      <div className="Menu container">menu</div>
-      <div className="ProfileInfo container">
-        <img src={user.avatar} alt="Avatar" style={{ margin: 50, width: 200, height: 170, borderRadius: 20 }} />
-        {/* <img src={user.avatar} /> */}
+    // <div className='PageMain'>
+    //   <div id="item-0" className="ProfileInfo container">
+    //     <img src={user.avatar} alt="Avatar" style={{ margin: 50, width: 200, height: 170, borderRadius: 20 }} />
+    //     {/* <img src={user.avatar} /> */}
 
-        {/* <img src={"undefined:undefined/upload/1688581369566-219674372.png"} alt="Logo" /> */}
+    //     {/* <img src={"undefined:undefined/upload/1688581369566-219674372.png"} alt="Logo" /> */}
 
-        <h5> {user.intraId} intra</h5>
+    //     <h5>{user.userName}</h5>
+    //     <h5> ID - {user.intraId}</h5>
+    //     {/* <button onClick={showAlert}> Change userName</button>
+    //     <input type='file' onChange={handleFileChange} accept='image/*' />
+    //     <button onClick={postimage} > Change photo</button> */}
+    //   </div>
+    //   {/* <div className="MyRank container">MyRank</div> */}
+    //   <div id="item-1" className="FriendSection container">
+    //     <Friends />
+    //   </div>
+    //   <div id="item-2" className="LeaderBoard container">LeaderBoard</div>
+    //   <div id="item-3" className="Achievement container">Achievement</div>
+    // </div>
+    <div className="PageMain">
+      <div id="item-0" className="ProfileInfo item">&nbsp;
+        <img src={user.avatar} alt="Avatar" style={{ margin: 50, width: 200, height: 160, borderRadius: 50 }} />
         <h5>{user.userName}</h5>
-        <button onClick={showAlert}> Change userName</button>
-        <input type='file' onChange={handleFileChange} accept='image/*' />
-        <button onClick={postimage} > Change photo</button>
+        <h5> ID - {user.intraId}</h5>
       </div>
-      <div className="MyRank container">MyRank</div>
-      <div className="Chat container">Chat</div>
-      <div className="AllRanks container">Allranks</div>
-      <div className="FriendSection container">
+      <div id="item-1" className="FriendSection item">&nbsp;
+        Friends
         <Friends />
+      </div>
+      <div id="item-2" className="LeaderBoard item">&nbsp;LeaderBoard
+      </div>
+      <div id="item-3" className="Achievement item">&nbsp;Achievement
       </div>
     </div>
   )

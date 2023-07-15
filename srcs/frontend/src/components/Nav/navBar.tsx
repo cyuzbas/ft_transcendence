@@ -1,8 +1,8 @@
 import React from 'react';
 import { Nav, Navbar, Form, FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-// import Intra from '../../img/ft.png';
-// import Avatar from '../../img/default.png';
+import Intra from '../../img/ft.png';
+import Avatar from '../../img/default.png';
 
 
 const Styles = styled.div`
@@ -43,7 +43,7 @@ const NavigationBar = () => (
   <Styles>
     <Navbar>
 	    <Navbar.Brand href="/home">
-        {/* <img src={Intra} alt="Ft-icon" className='icon'/> */}
+        <img src={Intra} alt="Ft-icon" className='icon'/>
         <text className='brand'>PONG</text>
       </Navbar.Brand>
       {/* <Form className="form-center">
@@ -51,7 +51,7 @@ const NavigationBar = () => (
       </Form> */}
         <Nav className="ms-auto">
           <Nav.Item><Nav.Link href="/home"><text className='userName'>user.name</text>
-          {/* <img src={Avatar} className='avatar' /> */}
+          <img src={Avatar} className='avatar' />
           </Nav.Link></Nav.Item> 
         </Nav>
     </Navbar>

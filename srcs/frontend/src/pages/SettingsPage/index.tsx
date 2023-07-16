@@ -113,7 +113,7 @@ function SettingsPage() {
 								/>
 						</form>
 						<button type="submit" className="SubmitButton Edit">
-							<i className="bi bi-pen fs-5"></i>
+							<i className="bi bi-pencil-square fs-5"></i>
 							<h6>Edit</h6>
 						</button>
 					</div>

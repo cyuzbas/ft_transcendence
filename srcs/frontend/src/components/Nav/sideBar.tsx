@@ -22,11 +22,11 @@ function SideBar() {
 			  <i className="bi bi-wechat fs-2"></i>
 			</a>
 		  </li>
-		  <li className="nav-item">
+		  {/* <li className="nav-item">
 			<a href="/home" className="nav-link mb-5">
 			  <i className="bi bi-person fs-2"></i>
 			</a>
-		  </li>
+		  </li> */}
 		  <li className="nav-item">
 			<a href="/settings" className="nav-link mb-5">
 			  <i className="bi bi-gear fs-2"></i>

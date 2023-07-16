@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Friends } from '../../components';
 import { UserContext } from '../../contexts'
 import swal from 'sweetalert';
+import pong from '../../img/pong.png';
 
 
 export function Home() {
@@ -69,34 +70,46 @@ export function Home() {
 
 
   return (
-    // <div className='PageMain'>
-    //   <div id="item-0" className="ProfileInfo container">
-    //     <img src={user.avatar} alt="Avatar" style={{ margin: 50, width: 200, height: 170, borderRadius: 20 }} />
-    //     {/* <img src={user.avatar} /> */}
 
-    //     {/* <img src={"undefined:undefined/upload/1688581369566-219674372.png"} alt="Logo" /> */}
-
-    //     <h5>{user.userName}</h5>
-    //     <h5> ID - {user.intraId}</h5>
-    //     {/* <button onClick={showAlert}> Change userName</button>
-    //     <input type='file' onChange={handleFileChange} accept='image/*' />
-    //     <button onClick={postimage} > Change photo</button> */}
-    //   </div>
-    //   {/* <div className="MyRank container">MyRank</div> */}
-    //   <div id="item-1" className="FriendSection container">
-    //     <Friends />
-    //   </div>
-    //   <div id="item-2" className="LeaderBoard container">LeaderBoard</div>
-    //   <div id="item-3" className="Achievement container">Achievement</div>
-    // </div>
     <div className="PageMain">
-      <div id="item-0" className="ProfileInfo item">&nbsp;
-        <img src={user.avatar} alt="Avatar" style={{ margin: 50, width: 200, height: 160, borderRadius: 50 }} />
-        <h5>{user.userName}</h5>
-        <h5> ID - {user.intraId}</h5>
+      <div id="item-0" className="ProfileSection item">&nbsp;
+        <div className="ProfileInfo">
+         <div className="imageClass">
+            <img src={user.avatar} id="Avatar"/>
+          </div>
+          <h4 className="UserName">{user.userName}</h4>
+          <h4 className="UserID"> ID - {user.intraId}</h4>
+        </div>
+        <div className="ProfileRankInfo">
+          <div className="ProfileRankInfoLine">
+            <i className="bi bi-star fs-2"></i>
+            <h4 className="UserScore">SCORE</h4>
+          </div>
+          <div className="ProfileRankInfoLine">
+            <i className="bi bi-chevron-double-up fs-2"></i>
+            <h4 className="UserRank">RANK </h4>
+          </div>
+        </div>
+        <div className="ProfileMatchHistory">
+          <div id="MatchHistoryTitle">&nbsp;
+            <img src={pong} className='pongIcon'/>
+            <h4>Match History</h4>
+            <img src={pong} className='pongIcon reverse'/>
+          </div>
+          <div id="MatchHistoryWin">&nbsp;
+            <h4>WIN</h4>
+            <i className="bi bi-trophy fs-4"></i>
+            <h4>2</h4>
+          </div>
+          <div id="MatchHistoryLoss">&nbsp;
+            <h4>LOSS</h4>
+            <i className="bi bi-x-lg fs-4"></i>
+            <h4>1</h4>
+          </div>
+        </div>
       </div>
       <div id="item-1" className="FriendSection item">&nbsp;
-        Friends
+        All users / Friends
         <Friends />
       </div>
       <div id="item-2" className="LeaderBoard item">&nbsp;LeaderBoard

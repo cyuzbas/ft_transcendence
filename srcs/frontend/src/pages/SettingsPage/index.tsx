@@ -77,7 +77,7 @@ function SettingsPage() {
 			// QR SCREEN HERE
 			setStatus('Enable');
 		}
-		window.location.href = 'http://localhost:3000/2fa';
+		window.location.href = 'http://localhost:3000/create2fa';
 		setIsEnabled(!isEnabled);
 	};
   

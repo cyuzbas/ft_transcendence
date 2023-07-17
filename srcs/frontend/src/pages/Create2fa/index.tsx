@@ -1,7 +1,10 @@
 import './styles.css'
 import Intra from '../../img/ft.png';
+import { useContext } from 'react';
 
 function Auth2faPage() {
+
+	// const {text, setText} = useContext('')
 
 
 	return (

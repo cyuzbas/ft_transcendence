@@ -1,9 +1,9 @@
 import { createContext, useState, Dispatch, SetStateAction, ReactNode, useContext, useEffect } from "react";
 import { UserRole } from "../ChatContext";
 import axios from "axios";
-import { Navigate } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { Login } from "../../pages";
-import Validate2faPage from '../../pages/Login/auth'
+import Verify2fa from '../../pages/Verify2fa'
 
 export type User = {
   userName: string;
@@ -94,12 +94,17 @@ export function UserProvider({ children }: UserProviderProps) {
   }
   else if (user.isLogged && user.TwoFactorAuth	) {
     return (
-      <Validate2faPage />
+      
+      <Routes>
+      <Route path='/verify2fa' element={<Verify2fa />} />
+      </Routes>
     )
   }
   else {
     return (
-      <Login />
+      <Routes>
+      <Route path='/login' element={<Login />} />
+      </Routes>
     )
   }
 }

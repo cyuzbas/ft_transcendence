@@ -3,6 +3,7 @@ import { UserRole } from "../ChatContext";
 import axios from "axios";
 import { Navigate } from 'react-router-dom'
 import { Login } from "../../pages";
+import Validate2faPage from '../../pages/Login/auth'
 
 export type User = {
   userName: string;
@@ -10,7 +11,9 @@ export type User = {
   intraId: string;
   status: string,
   userRole?: string,
-  isLogged:boolean
+  isLogged: boolean,
+  TwoFactorAuth	: boolean,
+  twoFactorCorrect:false
 }
 
 export interface UserContextInterface {
@@ -25,8 +28,10 @@ const defaultState = {
     avatar: '',
     status: '',
     userRole: '',
-    isLogged: false
-    },
+    isLogged: false,
+    TwoFactorAuth	: false,
+    twoFactorCorrect:false
+  },
   setUser: (user: User) => { }
 } as UserContextInterface;
 
@@ -50,7 +55,9 @@ export function UserProvider({ children }: UserProviderProps) {
     intraId: '',
     status: '',
     userRole: '',
-    isLogged: false
+    isLogged: false,
+    TwoFactorAuth	: false,
+    twoFactorCorrect:false
   });
 
 
@@ -66,6 +73,7 @@ export function UserProvider({ children }: UserProviderProps) {
         setUser(response.data);
         console.log("sonrasinda  " + user.userName + " asdasd " + JSON.stringify(response.data) + "user login    bundan sonra" + window.location.pathname);
         console.log(response.data.avatar + " asdasd")
+        console.log("provider data " + response.data)
       } catch (error) {
         if (!window.location.pathname.match('/login'))
           window.location.href = '/login'
@@ -76,17 +84,22 @@ export function UserProvider({ children }: UserProviderProps) {
   }, []);
 
 
-if(user.isLogged){
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );}
-  else{
-    return(
-      <>
-      <Login/>
-      </>
+  if (user.isLogged && (user.TwoFactorAuth	 != true || user.twoFactorCorrect)) {
+    console.log("provider " + JSON.stringify(user))
+    return (
+      <UserContext.Provider value={{ user, setUser }}>
+        {children}
+      </UserContext.Provider>
+    );
+  }
+  else if (user.isLogged && user.TwoFactorAuth	) {
+    return (
+      <Validate2faPage />
+    )
+  }
+  else {
+    return (
+      <Login />
     )
   }
 }

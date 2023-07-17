@@ -45,6 +45,7 @@ export class AuthController {
 				console.log("Login succes");
 		});
 		this.userService.updateLogIn(user.userName,true);
+		console.log("redirect : " + JSON.stringify(user));
 		res.redirect(`http://localhost:3000/home`);
 	}
 

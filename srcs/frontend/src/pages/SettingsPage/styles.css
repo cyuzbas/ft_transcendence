@@ -34,6 +34,21 @@
 	
  }
 
+ .UploadPP{
+	background-color: white;
+	border:solid 2px rgb(88, 110, 124, 0.8);
+	margin-bottom: 20px;
+	color: rgb(75, 94, 107);
+ }
+
+ .UploadPP::file-selector-button {
+	/* display: none; */
+	background-color: rgb(88, 110, 124, 0.8);
+	border:solid 1px rgb(88, 110, 124, 0.8);
+	color: rgb(178,225,255);
+	margin-right: 55px;
+  }
+
  .ChangePPLine {
 	display: flex;
     flex-direction: row;
@@ -63,7 +78,7 @@
 	height: 300px;
 	border-radius: 50%;
 	overflow: hidden;
-	margin: 100px 100px 50px 100px;
+	margin: 50px 100px 50px 100px;
   }
   
   .imageContainer img {
@@ -100,11 +115,16 @@
 	display: flex;
     flex-direction: row;
     align-items: center;
-	margin-left: 250px;
-	margin-top: 150px;
+	margin-left: 230px;
+	margin-top: 20px;
 
   }
 
+  .Info2fa {
+	color: rgb(75, 94, 107);
+	margin-left: 240px;
+	margin-top: 70px;
+  }
   .bi-qr-code-scan {
 	margin-right: 20px;
   }

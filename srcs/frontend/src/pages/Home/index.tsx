@@ -3,6 +3,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { Friends } from '../../components';
 import { UserContext } from '../../contexts'
+import FriendsToggle from './toggle';
 import swal from 'sweetalert';
 import pong from '../../img/pong.png';
 
@@ -41,32 +42,6 @@ export function Home() {
         }
       });
   }
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-
-  async function postimage() {
-
-    if (selectedFile) {
-      const formData = new FormData()
-      const imageName = user.userName + '.png'
-      formData.append('avatar', selectedFile)
-      const headers = { 'Content-Type': 'multipart/form-data' };
-      await axios
-        .post(`http://localhost:3001/user/avatar/${imageName}`,
-          formData, { withCredentials: true, headers })
-        .then((res) => { user.avatar = res.data.avatar })
-        .catch(err => { })
-    }
-  }
-
-
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
-    }
-  };
-
 
 
   return (
@@ -108,11 +83,11 @@ export function Home() {
           </div>
         </div>
       </div>
-      <div id="item-1" className="FriendSection item">&nbsp;
-        All users / Friends
-        <Friends />
+      <div id="item-1" className="FriendSection item">
+        <FriendsToggle />
       </div>
-      <div id="item-2" className="LeaderBoard item">&nbsp;LeaderBoard
+      <div id="item-2" className="LeaderBoard item">&nbsp;
+      LeaderBoard
       </div>
       <div id="item-3" className="Achievement item">&nbsp;Achievement
       </div>

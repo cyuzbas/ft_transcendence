@@ -1,5 +1,5 @@
 
-// import '../index.css';
+import './styles.css';
 import axios from 'axios';
 import { UserContext } from '../../contexts'
 import React, { useContext,useState , useEffect } from 'react';
@@ -45,11 +45,17 @@ export function Friends() {
       <>
     {Array.isArray(users) ? (
       users.map((user, index) => (
-        <div className="text-image-component" key={user.intraId}>
-             <img src={user.avatar} className="image" style={{margin:5,width:50, height:50, borderRadius:20}}/>
-            <div className="text">{user.userName}</div>
+        <div className="friends-text-image-component" key={user.intraId}>
+            <div className="imageClassPP">
+              <img src={user.avatar} id="Avatar"/>
+            </div>
+            <div className="friend-component-username">{user.userName}</div>
+            <div className="friend-component-username"> ID - {user.intraId}</div>
+            <div className='personaddcontainer'>
+              <i className="bi bi-person-add fs-3"></i>
+            </div>
             {/* <img src={logo}  className="image2" /> */}
-            <div>logo</div>
+            {/* <div>logo</div> */}
         </div>
       ))
     ) : (

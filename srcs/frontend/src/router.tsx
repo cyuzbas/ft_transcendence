@@ -41,7 +41,7 @@ export function Router() {
                     <Route path='/chat' element={  <Chat/>} />
                     <Route path='/settings' element={  <SettingsPage/>} />
                     <Route path='/create2fa' element={  <Create2fa/>} />
-                    <Route path='/verify2fa' element={  <Verify2fa/>} />
+                    {/* <Route path='/verify2fa' element={  <Verify2fa/>} /> */}
                     {/* <Route path='/chat' element={<Chat />} /> */}
                     {gameModes.map((mode: GameMode) => (
                       <Route

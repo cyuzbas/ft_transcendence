@@ -3,7 +3,7 @@
     display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 100%;
+	height: max-content;
  }
 
    
@@ -34,17 +34,14 @@
 
  }
 
- .LoginSend2faButton {
-	background-color:rgba(115, 143, 160, 1);
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-	border: solid 1px  rgb(88, 110, 124, 0.8);
- }
 
  .LoginSend2fa {
 	color: rgb(46, 58, 66);
 	margin: 10px;
-  }
+	border: solid 1px  rgb(88, 110, 124, 0.8);
+	background-color: rgb(88, 110, 124);
+}
 
   .LoginSend2fa:hover {
-	color: rgb(88, 110, 124);
+	color: rgba(115, 143, 160, 1);
   }

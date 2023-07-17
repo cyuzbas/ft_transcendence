@@ -1,8 +1,27 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './sideBar.css';
+import { useUser } from '../../contexts/UserContext';
+import axios from 'axios';
 
 
 function SideBar() {
+	
+	const { clearUser } = useUser();
+
+
+
+	async function logout() {
+		    // Diğer çıkış işlemleri...
+		
+			try{
+			const response = await axios.get('http://localhost:3001/auth/logout')
+			clearUser()
+			localStorage.removeItem('user');
+		}
+		catch(error){
+			console.error(error)
+		}
+	}
 	return (
 	<div className="sideBarContainer">
 	  <div className="d-flex flex-column p-2">
@@ -33,7 +52,7 @@ function SideBar() {
 			</a>
 		  </li>
 		  <li className="nav-item">
-			<a href='http://localhost:3001/auth/logout' className="nav-link logout">
+			<a onClick={logout} className="nav-link logout">
 			  <i className="bi bi-door-open fs-2"></i>
 			</a>
 		  </li>

@@ -4,6 +4,9 @@ import { GameMode, gameModes } from './pages/Game/logic/types'
 import { Game, Lobby, Home, Chat, Login } from './pages'
 import { SocketProvider } from './contexts/SocketContext/provider';
 import { Friends } from './components';
+import SettingsPage from './pages/SettingsPage'
+import Create2fa from './pages/Create2fa'
+import Verify2fa from './pages/Verify2fa'
 import Navbar from './components/Nav/navBar';
 import SideBar from './components/Nav/sideBar';
 import React, { useContext } from 'react';
@@ -36,6 +39,9 @@ export function Router() {
                     <Route path='/friend' element={<Friends />} />
                     <Route path='/lobby' element={<Lobby />} />
                     <Route path='/chat' element={  <Chat/>} />
+                    <Route path='/settings' element={  <SettingsPage/>} />
+                    <Route path='/create2fa' element={  <Create2fa/>} />
+                    <Route path='/verify2fa' element={  <Verify2fa/>} />
                     {/* <Route path='/chat' element={<Chat />} /> */}
                     {gameModes.map((mode: GameMode) => (
                       <Route

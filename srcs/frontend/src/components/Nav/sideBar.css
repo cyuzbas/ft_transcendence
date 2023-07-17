@@ -13,13 +13,14 @@
 	padding-left: 15px;
 }
 
-.bi{
+.bi-house-door, .bi-controller,.bi-wechat, .bi-gear, .bi-door-open{
 	color: rgb(178,225,255);
 }
-.bi:hover { 
+.bi-house-door:hover, .bi-controller:hover, .bi-wechat:hover, .bi-gear:hover, .bi-door-open:hover { 
 	color: white; 
 }
 
-.nav-link.logout{
-	padding-top: 120px;
-}
+.nav-link.logout {
+	position: absolute;
+	bottom: 20px;
+  }

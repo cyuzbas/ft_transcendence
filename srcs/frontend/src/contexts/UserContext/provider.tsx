@@ -7,7 +7,7 @@ export type User = {
   avatar: string;
   intraId: string;
   status?: string,
-  userRole?: string,
+  // userRole?: string,
 
 }
 
@@ -22,7 +22,7 @@ const defaultState = {
     intraId: '',
     avatar: '',
     status: '',
-    userRole: '',
+    // userRole: '',
   },
   setUser: (user: User) => {}
 } as UserContextInterface;
@@ -46,7 +46,7 @@ export function UserProvider({ children }: UserProviderProps) {
     avatar: '',
     intraId: '', 
     status: '',
-    userRole: '',
+    // userRole: '',
   });
 
 

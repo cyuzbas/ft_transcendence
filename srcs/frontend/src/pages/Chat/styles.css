@@ -60,8 +60,9 @@ html {
   background: rgba(248, 248, 252, 0.648);
   padding: .7rem;
 }
-
+/* display: "flex", alignItems: "center" */
 .chat-popup {
+  display: "flex";
   position: fixed;
   top: 50%;
   left: 50%;
@@ -172,10 +173,35 @@ html {
 }
 
 .roomListBtn {
+  display: flex;
+  align-items: center;
   /* padding: 15px; */
   margin-left: 15px;
   /* color: #0f0e0c; */
   cursor: pointer;
+}
+
+.roomList {
+  /* display: flex; */
+  align-items: center;
+  padding: 1px;
+  margin-left: 15px;
+  /* color: #0f0e0c; */
+  cursor: pointer;
+}
+
+.roomList:hover {
+  background-color: rgb(226, 222, 222);
+}
+
+.memberList {
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  margin-left: 15px;
+  /* color: #0f0e0c; */
+  cursor: pointer;
+
 }
 
 .leaveChat-btn {

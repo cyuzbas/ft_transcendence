@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { ClickableList } from "./clickableList";
 import { useChat } from "../../../contexts/ChatContext/provider";
-import { User, useUser } from "../../../contexts";
+import { RoomType, User, UserRole, useUser } from "../../../contexts";
+import { useSetupDmConversation } from "./hookSetupDm";
+import { useSocket } from "../../../contexts/SocketContext";
 
 type addContactProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -9,19 +11,21 @@ type addContactProps = {
 
 export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 	const [unknowContacts, setUnknownContacts] = useState<User[]>([]);
-	const { setRoom, allUsers, dmRooms, createDmRoom } = useChat();
+	const setupDmConversation = useSetupDmConversation();
+	const { allUsers, myRooms, createNewRoom, addRoomUser, setRoom, setMyRooms } = useChat();
 	const { user } = useUser();
+	const { socket } = useSocket();
 	
 	useEffect(() => {
 		const filteredUsers = allUsers
-		.filter(contact => !dmRooms.some(room => room.contact === contact.userName))
+		.filter(contact => !myRooms.some(room => room.contactName === contact.userName))
 		.filter(contact => contact.userName !== user.userName)
 		
 		setUnknownContacts(filteredUsers);
 	},[allUsers])
 
 	const handleClick = async(newContact: User) => { // prevent e.default()?
-		createDmRoom(newContact.userName);
+		await setupDmConversation(newContact);
 		setPopupVisibility(false);
 	}
 
@@ -37,6 +41,7 @@ export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 				items={unknowContacts}
 				renderItem={(newContact) => (
 					<p className={`roomListBtn ${newContact.status === 'online' ? 'online' : 'offline'}`}>
+						<img src={newContact.avatar} className="image" style={{margin:0,width:30, height:25, borderRadius:20}}/>
 						{newContact.userName} : {newContact.status}
 					</p>
 				)}
@@ -45,4 +50,3 @@ export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 		</>
 	)
 }
-

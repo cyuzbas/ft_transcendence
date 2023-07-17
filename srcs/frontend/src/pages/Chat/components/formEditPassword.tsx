@@ -1,38 +1,39 @@
 import { useState } from "react";
-import { useSocket } from "../../../contexts/SocketContext/provider"
 import { useChat } from "../../../contexts/ChatContext/provider";
-import { Room, RoomType } from "../../../contexts/ChatContext/types";
+import { RoomType } from "../../../contexts/ChatContext/types";
 
 export const FormEditPassword = () => {
-  const [visibility, setVisibility] = useState<Boolean>(false);
+  const [visibility, setVisibility] = useState<boolean>(false);
+  const [confirmation, setConfirmation] = useState<boolean>(false);
+  const [confirmationText, setConfirmationText] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
-  const [repeatPassword, setRepeatPassword] = useState<string>('');
-  // const { room } = useSocket();
   const { room, updateRoom } = useChat();
 
-  const handleRemovePassword = () => {
-    updateRoom({
+  const handleRemovePassword = async() => {
+    await updateRoom({
       roomId: room.roomId,
       roomName: room.roomName,
       type: RoomType.PUBLIC,
     });
+  
+    setConfirmationText('Password removed succesfully')
+    setConfirmation(!confirmation);
   }
-
-  const onSubmit = (e: React.FormEvent) => {
+  
+  const onSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword === repeatPassword) {
-      updateRoom({
-        roomId: room.roomId,
-        roomName: room.roomName,
-        type: RoomType.PROTECTED,
-        password: newPassword, // HASH
-      })
-      setVisibility(false);
-    } else {
-      alert('password does not match, please try again');
-      setNewPassword('');
-      setRepeatPassword('');
-    }
+    
+    await updateRoom({
+      roomId: room.roomId,
+      roomName: room.roomName,
+      type: RoomType.PROTECTED,
+      password: newPassword, // HASH
+    });
+    
+    setConfirmationText('Password added succesfully')
+    setConfirmation(!confirmation);
+    setVisibility(false);
+    setNewPassword('');
   }
 
   return (
@@ -40,14 +41,19 @@ export const FormEditPassword = () => {
       <form onSubmit={(e) => onSubmit(e)}>
         {room.type === RoomType.PROTECTED ? (
           <>
-            <button type="button" onClick={() => setVisibility(!visibility)}>Edit Password</button> 
-            <button onClick={handleRemovePassword}>Remove Password</button>
+            <button type="button" onClick={() => setVisibility(!visibility)}>
+              Edit Password
+            </button> 
+            <button type="button" onClick={handleRemovePassword}>
+              Remove Password
+            </button>
           </>
         ) : (
-          <button onClick={() => setVisibility(true)}>Add Password</button>
+          <button type="button" onClick={() => setVisibility(!visibility)}>
+            Add Password
+          </button>
         )
         }
-        {room.type} 
         {visibility &&
         <div className="chat-popup">
           <div>
@@ -57,18 +63,20 @@ export const FormEditPassword = () => {
               onChange={(e) => setNewPassword(e.target.value)}
               />
           </div>
-          <div>
-            <input
-              placeholder="repeat password"
-              value={repeatPassword}
-              onChange={(e) => setRepeatPassword(e.target.value)}
-            />
-          </div>
           <button type="submit">submit</button>
         </div>
         }
+        {confirmation &&
+        <div className="chat-popup">
+          {confirmationText}
+          <div>
+            <button onClick={() => setConfirmation(!confirmation)}>
+              Ok
+            </button>
+          </div>
+        </div>
+        }
       </form>
-     
     </>
   )
 }

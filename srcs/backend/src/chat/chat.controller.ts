@@ -4,103 +4,75 @@ import { RoomDto } from 'src/dto/room.dto';
 import { MessageDto } from 'src/dto/message.dto';
 import { UserRole } from 'src/typeorm/roomUser.entity';
 import { RoomType } from 'src/typeorm/room.entity';
-import { RoomUserDto } from 'src/dto/roomUser.dto';
+import { NewRoomUserDto, RoomUserDto } from 'src/dto/roomUser.dto';
+import { UserDto } from 'src/dto/user.dto';
 
 @Controller('chat')
 export class ChatController {
 
 	constructor(private chatService: ChatService) {}
 
-	@Post('channel') 
-	async createChatRoom(@Body() chatRoom: RoomDto): Promise<RoomUserDto> {
-		return await this.chatService.createChatRoom(chatRoom);
+	@Post('newRoom') 
+	async createNewRoom(@Body() newRoom: RoomDto): Promise<RoomDto> {
+		return await this.chatService.createNewRoom(newRoom);
 	}
 
-	@Post('contact')
-	async createDmRoom(@Body() dmRoom: RoomDto): Promise<RoomUserDto> {
-		const newDmRoom = await this.chatService.createDmRoom(dmRoom.roomName);
-		return await this.chatService.addDmRoomUser(newDmRoom, dmRoom.member);
+	@Post('addRoomUser')
+	async addRoomUser(@Body() roomUser: NewRoomUserDto): Promise<RoomUserDto> {
+		return await this.chatService.addRoomUser(roomUser);
 	}
 
-	@Post('roomuser/:roomName/:userName/:userRole')
-	async addChatRoomUser(
-		@Param('roomName') roomName: string, 
-		@Param('userName') userName: string, 
-		@Param('userRole') userRole: UserRole): Promise<RoomUserDto> {
-		return await this.chatService.addChatRoomUser(roomName, userName, userRole);
-	}
-
-	@Put('room')
-	async UpdateRoom(@Body() updatedRoom: RoomDto): Promise<void> {
+	@Put('updateRoom')
+	async UpdateRoom(@Body() updatedRoom: RoomDto): Promise<RoomDto> {
 		return await this.chatService.updateRoom(updatedRoom);
 	}
 
-	@Put('roomuser/:roomName/:userName')
-	async UpdateRoomUser(
-		@Param('roomName') roomName: string,
-		@Param('userName') userName: string,
-		@Body() updatedRoomUser: RoomUserDto): Promise<RoomUserDto[]> {
-		await this.chatService.updateRoomUser(roomName, userName, updatedRoomUser);
-		return await this.chatService.getRoomMembers(roomName);
+	@Put('updateRoomUser')
+	async UpdateRoomUser(@Body() updatedRoomUser: RoomUserDto): Promise<RoomUserDto> {
+		return await this.chatService.updateRoomUser(updatedRoomUser);
 	}
 
-	// @Put('roomuser/:roomName/:userName')
-	// async UpdateRoomUserUnread(
-	// 	@Param('roomName') roomName: string,
-	// 	@Param('userName') userName: string,
-	// 	@Body() updatedRoomUser: RoomUserDto): Promise<RoomUserDto[]> {
-	// 	await this.chatService.UpdateRoomUserDetails(roomName, userName, updatedRoomUser);
-	// 	return await this.chatService.getRoomUsers(roomName);
-	// }
-
-	@Put('remove/:roomName/:userName/:type')
+	@Put('removeRoomUser/:roomName/:userName/')
 	async removeRoomUserLinks(
 		@Param('roomName') roomName: string,
-		@Param('userName') userName: string,
-		@Param('type') type: RoomType): Promise<RoomUserDto[]> {
-		await this.chatService.removeRoomUser(roomName, userName);
-		if (type === RoomType.DIRECTMESSAGE) {
-			return await this.chatService.getUserDmRooms(userName);
-		} else {
-			return await this.chatService.getUserChatRooms(userName);
-		}
+		@Param('userName') userName: string) {
+		return await this.chatService.removeRoomUser(roomName, userName);
 	}
 
-	// @Put('remove/contact/:roomName/:userName/')
-	// async removeContact(
-	// 	@Param('roomName') roomName: string,
-	// 	@Param('userName') userName: string): Promise<RoomUserDto[]> {
-	// 	await this.chatService.removeRoomUser(roomName, userName);
-	// 	return await this.chatService.getUserDmRooms(userName);
-	// }
-
-	@Post('password')
-	async checkPassword(@Body() room: RoomDto): Promise<boolean> {
-		return await this.chatService.checkPassword(room);
-	}
-	
-	@Get('generalchat/:userName')
-	async getDefaultChatRoomUser(@Param('userName') userName: string): Promise<RoomUserDto> {
-		return await this.chatService.getDefaultChatRoomUser(userName);
+	@Put('block/:blocker/:blocked')
+	async blockUser(
+		@Param('blocker') blockerUserName: string,
+		@Param('blocked') blockedUserName: string,
+	): Promise<UserDto[]> {
+		return await this.chatService.blockUser(blockerUserName, blockedUserName);
 	}
 
-	@Get('public')
+	@Put('unblock/:blocker/:blocked')
+	async unBlockUser(
+		@Param('blocker') blockerUserName: string,
+		@Param('blocked') blockedUserName: string,
+	): Promise<UserDto[]> {
+		return await this.chatService.unBlockUser(blockerUserName, blockedUserName);
+	}
+
+	@Get('blocked/:userName')
+	async getBlockedUsers(
+		@Param('userName') userName: string
+	): Promise<UserDto[]> {
+		return await this.chatService.getBlockedUsers(userName);
+	}
+
+	@Get('publicRooms')
 	async getAllPublicChatRooms(): Promise<RoomDto[]> {
 		return await this.chatService.getAllPublicChatRooms();
 	}
 	
-	@Get('channels/:userName')
-	async getUserChatRooms(
+	@Get('myRooms/:userName')
+	async getMyRooms(
 		@Param('userName') userName: string): Promise<RoomUserDto[]> {
-		return await this.chatService.getUserChatRooms(userName);
+		return await this.chatService.getMyRooms(userName);
 	}
 
-	@Get('contacts/:userName')
-	async getUserDmRooms(
-		@Param('userName') userName: string): Promise<RoomUserDto[]> {
-		return await this.chatService.getUserDmRooms(userName);
-	}
-		
 	@Get('messages/:roomName')
 	async getRoomMessages(
 		@Param('roomName') roomName: string): Promise<MessageDto[]> {
@@ -114,30 +86,13 @@ export class ChatController {
 		return await this.chatService.getRoomMembers(roomName);
 	}
 	
+	@Post('password')
+	async checkPassword(@Body() room: RoomDto): Promise<boolean> {
+		return await this.chatService.checkPassword(room);
+	}
+
 	@Delete(':id')
 	delete(@Param('id') id: number) {
 		return this.chatService.deleteRoom(id);
 	}	
 }
-
-// @Put('unsubscribe/:room/:user/:role')
-// leaveRoom(
-// 	@Param('room') room: string,
-// 	@Param('user') user: string,
-// 	@Param('role') role: string
-// ) {
-// 	this.chatService.leaveRoom(room, user, role);
-// }
-
-
-// @Put('admin/:user/:room')
-// addAdmin(
-// 	@Param('user') user: string,
-// 	@Param('room') room: string) {
-// 	this.chatService.addAdmin(user, room);
-// }
-
-// @Get('exists/:room')
-// async checkRoomExists(@Param('room') room: string): Promise<boolean> {
-// 	return await this.chatService.checkRoomExists(room);
-// }

@@ -1,12 +1,10 @@
-import { useSocket } from "../../../contexts/SocketContext/provider";
 import { ClickableList } from "./clickableList";
 import { useChat } from "../../../contexts/ChatContext/provider";
 import { BlockButton } from "./buttonBlock";
-import { UnBlockButton } from "./buttonUnBlock";
-import { AddAdminButton } from "./buttonAddAdmin";
-import { useEffect, useState } from "react";
+import { AdminButton } from "./buttonAdmin";
+import { useState } from "react";
 import { FormAddMember } from "./formAddMember";
-import { ChatRoomUser, Member, RoomType, RoomUser, UserRole } from "../../../contexts/ChatContext/types";
+import { Member, UserRole } from "../../../contexts/ChatContext/types";
 import { BanButton } from "./buttonBan";
 import { KickButton } from "./buttonKick";
 import { MuteButton } from "./buttonMute";
@@ -21,16 +19,11 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 	const [popupVisibility, setPopupVisibility] = useState<boolean>(false);
 	const [settings, setSettings] = useState<boolean>(false);
 	const { user } = useUser();
-	const { members, room: RoomUser } = useChat();
-	const room = RoomUser as ChatRoomUser;
+	const { members, room } = useChat();
 	
 	const handleMemberClick = (member: Member) => {
 		setSelectedMember(member);
 	}
-
-	useEffect(() => {
-		setSettings(false);
-	}, [room])
 
 	return (
 		<>
@@ -62,59 +55,71 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 			<ClickableList
 				items={members}
 				renderItem={(member) => (
-					<p className={`roomListBtn ${member.status === 'online' ? 'online' : 'offline'}`}>
-						{member.userName !== user.userName &&
-							<>
+					!member.isBanned && !member.isKicked ?
+						<p className={`memberList ${member.status === 'online' ? 'online' : 'offline'}`}>
+							<img src={member.avatar} className="image" style={{margin:0,width:30, height:25, borderRadius:20}}/>
+							{member.userName}
+							{member.userName !== user.userName &&
 								<BlockButton member={member} /> 
-								<UnBlockButton member={member} />
-							</>
-						}
-						{member.userName} : {member.userRole !== UserRole.MEMBER && member.userRole}
-						{settings && room.userRole === UserRole.OWNER && 
-							member.userRole !== UserRole.ADMIN &&
-							member.userName !== user.userName && 
-								<AddAdminButton member={member}/>
-						}
-						{settings && (room.userRole === UserRole.OWNER || 
-							room.userRole === UserRole.ADMIN) &&
-							member.userRole !== UserRole.OWNER &&
-							member.userRole !== UserRole.ADMIN &&
-							member.userName !== user.userName &&
-							<>
-								<BanButton member={member} />
-								<KickButton member={member} />
-								<MuteButton member={member} />
-							</>
-						}
-					</p>
+							}
+							{settings && room.userRole === UserRole.OWNER && 
+								member.userRole !== UserRole.ADMIN &&
+								member.userName !== user.userName && 
+								<AdminButton member={member}/>
+							}
+							{settings && (room.userRole === UserRole.OWNER || 
+								(room.userRole === UserRole.ADMIN) &&
+								member.userRole !== UserRole.OWNER &&
+								member.userRole !== UserRole.ADMIN) &&
+								member.userName !== user.userName &&
+								<>
+									<BanButton member={member} />
+									<KickButton member={member} />
+									<MuteButton member={member} />
+								</>
+							}
+						</p>
+					: <></>
 				)}
 				onClickItem={(member) => handleMemberClick(member)}
 				/>
+			{settings && (room.userRole === UserRole.OWNER || room.userRole === UserRole.ADMIN) &&
+				<>
+					<h3>Banned</h3>
+					<ClickableList
+						items={members}
+						renderItem={(member) => (
+							member.isBanned ?
+								<p className={`memberList ${member.status === 'online' ? 'online' : 'offline'}`}>
+									<img src={member.avatar} className="image" style={{margin:0,width:30, height:25, borderRadius:20}}/>
+									{member.userName}
+									<BlockButton member={member} /> 
+									<BanButton member={member}/>
+								</p>
+							: <></>
+						)}
+						onClickItem={(member) => handleMemberClick(member)}
+					/>
+				</>
+			}	
+			{/* {settings && (room.userRole === UserRole.OWNER || room.userRole === UserRole.ADMIN) &&
+				<>
+					<h3>Recently Kicked</h3>
+					<ClickableList
+						items={members}
+						renderItem={(member) => (
+							member.isKicked ?
+								<p className={`roomListBtn ${member.status === 'online' ? 'online' : 'offline'}`}>
+									<img src={member.avatar} className="image" style={{margin:0,width:30, height:25, borderRadius:20}}/>
+									{member.userName} : {member.userRole}
+									<BlockButton member={member} /> 
+								</p>
+							: <></>
+						)}
+						onClickItem={(member) => handleMemberClick(member)}
+					/>
+				</>
+			}	 */}
 		</>
 	)
 }
-
-
-
-
-
-
-
-
-// useEffect(() => {
-// 	function onMemberStatus(members: Member[]) {
-// 		members.sort((a, b) => a.userName.localeCompare(b.userName))
-// 		setMembers(members);
-// 	};
-	
-// 	function onUserStatus() { // have to change this
-// 		socket.emit('getMemberStatus', room)
-// 	};
-
-// 	socket.on('memberStatus', onMemberStatus);
-// 	socket.on('userStatus', onUserStatus);		
-// 	return () => {
-// 		socket.off('memberStatus');
-// 		socket.off('userStatus');
-// 	}
-// }, [room, socket])

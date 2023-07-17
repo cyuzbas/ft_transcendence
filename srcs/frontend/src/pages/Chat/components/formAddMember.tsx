@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSocket } from "../../../contexts/SocketContext/provider";
 import { useChat } from "../../../contexts/ChatContext/provider";
-import { User, useUser } from "../../../contexts";
+import { User, UserRole, useUser } from "../../../contexts";
 
 type addContactProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -9,8 +9,8 @@ type addContactProps = {
 
 export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
 	const [unknowMembers, setUnknownMembers] = useState<User[]>([]);
+	const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 	const { allUsers, members, addRoomUser } = useChat();
-	const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 	const { socket } = useSocket();
 	const { user } = useUser();
 	const { room } = useChat();
@@ -23,24 +23,33 @@ export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
 		setUnknownMembers(filteredUsers);
 	},[allUsers])
 
-	const handleCheckBoxChange = (userName: string, isChecked: boolean) => {
+	const handleCheckBoxChange = (user: User, isChecked: boolean) => {
 		if (isChecked) {
-			setSelectedUsers(prev => [...prev, userName])
+			setSelectedUsers(prev => [...prev, user])
 		} else {
-			setSelectedUsers(prev => prev.filter(user => user !== userName))
+			setSelectedUsers(prev => prev.filter(selectedUser => selectedUser.userName !== user.userName))
 		}
 	};
 
   const handleSubmit = async(e: React.FormEvent) => {
 		e.preventDefault();
 		
-		for (const userName of selectedUsers) {
-			socket.emit('memberInvite', { userName: userName, roomName: room.roomName })
-			// await addRoomUser(room.roomName, userName);
-		};
+		for (const selectedUser of selectedUsers) {
+			const newRoomUser = await addRoomUser({
+				roomName: room.roomName,
+				userName: selectedUser.userName,
+				userRole: UserRole.MEMBER,
+			});
 
-		// socket.emit('memberInvite', selectedUsers);
-		// socket.emit('memberUpdate', room.roomName);
+			socket.emit('roomInvite', {
+				...newRoomUser,
+				intraId: selectedUser.intraId, 
+				// roomName: room.roomName,
+				// userName: selectedUser.userName,
+				// userRole: UserRole.MEMBER,
+			});
+		};
+		
 		setPopupVisibility(false);
   }
 
@@ -52,12 +61,15 @@ export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
 			</button>
       {unknowMembers.map((user, index) => (
         <div key={index}>
-					<p className={`roomListBtn ${user.status === 'online' ? 'online' : 'offline'}`}>
-						<input
-							type="checkbox"
-							onChange={(e) => handleCheckBoxChange(user.userName, e.target.checked)}
-						/>
-						{user.userName}
+					<p className={`${user.status === 'online' ? 'online' : 'offline'}`}>
+						<label className="roomListBtn">
+						<img src={user.avatar} className="image" style={{margin:0,width:30, height:25, borderRadius:20}}/>
+							{user.userName}
+							<input
+								type="checkbox"
+								onChange={(e) => handleCheckBoxChange(user, e.target.checked)}
+							/>
+						</label>
 					</p>
         </div>
       ))}

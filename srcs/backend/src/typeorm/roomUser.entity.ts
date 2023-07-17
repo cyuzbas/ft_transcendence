@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "../typeorm/user.entity";
-import { RoomEntity, RoomType } from "./room.entity";
+import { RoomEntity } from "./room.entity";
 
 export enum UserRole {
     OWNER = 'owner',
@@ -13,9 +13,6 @@ export class RoomUserEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
-
-    // @Column() //can keep for joining?
-    // roomId: number;
 
     @Column()
     userRole: UserRole;
@@ -32,15 +29,15 @@ export class RoomUserEntity {
     @Column({ default: false })
     isMuted: boolean;
 
+    @Column({ nullable: true })
+    muteEndTime: Date;
+
     @ManyToOne(() => UserEntity, user => user.roomLinks, {onDelete: 'CASCADE'})
     user: UserEntity;
 
     @ManyToOne(() => RoomEntity, room => room.userLinks, {onDelete: 'CASCADE'})
     room: RoomEntity;
 
-    @ManyToOne(() => UserEntity, user => user.contactLinks, { 
-        nullable: true,
-        // onDelete: 'CASCADE'
-    })
+    @ManyToOne(() => UserEntity, user => user.contactLinks, { nullable: true })
     contact: UserEntity;
 }

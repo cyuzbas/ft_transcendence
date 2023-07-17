@@ -24,11 +24,14 @@ export class RoomEntity {
 
 	@Column()
 	roomName: string;
-
+	
 	@Column()
 	type: RoomType;
 
-	@Column({ nullable: true})
+	@Column({ nullable: true })
+	description: string;
+
+	@Column({ nullable: true })
 	password: string;
 
 	@OneToMany(() => MessageEntity, (message) => message.room)

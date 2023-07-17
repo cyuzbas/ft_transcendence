@@ -1,10 +1,11 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { Room, RoomType } from "../../../contexts/ChatContext/types"
+import { Room, RoomType, UserRole } from "../../../contexts/ChatContext/types"
 import { ClickableList } from "./clickableList"
 import { useChat } from "../../../contexts/ChatContext/provider"
 import { useUser } from "../../../contexts"
 import { useSocket } from "../../../contexts/SocketContext"
+import { Prompt } from "./prompt"
 
 type Props = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -14,32 +15,60 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
     const [joinableRooms, setJoinableRooms] = useState<Room[]>([]);
     const [selectedRoom, setSelectedRoom] = useState<Room>();
     const [isProtected, setIsProtected] = useState<boolean>(false);
+    const [prompt, setPrompt] = useState<boolean>(false);
+    const [promptText, setPromptText] = useState<string>('');
     const [value, setValue] = useState<string>('')
-    const { setRoom, chatRooms, setChatRooms, fetchAllPublicRooms, addRoomUser } = useChat();
+    const { setRoom, myRooms, setMyRooms, fetchPublicRooms, publicRooms, addRoomUser, updateRoomUser } = useChat();
     const { user } = useUser();
     const { socket, URL } = useSocket();
         
-    useEffect(() => { // do same as contact with gateway?
-        const getJoinableRooms = async() => {
-            const allPublicRooms = await fetchAllPublicRooms();
-            const filteredRooms = allPublicRooms
-                .filter(room => !chatRooms.some(userRoom => userRoom.roomName === room.roomName))
+    useEffect(() => {
+        fetchPublicRooms();
+    }, [])
+
+    useEffect(() => { // do with gateway?
+        const getJoinableRooms = () => {
+            const filteredRooms = publicRooms.filter(publicRoom => {
+                const myRoom = myRooms.find(myRoom => myRoom.roomName === publicRoom.roomName);
+                if (!myRoom) {
+                    return true;
+                } else {
+                    return myRoom.isBanned// || myRoom.isKicked;
+                }
+            });
             setJoinableRooms(filteredRooms);
         };
     	getJoinableRooms();
-    },[])
+    },[publicRooms, myRooms])
 
     const joinRoom = async(room: Room) => {
-        const newRoomUser = await addRoomUser(room.roomName, user.userName);
+        const newRoomUser = await addRoomUser({
+            roomName: room.roomName, 
+            userName: user.userName, 
+            userRole: UserRole.MEMBER,
+        });
+        
         if (newRoomUser) {
+            if (newRoomUser.isBanned) {
+                setPromptText('You are banned from this channel');
+                setPrompt(true);
+                return
+            } 
+            // else if (newRoomUser.isKicked) {
+            //     await updateRoomUser({
+            //         ...user,
+            //         ...newRoomUser,
+            //         isKicked: false,
+            //     }, room.roomName);
+            //     setRoom({...newRoomUser, isKicked: false});
+            //     // socket.emit('joinRoom', room.roomName);
+            //     setPopupVisibility(false);
+            //     return
+            // }
+			setMyRooms(prev => [...prev, newRoomUser]);
             setRoom(newRoomUser);
+            socket.emit('joinRoom', room.roomName);
         }
-        // setRoom(response.data);
-
-        // const newRoomUser = await addRoomUser(room.roomName, user.userName);
-        // setChatRooms(prevRooms => [...prevRooms, newRoomUser]);
-        // setRoom(newRoomUser);
-        // socket.emit('joinRoom', room.roomName)
         setPopupVisibility(false);
     }
 
@@ -57,7 +86,7 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         if (selectedRoom) {
             const response = await axios.post(`${URL}/chat/password`, {
                 roomName: selectedRoom.roomName,
-                type: RoomType.PROTECTED, // is necessary for RoomDto, make another for this?
+                type: RoomType.PROTECTED,
                 password: value
             })
             if (response.data === false) {
@@ -74,7 +103,10 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
             Join existing channel
             <ClickableList
                 items={joinableRooms}
-                renderItem={room => <p className="roomListBtn">{room.roomName} - {room.type}</p>}
+                renderItem={room => 
+                    <p className="roomListBtn">
+                        {room.roomName} - {room.type}
+                    </p>}
                 onClickItem={room => handleRoomListClick(room)}
             />
             {isProtected && 
@@ -86,6 +118,12 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
                         />
                     <button>SUBMIT</button>
                 </form>
+            }
+            {prompt &&
+                <Prompt
+                    promptText={promptText}
+                    setPrompt={setPrompt}
+                />
             }
         </>
     )

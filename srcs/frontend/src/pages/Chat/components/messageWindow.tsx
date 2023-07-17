@@ -8,23 +8,26 @@ export const MessageWindow = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const { socket } = useSocket();
   const { user } = useUser();
-  const { room, blocked, messages, setMessages, handleUnreadMessage, dmRooms, chatRooms } = useChat();
+  const { room, blocked, messages, setMessages, handleUnreadMessage, myRooms } = useChat();
 
   useEffect(() => {
     const onMessage = (newMessage: Message) => {
       const isBlocked = blocked
         .some(blocked => blocked.userName === newMessage.userName);
-      if (!isBlocked && newMessage.roomName === room.roomName) {
-        setMessages(prevMessages => [...prevMessages, newMessage]);
-      } else {
-        handleUnreadMessage(newMessage.roomName);
-      }
+      if (!isBlocked) {
+        if (newMessage.roomName === room.roomName) {
+          setMessages(prevMessages => [...prevMessages, newMessage]);
+        } else {
+          handleUnreadMessage(newMessage.roomName);
+        }
+      } 
     };
+
     socket.on('onMessage', onMessage);
     return () => {
       socket.off('onMessage');
     }
-  }, [room, socket, user, blocked, dmRooms, chatRooms])
+  }, [room, myRooms, blocked])
 
   useEffect(() => {
       lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });

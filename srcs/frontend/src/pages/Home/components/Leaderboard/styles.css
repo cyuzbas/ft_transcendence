@@ -1,13 +1,12 @@
-
-.Friend-UsersSection {
+.LeaderBoardSection {
 	height: 100%;
 	width: 100%;
 	position: relative;
-	padding: 5px;
+	padding: 15px;
 	overflow: hidden;
 }
 
-.button-box {
+.title-box {
 	width: 250px;
 	margin: 15px auto;
 	position: relative;
@@ -17,61 +16,30 @@
 }
 
 
-.toggle-button {
+.LeaderBoardTitle {
 	padding: 10px 30px;
-	cursor: pointer;
 	background: transparent;
 	border: 0;
 	position: relative;
+	color: rgb(43, 45, 46);
+	text-align: center;
+	font-weight: 500;
 }
 
-
-#btn-color {
-	top: 0;
-	left: 0;
-	position: absolute;
-	width: 50%;
-	height: 100%;
-	background: linear-gradient(to right, #396478,rgb(228, 234, 234));
-	border-radius: 30px ;
-	transition: 0.5s;
-}
-
-#friends-btn-color {
-	top: 0;
-	left: 0;
-	position: absolute;
-	width: 50%;
-	height: 100%;
-	background: linear-gradient(to right, #396478,rgb(228, 234, 234));
-	border-radius: 30px ;
-	transition: 0.5s;
-	left: 125px;
-}
-
-#btn-color {
-	top: 0;
-	left: 0;
-	position: absolute;
-	width: 125px;
-	height: 100%;
-	background: linear-gradient(to right, #396478,rgb(228, 234, 234));
-	border-radius: 30px ;
-	transition: 0.5s;
-}
-
-.UsersSection{
+.UserScoreSection{
+	padding-top: 20px;
 	height: 100%;
 	overflow-x: scroll;
 	top: 110px;
 	position: absolute;
-	width: 80%;
+	width: 100%;
 	transition: 0.5s;
+	/* background-color: antiquewhite; */
 }
 
-.fake-all-users{
-	margin: 20px;
-	width: 100%;
+.UserScores{
+	margin: 10px;
+	width: 87%;
 	background: transparent;
 
     height: 60px;

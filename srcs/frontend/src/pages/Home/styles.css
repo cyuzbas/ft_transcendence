@@ -28,20 +28,8 @@
     grid-area: label0;
     display: flex;
     flex-direction: row;
-    /* justify-content: center; */
     align-items: center;
 
-    /* display: grid; 
-
-   grid-template-rows: 1fr 1fr;
-   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-   
-   grid-template-areas: 
-	'profile0 profile0 profile1 profile2 profile2 profile2'
-	'profile0 profile0 profile1 profile2 profile2 profile2';
-
-   gap: 0px;
-   height: 100%; */
  }
 
  .FriendSection {
@@ -67,8 +55,6 @@
     align-items: center;
     padding-left: 30px;
     padding-right: 30px;
-    /* grid-area: profile0; */
-    /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); */
  }
 
  .imageClass {
@@ -165,7 +151,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* border-bottom: 2px dashed rgb(53, 67, 75); */
+    /* border-bottom: 2px dashed rgb(109, 164, 196); */
     /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); */
     
  }

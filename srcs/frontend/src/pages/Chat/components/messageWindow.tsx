@@ -8,7 +8,7 @@ export const MessageWindow = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const { socket } = useSocket();
   const { user } = useUser();
-  const { room, blocked, messages, setMessages, handleUnreadMessage, myRooms } = useChat();
+  const { room, blocked, messages, setMessages, updateRoomUser, myRooms } = useChat();
 
   useEffect(() => {
     const onMessage = (newMessage: Message) => {
@@ -18,7 +18,17 @@ export const MessageWindow = () => {
         if (newMessage.roomName === room.roomName) {
           setMessages(prevMessages => [...prevMessages, newMessage]);
         } else {
-          handleUnreadMessage(newMessage.roomName);
+          const foundRoom = myRooms.find(room => room.roomName === newMessage.roomName);
+          if (foundRoom) {
+            // console.log(foundRoom)
+            // const { contactName, ...room } = foundRoom;
+            updateRoomUser({
+              ...user,
+              ...foundRoom,
+              unreadMessages: foundRoom.unreadMessages + 1,
+            }, newMessage.roomName);
+          }
+          // handleUnreadMessage(newMessage.roomName);
         }
       } 
     };

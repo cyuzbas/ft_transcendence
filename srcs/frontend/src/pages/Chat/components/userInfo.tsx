@@ -4,6 +4,8 @@ import { useUser } from "../../../contexts";
 import { useSetupDmConversation } from "./hookSetupDm";
 import { BlockButton } from "./buttonBlock";
 import { useEffect } from "react";
+import { MdKeyboardReturn } from "react-icons/md"
+import { BsChatRightText } from "react-icons/bs"
 
 type Props = {
   selectedMember: Member | null,
@@ -39,29 +41,27 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 
 	return (
 		<>
-			User Information
 			{room.type !== RoomType.DIRECTMESSAGE &&
-        <button onClick={() => setSelectedMember(null)}>
-					back
+        <button className="iconBtn" onClick={() => setSelectedMember(null)}>
+					<MdKeyboardReturn size="2em"/>
 				</button>
 			}
-			<div>
-					{selectedMember?.userName}
-			</div>
+			<div />
 			{selectedMember &&
-			<img src={selectedMember.avatar} className="image" style={{margin:5,width:200, height:150, borderRadius:20}}/>
+			<img src={selectedMember.avatar} style={{margin:10,width:190, height:150, borderRadius:10}}/>
 			}
+			<div />
 			{selectedMember && 
 				selectedMember.userName !== user.userName &&
-				<div>
-					<BlockButton member={selectedMember}/>
-				</div>
+				<BlockButton member={selectedMember}/>
 			}
+			{selectedMember?.userName}
 			{selectedMember 
 				&& selectedMember.userName !== user.userName 
 				&& room.type !== RoomType.DIRECTMESSAGE 
-				&& <button onClick={() => openConversation(selectedMember)}>
-						open conversation
+				&& <button className="iconBtn" onClick={() => openConversation(selectedMember)}>
+					<BsChatRightText size="2em"/>
+						message
 					</button>
 			}
 		</>

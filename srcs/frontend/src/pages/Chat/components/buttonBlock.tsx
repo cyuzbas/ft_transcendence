@@ -1,5 +1,8 @@
 import { User } from "../../../contexts";
 import { useChat } from "../../../contexts/ChatContext";
+import { MdBlock, MdBlockFlipped } from "react-icons/md"
+import { SiAdblock } from "react-icons/si"
+
 
 export const BlockButton: React.FC<{ member: User }> = ({ member }) => {
 	const { blocked, handleBlock } = useChat();
@@ -14,7 +17,13 @@ export const BlockButton: React.FC<{ member: User }> = ({ member }) => {
 	
 	return (
 		isBlocked 
-		? <button onClick={(e) => handleClick(e, member, "unblock")}>UNBLOCK</button> 
-		: <button onClick={(e) => handleClick(e, member, "block")}>BLOCK</button>
+		? <button className="iconBtn unblockBtn" color="red" onClick={(e) => handleClick(e, member, "unblock")}>
+				{/* <SiAdblock size="2em" /> */}
+				<MdBlock size="1.5em" />
+			</button> 
+		: <button className="iconBtn blockBtn" onClick={(e) => handleClick(e, member, "block")}>
+				{/* <SiAdblock size="2em" color="black"/>  */}
+				<MdBlockFlipped size="1.5em" color="black"/> 
+			</button>
 	)
 }

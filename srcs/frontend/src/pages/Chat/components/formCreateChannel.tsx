@@ -3,6 +3,8 @@ import { RoomType, UserRole } from "../../../contexts/ChatContext/types";
 import { useChat } from "../../../contexts/ChatContext/provider";
 import { useUser } from "../../../contexts";
 import { useSocket } from "../../../contexts/SocketContext";
+import { AiOutlineClose } from "react-icons/ai"
+
 
 type createChannelProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -31,6 +33,7 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 			roomName: roomName, 
 			userName: user.userName, 
 			userRole: UserRole.OWNER,
+			contactName: null,
 		});
 
 		if (newRoomUser) {
@@ -44,43 +47,56 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 	
 	return (
 		<>
-			<form onSubmit={handleSubmit}>
-				Create New Channel 
-				<button 
+			<form className="createChannel-form" onSubmit={handleSubmit}>
+				<h4 className="formTitle">
+					Create New Channel 
+					</h4>
+				<button className="iconBtn formCloseBtn"
 					type="button" 
 					onClick={() => setPopupVisibility(false)}>
-					X
+					<AiOutlineClose size="2em"/>
 				</button>
 				<div>
-					<label htmlFor="type">Type</label>
-						<select id="type" onChange={(e) => setType(e.target.value as RoomType)}>
+					{/* <label htmlFor="type">Type</label> */}
+						<select className="form-input" id="type" onChange={(e) => setType(e.target.value as RoomType)}>
+							<option value="" disabled selected>Select type</option>
 							<option value={RoomType.PUBLIC}>public</option>
 							<option value={RoomType.PRIVATE}>private</option>
 							<option value={RoomType.PROTECTED}>protected</option>
 					</select>
 				</div>
-				<div className="popup-input">
+				<div >
+					<p>
+						Channel Name
+						</p>
 					<input
-						placeholder="name" 
+						required
+						placeholder="Enter Name" 
 						value={roomName}
 						onChange={(e) => setRoomName(e.target.value)}/> 
 				</div>
 				<div>
+					<p>
+						Description
+						</p>
 					<textarea 
 						rows={4}
-						placeholder="optional: description"
+						placeholder="Enter Description: optional"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}/>
 				</div>
 				{type === 'protected' && (
 					<div>
 						<input 
-							placeholder="password"
+							required
+							placeholder="Enter Password"
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}/>
 					</div>
 				)}
-				<button type="submit">CREATE</button>
+				<button className="formBtn" type="submit">
+					CREATE
+				</button>
 			</form>
 		</>
 	)

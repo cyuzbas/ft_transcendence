@@ -109,18 +109,22 @@ export class ChatService {
 		if (roomUser && !roomUser.isBanned) {
 			return
 		} else if (!roomUser) {
-			const [room, user1, user2] = await Promise.all([
+			const [room, user1] = await Promise.all([
 				this.roomRepository.findOne({ where: {roomName: newRoomUser.roomName} }),
 				this.userRepository.findOne({ where: {userName: newRoomUser.userName} }),
-				this.userRepository.findOne({ where: {userName: newRoomUser.contactName} }),
 			]);
-	
+			let user2 = null;
+			if(newRoomUser.contactName) {
+				user2 = await this.userRepository.findOne({ where: {userName: newRoomUser.contactName} });
+			}
+			
 			roomUser = this.roomUserRepository.create({
 				userRole: newRoomUser.userRole,
 				user: user1,
 				room: room,
 				contact: user2,
 			});
+			// console.log(newRoomUser.contactName, user2, roomUser)
 
 			await this.roomUserRepository.save(roomUser);
 		}
@@ -217,14 +221,14 @@ export class ChatService {
 		roomUser.muteEndTime = updatedRoomUser.muteEndTime;
 
 		await this.roomUserRepository.save(roomUser);
-		// console.log(roomUser)
-		const { roomId, roomName, type } = roomUser.room;
+		// const { roomId, roomName, type } = roomUser.room;
 		const { unreadMessages, userRole, isBanned, isKicked, isMuted, muteEndTime } = roomUser;
 
 		return {
-			roomId,
-			roomName,
-			type,
+			// roomId,
+			// roomName,
+			// type,
+			...updatedRoomUser,
 			unreadMessages,
 			userRole,
 			isBanned,

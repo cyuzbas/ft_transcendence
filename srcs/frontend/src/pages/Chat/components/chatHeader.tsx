@@ -1,6 +1,8 @@
 import { RoomUser, GENERAL_CHAT, RoomType } from "../../../contexts/ChatContext/types";
 import { useChat } from "../../../contexts/ChatContext/provider";
 import { useUser } from "../../../contexts";
+import { RiSettings3Line } from "react-icons/ri";
+
 
 type Props = {
 	expanded: boolean,

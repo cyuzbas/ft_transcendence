@@ -7,14 +7,8 @@
   font-family: 'Poppins', sans-serif;
 }
 
-p {
-  /* display: flex; */
-  /* align-items: center; */
-}
-
 html {
   background: white;
-  /* background: linear-gradient(to right, rgb(130, 130, 238), purple); */
 }
 
 .online {
@@ -24,11 +18,6 @@ html {
 .offline {
   color: red;
 }
-
-/* #chat-grid {
-  display: grid;
-  place-items: center center;
-} */
 
 #chat-grid-expanded {
   display: grid;
@@ -66,20 +55,57 @@ html {
   position: fixed;
   top: 50%;
   left: 50%;
+  height: 70%;
+  width: 25%;
   transform: translate(-50%, -50%);
   background: #fff;
-  padding: 20px;
-  border: 1px solid #ccc;
+  padding: 35px;
+  border: 1px solid #b9ddf2;
   /* z-index: 999; */
 }
 
-.popup-input {
+
+
+.channel-popup {
+  display: grid;
+  /* grid-template-rows: 1fr 1fr; */
+  position: fixed;
+  /* position: relative; */
+  top: 50%;
+  left: 50%;
+  height: 75%;
+  width: 30%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 45px;
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+  /* align-content: center; */
+  z-index: 999;
+  
+}
+
+.channel-popup input,
+.channel-popup textarea,
+.channel-popup select {
+  /* border-color: #dbe7db; */
+  border-color: lightgrey;
   width: 100%;
-  margin-bottom: 10px;
+  box-sizing: border-box;
+  margin: 3px;
+  padding: 5px;
+}
+
+.createChannel-form div > p {
+  font-weight: bold;
+  color: rgb(96, 95, 95);
+  /* font-size: 5px; */
+
 }
 
 #chat-right-sidebar {
   background: rgba(245, 243, 246, 0.588);
+  padding: 15px;
 }
 
 #chat-body {
@@ -103,14 +129,34 @@ html {
 #chat-footer {
   /* width: 100%; */
   background: rgba(128, 128, 128, 0.266);
+  /* background: red; */
 }
 
-.form {
+.formMessageInput {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  justify-content: center;
+}
+
+.formCloseBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.formBtn {
+  color: white;
+  background-color: rgb(7, 181, 111);
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 20%;
 }
 
 .message-input {
@@ -121,6 +167,10 @@ html {
   /* outline: none; */
   padding: 15px;
 }
+
+/* .form-input {
+  width: 80%;
+} */
 
 .sendBtn {
   width: 20%;
@@ -181,21 +231,59 @@ html {
   cursor: pointer;
 }
 
+.roomJoinList {
+  /* margin-left: 15px; */
+  /* display: flex; */
+  cursor: pointer;
+  /* height: 150px; */
+  overflow-y: auto;
+
+  /* border: 1px solid lightgrey; */
+  background-color: rgb(249, 244, 244);
+}
+
 .roomList {
   /* display: flex; */
   align-items: center;
   padding: 1px;
   margin-left: 15px;
+  /* height: 50%; */
   /* color: #0f0e0c; */
   cursor: pointer;
+  /* overflow-y: auto; */
+
 }
 
 .roomList:hover {
   background-color: rgb(226, 222, 222);
 }
 
+.iconBtn {
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  background-color: transparent;
+}
+
+.blockBtn {
+  color: black;
+}
+
+/* .blockBtn:hover {
+  color: red;
+} */
+
+.unblockBtn {
+  color: red;
+}
+
+/* .unblockBtn:hover {
+  color: black;
+} */
+
 .memberList {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 3fr 5fr 1fr;
   align-items: center;
   padding: 3px;
   margin-left: 15px;
@@ -214,4 +302,349 @@ html {
   cursor: pointer;
   color: #eae3d2;
   float: right;
+}
+
+.online-dot {
+  height: 7px;
+  width: 7px;
+  background-color: #04fc04;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.offline-dot {
+  height: 7px;
+  width: 7px;
+  background-color: #ff0000;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.profile-img {
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* align-items: center; */
+}
+
+.avatar-status-wrapper {
+  position: relative;
+  display: inline-block; /* So the wrapper only takes up as much space as its content */
+}
+
+.online-dot, .offline-dot {
+  position: absolute;
+  bottom: 10px;
+  left: 14px;
+  border: 1px solid #ffffff;
+}
+
+.online-dot-big, .offline-dot-big {
+  position: absolute;
+  bottom: 4px;
+  left: 24px;
+  border: 1px solid #ffffff;
+}
+.online-dot-big {
+  height: 11px;
+  width: 11px;
+  background-color: #04fc04;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.offline-dot-big {
+  height: 11px;
+  width: 11px;
+  background-color: #ff0000;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+
+/* .roominfo {
+  display: grid;
+  grid-template-rows: 1fr 5fr 5fr;
+} */
+.userList {
+  /* margin-left: 15px; */
+  cursor: pointer;
+  height: 150px;
+  overflow-y: auto;
+  border: 1px solid #6d7172;
+  background-color: #f1f8fc;
+}
+
+.user-row {
+  display: flex;
+  align-items: center; /* This will align the items vertically in the center */
+  gap: 10px; /* This will add some spacing between the items */
+  /* background-color: linear-gradient(to right, white rgb(23, 149, 191)); */
+  border: 1px solid rgb(172, 189, 196);;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 25px;
+  margin-bottom: 5px;
+}
+
+.user-row:hover {
+  background-color: rgb(172, 189, 196);
+}
+
+.selected {
+  background-color: rgb(172, 189, 196);
+}
+
+.user-avatar {
+  margin: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.user-status {
+  font-size: xx-large;
+  flex-grow: 1; /* This will allow the username to take up remaining space */
+}
+
+.user-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 70%;
+  width: 25%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 45px;
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+  z-index: 999;
+}
+
+.createChannel-form {
+  margin-bottom: 25px;
+  /* border-bottom: 1px solid lightgrey; */
+  /* position: absolute; */
+}
+
+.formTitle {
+  color: rgb(96, 95, 95);
+  margin-top: 10px;
+  /* border-bottom: 1px solid lightgrey; */
+  position: absolute;
+  top: 0;
+  left: 1;
+  font-size: 22px;
+}
+
+.formTitleMember {
+  color: rgb(96, 95, 95);
+  margin-bottom: 5px;
+  /* border-bottom: 1px solid lightgrey; */
+  position: absolute;
+  top: 0;
+  left: 1;
+  font-size: 22px;
+}
+
+.formTitle {
+  color: rgb(96, 95, 95);
+  margin-bottom: 5px;
+  /* border-bottom: 1px solid lightgrey; */
+  position: absolute;
+  top: 0;
+  left: 1;
+  font-size: 22px;
+}
+
+.formTitleJoin {
+  color: rgb(96, 95, 95);
+  margin-bottom: 5px;
+  /* border-bottom: 1px solid lightgrey; */
+  /* position: absolute;
+  top: 6;
+  left: 1; */
+  font-size: 22px;
+}
+
+.plusBtn {
+  border: none;
+  /* border: 1px solid; */
+  font-size: 20px;
+  background-color: transparent;
+  /* border-color: rgb(7, 181, 111); */
+  /* padding: 5px; */
+  padding-left: 7px;
+  padding-right: 7px;
+  cursor: pointer;
+  margin-left: 5px;
+  border-radius: 5px;
+
+}
+
+.plusBtn:hover {
+  color: white;
+  background-color: rgb(7, 181, 111);
+}
+
+.owner {
+  color: gold;
+  background-color: grey;
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 12px;
+}
+
+.admin {
+  /* color:  royalblue; */
+  color:  rgb(7, 181, 111);
+  background-color: grey;
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 12px;
+}
+
+.banned-popup {
+  display: flex;
+  position: fixed;
+  border: 4px solid red;
+  border-radius: 5px;
+  background-color: white;
+  top: 20%;
+  left: 50%;
+  height: 25%;
+  width: 120%;
+  padding-left: 20px;
+  transform: translate(-50%, -50%);
+  align-items: center;
+}
+
+/* .bannedBtn {
+  color: red;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+} */
+
+.banned-popup-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.unread {
+  /* display: flex; */
+  height: 12px;
+  width: 16px;
+  align-items: right;
+  margin-left: 4px;
+  
+  border: 1px solid black;
+  background-color: black;
+  color: white;
+  padding-left: 2px;
+  padding-right: 5px;
+  border-radius: 100px;
+  font-size: 12px;
+}
+
+.formBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* high value to ensure it appears above other elements */
+}
+
+.iconContainer {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .iconContainer .line-through {
+  position: absolute;
+  width: 100%;
+  height: 1.5px; /* Adjust thickness as needed 
+} 
+*/
+
+/* .iconContainer .line1 {
+  transform: rotate(45deg);
+} */
+
+/* .iconContainer .line2 {
+  transform: rotate(-45deg);
+} */
+
+.editPassword {
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: space-between; */
+  /* width: 100%; */
+  /* padding: 5px; */
+}
+
+.editPassword > input {
+  /* height: 100%; */
+  width: 50%;
+  border-color: lightgrey;
+  padding: 5px;
+  margin-left: 10px;
+}
+
+.formPasswordBtn {
+  color: white;
+  background-color: rgb(7, 181, 111);
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: none;
+  /* border-radius: 5px; */
+  cursor: pointer;
+  width: 20%;
+
+}
+
+/* .editPassword > button {
+  border-radius: none;
+} */
+
+.successMessage {
+  margin-left: 10px;
+  padding: 7px;
+  font-size: 14px;
+  align-items: center;
+  color:  rgb(7, 181, 111);
+  animation: fadeIn 1s;
+  /* animation: fadeOut 1s; */
+  /* opacity: 0;
+  transition: opacity 1s ease-in-out; */
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.mutedText {
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  color: white;
+  font-size: 30px;
 }

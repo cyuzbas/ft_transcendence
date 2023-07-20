@@ -22,7 +22,7 @@ export type ChatContextValue = {
     removeRoomUser: (roomName: string, userName: string, intraId: string) => Promise<void>,
     updateRoomUser: (updatedRoomUser: Member, roomName: string) => Promise<void>,
     updateRoom: (updatedRoom: Room) => Promise<void>,
-    handleUnreadMessage: (roomName: string) => Promise<void>,
+    // handleUnreadMessage: (roomName: string) => Promise<void>,
     handleBlock: (member: User, blockAction: string) => Promise<void>,
 };
 
@@ -48,18 +48,11 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             return
         } 
 
-        function onUserUpdate(users: User[]) {
-            users.sort((a, b) =>  a.userName.localeCompare(b.userName));
-            setAllUsers(users);
-            socket.emit('memberUpdate', room.roomName);
-        };
-
         function onRoomInvite(newRoomUser: RoomUser) {
             setMyRooms(prev => [...prev, newRoomUser]);
             socket.emit('joinRoom', newRoomUser.roomName);
         };
       
-        socket.on('onUserUpdate', onUserUpdate);
         socket.on('onRoomInvite', onRoomInvite);
         socket.emit('userUpdate');
 
@@ -67,26 +60,41 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         fetchBlocked();
 
         return () => {
-            socket.off('onUserUpdate');
             socket.off('onRoomInvite');
         }
     }, [user]);
 
     
     useEffect(() => {
+        function onUserUpdate(users: User[]) {
+            users.sort((a, b) =>  a.userName.localeCompare(b.userName));
+            setAllUsers(users);
+            socket.emit('memberUpdate', room.roomName);
+        };
+
         function onMemberUpdate(roomName: string) {
             if (roomName === room.roomName) {
                 fetchMembers();
             }
         };
     
+        socket.on('onUserUpdate', onUserUpdate);
         socket.on('onMemberUpdate', onMemberUpdate);
+        
+        console.log(room)
+        if (room.unreadMessages > 0) {
+            updateRoomUser({
+                ...user,
+                ...room,
+                unreadMessages: 0,
+            }, room.roomName)
+            // clearUnreadMessages();
+        }
         
         fetchMembers();
         fetchMessages();
-        clearUnreadMessages();
-        console.log(room)
         return () => {
+            socket.off('onUserUpdate');
             socket.off('onMemberUpdate');
         }
     }, [room])
@@ -108,6 +116,8 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         };
 
         function onRoomUserUpdate(updatedRoomUser: RoomUser) {
+            // console.log(updatedRoomUser)
+
             if (updatedRoomUser.roomName === room.roomName) {
                 if (updatedRoomUser.isBanned) {
                     setRoom(GENERAL_CHAT);
@@ -245,7 +255,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
                 ...updatedMember, 
                 roomName
             });
-            socket.emit('memberUpdate', room.roomName); //not for unreadmessages
+            // socket.emit('memberUpdate', room.roomName); //not for unreadmessages
             socket.emit('roomUserUpdate', {
                 ...response.data,
                 intraId: updatedMember.intraId,
@@ -279,26 +289,32 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         }
     };
 
-    const handleUnreadMessage = async(roomName: string) => {
-        const foundRoom = myRooms.find(room => room.roomName === roomName);
-        if (foundRoom) {
-            // updateRoomUser API call
-            setMyRooms(prevRooms =>
-                prevRooms.map(room =>
-                    room.roomName === foundRoom.roomName
-                    ? { ...room, unreadMessages: room.unreadMessages + 1 }
-                    : room
-                )
-            );
-        }
-    };
+    // const handleUnreadMessage = async(roomName: string) => {
+    //     const foundRoom = myRooms.find(room => room.roomName === roomName);
+    //     if (foundRoom) {
+    //         // updateRoomUser
+    //         // updateRoomUser API call
+    //         setMyRooms(prevRooms =>
+    //             prevRooms.map(room =>
+    //                 room.roomName === foundRoom.roomName
+    //                 ? { ...room, unreadMessages: room.unreadMessages + 1 }
+    //                 : room
+    //             )
+    //         );
+    //     }
+    // };
 
-    const clearUnreadMessages = () => { //also api call to clear
+    // const clearUnreadMessages = () => { //also api call to clear
         // if (room) {
 
-            room.unreadMessages = 0;
+            // room.unreadMessages = 0;
         // }
-    }
+        // updateRoomUser({
+        //     ...user,
+        //     ...room,
+        //     unreadMessages: 0,
+        // }, room.roomName);
+    // }
     
     // function onRoom
     // socket.on('onRoomUpdate', onRoomUpdate);
@@ -321,7 +337,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         removeRoomUser,
         updateRoomUser,
         updateRoom,
-        handleUnreadMessage,
+        // handleUnreadMessage,
         handleBlock,
 	};
     

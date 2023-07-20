@@ -1,20 +1,29 @@
 import { Member, useChat } from "../../../contexts/ChatContext"
+import { BiSolidUserX, BiSolidUserCheck } from "react-icons/bi"
+import { useSocket } from "../../../contexts/SocketContext";
 
 export const BanButton: React.FC<{ member: Member }> = ({ member }) => {
   const { room, updateRoomUser } = useChat();
+  const { socket } = useSocket();
 
-  function handleClick(e: React.MouseEvent, member: Member, banAction: boolean) {
+  async function handleClick(e: React.MouseEvent, member: Member, banAction: boolean) {
     e.stopPropagation();
 
-    updateRoomUser({
+    await updateRoomUser({
       ...member,
       isBanned: banAction,
     }, room.roomName);
+    socket.emit('memberUpdate', room.roomName); //not for unreadmessages
+
   };
 
   return(
     member.isBanned 
-    ? <button onClick={(e) => handleClick(e, member, false)}>UNBAN</button>
-    : <button onClick={(e) => handleClick(e, member, true)}>BAN</button>
+    ? <button className="iconBtn" onClick={(e) => handleClick(e, member, false)}>
+        <BiSolidUserCheck size="2em" color="green" />
+      </button>
+    : <button className="iconBtn" onClick={(e) => handleClick(e, member, true)}>
+        <BiSolidUserX size="2em" color="red" />
+      </button>
   )
 }

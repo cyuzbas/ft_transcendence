@@ -55,7 +55,7 @@ export type NewRoomUser = {
 	userName: string,
 	userRole: UserRole,
 	intraId?: string,
-	contactName?: string,
+	contactName?: string | null,
 };
 
 export type RoomUser = Room & UserDetails;

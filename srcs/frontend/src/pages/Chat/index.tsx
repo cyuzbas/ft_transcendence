@@ -11,6 +11,7 @@ import { UserInfo } from "./components/userInfo";
 import { Member, RoomType } from '../../contexts/ChatContext/types';
 import { ChatProvider, useChat } from '../../contexts/ChatContext/provider';
 import { useEffect } from 'react';
+import { AiOutlineClose } from "react-icons/ai"
 
 export const Chat = () => {
 	const [expanded, setExpanded] = useState<boolean>(true);
@@ -23,14 +24,7 @@ export const Chat = () => {
 	}, [room])
 
 	if (!isConnected)
-		return <div>not connected</div>
-	
-
-	// console.log(room)
-	// if (!room) {
-	// 	return <div>Loading</div>
-	// }
-	
+		return <div>not connected</div>	
 
 	return (
 		<>
@@ -50,8 +44,8 @@ export const Chat = () => {
 				</div>
 				{expanded &&
 					<div id="chat-right-sidebar">
-						<button onClick={() => setExpanded(false)}>
-							X
+						<button className='iconBtn' onClick={() => setExpanded(false)}>
+							<AiOutlineClose size="1.5em" />
 						</button>
 						{room.type === RoomType.DIRECTMESSAGE || selectedMember ? 
 							<UserInfo

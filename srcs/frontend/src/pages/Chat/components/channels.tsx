@@ -14,18 +14,20 @@ export const Channels = () => {
 			<div>
 				<h3>
 					Channels
-					<button onClick={() => setPopupVisibility(true)}>
+					<button className="plusBtn" onClick={() => setPopupVisibility(true)}>
 						+
 					</button>
 				</h3>
 			{popupVisibility && (
-				<div className="chat-popup">
-					<FormCreateChannel
-						setPopupVisibility={setPopupVisibility}
-					/>
-					<FormJoinChannel
-						setPopupVisibility={setPopupVisibility}
-					/>
+				<div className="formBackdrop" onClick={() => setPopupVisibility(false)}>
+				<div className="channel-popup" onClick={(e) => e.stopPropagation()}>
+						<FormCreateChannel
+							setPopupVisibility={setPopupVisibility}
+						/>
+						<FormJoinChannel
+							setPopupVisibility={setPopupVisibility}
+						/>
+				</div>
 				</div>
 			)}
 			</div>
@@ -37,12 +39,13 @@ export const Channels = () => {
 					? (
 						<p className="roomList">
 							{room.roomName}
-							{
-								room.unreadMessages > 0
-								? room.unreadMessages < 10
-								? ` [${room.unreadMessages}]`
-								: ` [9+]`
-								: ""
+							{room.unreadMessages > 0 &&
+								<span className="unread">
+									{room.unreadMessages < 10
+									? ` ${room.unreadMessages}`
+									: ` 9+`
+									}
+								</span>
 							}
 						</p>
 					)

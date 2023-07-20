@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useSocket } from "../../../contexts/SocketContext/provider";
 import { useChat } from "../../../contexts/ChatContext/provider";
 import { User, UserRole, useUser } from "../../../contexts";
+import { AiOutlineClose } from "react-icons/ai"
+import { ClickableList } from "./clickableList";
+import { AiOutlineUserAdd, AiOutlineCheck } from "react-icons/ai"
 
 type addContactProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -18,18 +21,21 @@ export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
 	useEffect(() => {
 		const filteredUsers = allUsers
 		.filter(users => !members.some(member => member.userName === users.userName))
-		.filter(users => users.userName !== user.userName) // filter out my username in provider?
+		.filter(users => users.userName !== user.userName)
 		
 		setUnknownMembers(filteredUsers);
 	},[allUsers])
 
-	const handleCheckBoxChange = (user: User, isChecked: boolean) => {
-		if (isChecked) {
-			setSelectedUsers(prev => [...prev, user])
-		} else {
+	const isSelected = (user: User) => {
+		return selectedUsers.some(selectedUser => selectedUser.userName === user.userName)
+	}
+
+	const handleSelectChange = (user: User ) => {
+		if (isSelected(user)) {
 			setSelectedUsers(prev => prev.filter(selectedUser => selectedUser.userName !== user.userName))
-		}
-	};
+		} else {
+			setSelectedUsers(prev => [...prev, user])
+		}	};
 
   const handleSubmit = async(e: React.FormEvent) => {
 		e.preventDefault();
@@ -39,14 +45,12 @@ export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
 				roomName: room.roomName,
 				userName: selectedUser.userName,
 				userRole: UserRole.MEMBER,
+				contactName: null,
 			});
 
 			socket.emit('roomInvite', {
 				...newRoomUser,
 				intraId: selectedUser.intraId, 
-				// roomName: room.roomName,
-				// userName: selectedUser.userName,
-				// userRole: UserRole.MEMBER,
 			});
 		};
 		
@@ -54,28 +58,40 @@ export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
   }
 
 	return (
-		<form onSubmit={handleSubmit}>
-			Invite Member
-			<button type="button" onClick={() => setPopupVisibility(false)}>
-				X
+		<div className="formBackdrop" onClick={() => setPopupVisibility(false)}>
+		<form className="user-popup" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
+			<h4 className="formTitle">
+				Invite Member
+			</h4>
+			<button className="iconBtn formCloseBtn"
+					type="button" 
+					onClick={() => setPopupVisibility(false)}>
+					<AiOutlineClose size="2em"/>
 			</button>
-      {unknowMembers.map((user, index) => (
-        <div key={index}>
-					<p className={`${user.status === 'online' ? 'online' : 'offline'}`}>
-						<label className="roomListBtn">
-						<img src={user.avatar} className="image" style={{margin:0,width:30, height:25, borderRadius:20}}/>
+			<ClickableList
+				items={unknowMembers}
+				renderItem={ user =>
+					<p>
+						<label className={`user-row avatar-status-wrapper ${isSelected(user) ? 'selected' : ''}`}>
+							<img src={user.avatar} style={{margin:0,width:50, height:50, borderRadius:50}}/>
+							{user.status === 'online' ?
+							<span className="online-dot-big"></span> :
+							<span className="offline-dot-big"></span>
+							}
 							{user.userName}
-							<input
-								type="checkbox"
-								onChange={(e) => handleCheckBoxChange(user, e.target.checked)}
-							/>
+							{isSelected(user) ? <AiOutlineCheck color="green" /> : null}
 						</label>
 					</p>
-        </div>
-      ))}
+				}
+				onClickItem={user => handleSelectChange(user)}
+			/>
 			<div>
-				<button type="submit">ADD</button>
+				<button className="formBtn" type="submit">
+					ADD
+				</button>
 			</div>
 		</form>
+		</div>
 	)
 }
+

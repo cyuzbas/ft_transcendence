@@ -12,7 +12,7 @@ export const DirectMessages = () => {
         <>
 			<h3>
                 Direct Messages
-                <button onClick={() => setPopupVisibility(true)}>
+                <button className="plusBtn" onClick={() => setPopupVisibility(true)}>
                     + 
                 </button>
             </h3>
@@ -22,15 +22,24 @@ export const DirectMessages = () => {
                     ? (
                         <p className="roomList">
                             {room.contactName}
-                            {room.unreadMessages > 0 && ` [${room.unreadMessages}]`}
+							{room.unreadMessages > 0 &&
+								<span className="unread">
+									{room.unreadMessages < 10
+									? ` ${room.unreadMessages}`
+									: ` 9+`
+									}
+								</span>
+							}
                         </p>
                     ): <></>
                 }
                 onClickItem={room => setRoom(room)}
                 />
             {popupVisibility && (
-                <div className="chat-popup">
-                    <FormAddContact setPopupVisibility={setPopupVisibility} />
+                <div className="formBackdrop" onClick={() => setPopupVisibility(false)}>
+                    <div className="user-popup" onClick={(e) => e.stopPropagation()}>
+                        <FormAddContact setPopupVisibility={setPopupVisibility} />
+                    </div>
                 </div>
 			)}
         </>

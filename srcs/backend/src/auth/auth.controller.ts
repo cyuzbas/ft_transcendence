@@ -17,6 +17,7 @@ export class AuthController {
 	@Get('login')
 	@UseGuards(OAuthGuard)
 	login() {
+
 		return ;
 	}
 
@@ -26,9 +27,9 @@ export class AuthController {
 	@UseGuards(AuthenticatedGuard)
 	async logout(@Req() req, @Res() res) {
 		this.userService.updateLogIn(req.user.userName, false)
+		console.log("logout calisti")
 		req.logout(() => {
-			
-			res.redirect('http://localhost:3000/login'); // Örnek olarak, login sayfasına yönlendirme yapabilirsiniz
+			res.redirect('http://localhost:3000/login');
 		  });
 	}
 
@@ -46,7 +47,10 @@ export class AuthController {
 		});
 		this.userService.updateLogIn(user.userName,true);
 		console.log("redirect : " + JSON.stringify(user));
-		res.redirect(`http://localhost:3000/home`);
+		if(user.TwoFactorAuth)
+			res.redirect(`http://localhost:3000/verify2fa`)
+		else
+			res.redirect(`http://localhost:3000/home`);
 	}
 
 
@@ -64,8 +68,10 @@ export class AuthController {
 
 
 	@Get('enable2fa')
+	@UseGuards(AuthenticatedGuard)
 	async enableTwoFactor(@Req() req, @Res() res) {
-		const tfa = await this.authService.generateTwoFactorAuthenticationSecret(req.user);
+		const tfa = await this.authService.generateTwoFactorAuthenticationSecret(req.user) 
+		console.log("tfa is : " +tfa + req.user.twoFactorAuthSecret.lenght)
 		const qrCodeBuffer = await qrcode.toBuffer(tfa.qrCode);
 		res.set('Content-type', 'image/png');
 		res.send(qrCodeBuffer);
@@ -73,10 +79,12 @@ export class AuthController {
 	
 
 	@Get('verify/:token/:intraId')
+	@UseGuards(AuthenticatedGuard)
 	async verifyToken(@Param('token') token: string, @Param('intraId') intraId: string) {
 		const user = await this.userService.findByintraIdEntitiy(intraId);
 		const result = this.authService.verifyTwoFactorAuthentication(token, user.twoFactorAuthSecret);
 		console.log(result);
+		await this.userService.updateTwoFactorStatus(user.id, true)
 		if (result)
 			return true
 		return false

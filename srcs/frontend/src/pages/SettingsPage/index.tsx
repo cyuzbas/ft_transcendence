@@ -65,20 +65,19 @@ function SettingsPage() {
 
 
 	//2FA BUTTON STARTS HERE
-	const [isEnabled, setIsEnabled] = useState(false);
+	
 	const [status, setStatus] = useState('Disable');
 	
 	const handleClick2FA = () => {
-		if (isEnabled) {
+		if (user.TwoFactorAuth) {
 			// 2FA CHECK HERE
-
 			setStatus('Disable');
 		} else {
 			// QR SCREEN HERE
 			setStatus('Enable');
+			window.location.href = 'http://localhost:3000/create2fa';
+
 		}
-		window.location.href = 'http://localhost:3000/create2fa';
-		setIsEnabled(!isEnabled);
 	};
   
 	return (
@@ -120,7 +119,7 @@ function SettingsPage() {
 					<div className="Change2FA">
 						<button type="submit" className="SubmitButton TwoFA" onClick={handleClick2FA}>
 							<i className="bi bi-qr-code-scan fs-1"></i>
-							<h4>{isEnabled ? 'Disable' : 'Enable'} 2FA</h4>
+							<h4>{user.TwoFactorAuth ? 'Disable' : 'Enable'} 2FA</h4>
 						</button>
 					</div>
 				</div>

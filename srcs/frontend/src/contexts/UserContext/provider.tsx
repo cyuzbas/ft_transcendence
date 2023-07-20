@@ -64,8 +64,8 @@ export function UserProvider({ children }: UserProviderProps) {
   });
 
   const clearUser = () => {
-    localStorage.removeItem('user');
     setUser(defaultState.user);
+    localStorage.removeItem('user');
   };
 
 
@@ -87,11 +87,21 @@ export function UserProvider({ children }: UserProviderProps) {
     };
     fetchData();
   }, []);
-  if (user.isLogged) {
+  if(!user.isLogged){
+    return (
+      <Routes>
+      <Route path='/login' element={<Login />} />
+    </Routes>
+    );
+  }
+
+  else {
     if(user.TwoFactorAuth && user.twoFactorCorrect == false){
       return(
         <UserContext.Provider value={{ user, setUser, clearUser }}>
-        <Verify2fa/>
+          <Routes>
+          <Route path='/verify2fa' element={<Verify2fa />} />
+        </Routes>
         </UserContext.Provider>
       )
     }
@@ -101,9 +111,5 @@ export function UserProvider({ children }: UserProviderProps) {
         {children}
       </UserContext.Provider>
     );}
-  } else {
-    return (
-      <Login />
-    );
   }
 }

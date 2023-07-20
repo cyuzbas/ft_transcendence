@@ -12,14 +12,18 @@ function SideBar() {
 
 	async function logout() {
 		    // Diğer çıkış işlemleri...
-		
+			console.log("cikis")
 			try{
-			const response = await axios.get('http://localhost:3001/auth/logout')
-			clearUser()
-			localStorage.removeItem('user');
+			const response = await axios.get('http://localhost:3001/auth/logout',{withCredentials:true})
+			
+			localStorage.clear(); // Yerel depodaki tüm verileri sil
+			window.location.href="/login"
+
 		}
 		catch(error){
 			console.error(error)
+			localStorage.clear(); // Yerel depodaki tüm verileri sil
+			window.location.href="/login"
 		}
 	}
 	return (

@@ -54,9 +54,17 @@ export class UserService {
 	return createdUser;
 	}
 
+
+	async updateTwoFactorStatus(id:number, isAuth:boolean){
+		await this.userRepository.update(id,{
+			TwoFactorAuth: isAuth
+		})
+	}
 	async addAuthSecretKey(key:string,user:UserI){
-		if(!user)
-			return
+
+		// if (!user || typeof user.id !== 'number') {
+		// 	throw new Error('Invalid user data');
+		//   }
 		await this.userRepository.update(user.id,{
 			twoFactorAuthSecret: key
 			});

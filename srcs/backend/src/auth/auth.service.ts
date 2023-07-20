@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import {CreateUserDTO} from '../dto/create-user-dto'
 import {UserI} from '../user/user.interface'
 import * as speakeasy from 'speakeasy';
+import { UserEntity } from 'src/typeorm/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -29,13 +30,13 @@ export class AuthService {
 		return await this.userService.createUser(createUserDto);
 	}
 
-	async generateTwoFactorAuthenticationSecret(user: UserI) {
+	async generateTwoFactorAuthenticationSecret(user: UserEntity) {
 		const secret = speakeasy.generateSecret({ length: 20 });
 		console.log(secret.base32 + " burda")
 		await this.userService.addAuthSecretKey(secret.base32, user)
 		const qrCode = speakeasy.otpauthURL({
 			secret: secret.ascii,
-			label: user.userName,
+			label: "ali",
 			issuer: 'Cida-trans',
 		});
 		return { qrCode, secret: secret.base32 }

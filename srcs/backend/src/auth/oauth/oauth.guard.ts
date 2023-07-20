@@ -20,6 +20,7 @@ export class OAuthGuard extends AuthGuard('oauth') {
 export class AuthenticatedGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const req = context.switchToHttp().getRequest();
+		console.log(" guard " + req.isAuthenticated())
 		return req.isAuthenticated();
 	}
 }

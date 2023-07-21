@@ -1,5 +1,5 @@
 import './styles.css'
-import React, { useContext, useState, useEffect } from 'react';
+import React, { ChangeEvent, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
 import { UserContext } from '../../contexts'
@@ -31,7 +31,7 @@ function SettingsPage() {
 				intraId: user.intraId
 			  }, { withCredentials: true })
   
-			  swal("Saved!", "Your imaginary file has been saved!" + user.intraId + "asdasd", "success");
+			  swal("Saved!", "Your imaginary file has been saved! " + user.intraId );
 			}
 			catch (error) {
 			  swal("error", "something go wrong" + error, "ok")
@@ -40,28 +40,32 @@ function SettingsPage() {
 		});
 	}
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+
+  async function postimage() {
+
+    if (selectedFile) {
+      const formData = new FormData()
+      const imageName = user.userName + '.png'
+      formData.append('avatar', selectedFile)
+      const headers = { 'Content-Type': 'multipart/form-data' };
+      await axios
+        .post(`http://localhost:3001/user/avatar/${imageName}`,
+          formData, { withCredentials: true, headers })
+        .then((res) => { user.avatar = res.data.avatar })
+        .catch(err => { })
+    }
+	window.location.reload();
+  }
+
+
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedFile(event.target.files[0]);
+    }
+  };
   
-  
-	async function postimage() {
-  
-	  if (selectedFile) {
-		const formData = new FormData()
-		const imageName = user.userName + '.png'
-		formData.append('avatar', selectedFile)
-		const headers = { 'Content-Type': 'multipart/form-data' };
-		await axios
-		  .post(`http://localhost:3001/user/avatar/${imageName}`,
-			formData, { withCredentials: true, headers })
-		  .then((res) => { user.avatar = res.data.avatar })
-		  .catch(err => { })
-	  }
-	}
-  
-	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-	  if (event.target.files && event.target.files.length > 0) {
-		setSelectedFile(event.target.files[0]);
-	  }
-	};
 
 
 	//2FA BUTTON STARTS HERE
@@ -89,6 +93,9 @@ function SettingsPage() {
 					<div className="imageContainer">
 						<img src={user.avatar} className='profilePicture'  />
 					</div>
+					<div>
+						<input className='UploadPP' type='file' onChange={handleFileChange} accept='image/*' />
+					</div>
 					<div className="ChangePPLine">
 						<button type="submit" className="SubmitButton" onClick={postimage}>
 							<i className="bi bi-upload fs-2"></i>
@@ -112,10 +119,14 @@ function SettingsPage() {
 								placeholder="* Change your name"
 								/>
 						</form>
-						<button type="submit" className="SubmitButton Edit">
+						<button type="submit" className="SubmitButton Edit" onClick={showAlert}>
 							<i className="bi bi-pencil-square fs-5"></i>
 							<h6>Edit</h6>
 						</button>
+					</div>
+					<div className="Info2fa">
+						<h5>Secure your account with </h5>
+						<h5>Two-Factor Authentication</h5>
 					</div>
 					<div className="Change2FA">
 						<button type="submit" className="SubmitButton TwoFA" onClick={handleClick2FA}>

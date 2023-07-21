@@ -31,8 +31,7 @@ function Auth2faPage() {
 					const updatedUser = { ...user, twoFactorCorrect: true, TwoFactorAuth:true };
 					setUser(updatedUser);
 					localStorage.setItem('user', JSON.stringify(updatedUser));
-					// window.location.href ="http://localhost:3000/home"
-
+					window.location.href ='http://localhost:3000/settings'
 
 				} else {
 					console.log("AUTH2FA ERROR!!");

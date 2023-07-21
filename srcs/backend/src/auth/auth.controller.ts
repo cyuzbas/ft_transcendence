@@ -65,13 +65,17 @@ export class AuthController {
 	}
 
 
+	@Get('disabled2fa')
+	@UseGuards(AuthenticatedGuard)
+	async disabled2fa(@Req()req, @Res() res){
+		await this.userService.disabledTwoFactor(req.user);
+	}
 
 
 	@Get('enable2fa')
 	@UseGuards(AuthenticatedGuard)
 	async enableTwoFactor(@Req() req, @Res() res) {
 		const tfa = await this.authService.generateTwoFactorAuthenticationSecret(req.user) 
-		console.log("tfa is : " +tfa + req.user.twoFactorAuthSecret.lenght)
 		const qrCodeBuffer = await qrcode.toBuffer(tfa.qrCode);
 		res.set('Content-type', 'image/png');
 		res.send(qrCodeBuffer);

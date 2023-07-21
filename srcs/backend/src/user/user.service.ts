@@ -34,6 +34,14 @@ export class UserService {
 			};
 		}
 
+
+  async disabledTwoFactor(user: UserEntity){
+	await this.userRepository.update(user.id,{
+		TwoFactorAuth: false,
+		twoFactorAuthSecret:null
+	})
+  }
+
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);
 	const createdUser: UserI = await this.userRepository.save(newUser);

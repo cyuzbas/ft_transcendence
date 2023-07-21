@@ -66,15 +66,16 @@ function SettingsPage() {
 
 	//2FA BUTTON STARTS HERE
 	
-	const [status, setStatus] = useState('Disable');
 	
-	const handleClick2FA = () => {
+	const handleClick2FA = async() => {
 		if (user.TwoFactorAuth) {
-			// 2FA CHECK HERE
-			setStatus('Disable');
+			const response = await axios.get('http://localhost:3001/auth/disabled2fa', {withCredentials:true})
+			console.log("auth !")
+			const updatedUser = { ...user, TwoFactorAuth: false , twoFactorCorrect:false};
+			setUser(updatedUser)
+			localStorage.setItem('user', JSON.stringify(updatedUser));
+
 		} else {
-			// QR SCREEN HERE
-			setStatus('Enable');
 			window.location.href = 'http://localhost:3000/create2fa';
 
 		}

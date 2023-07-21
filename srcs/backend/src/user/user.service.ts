@@ -34,6 +34,14 @@ export class UserService {
 			};
 		}
 
+
+  async disabledTwoFactor(user: UserEntity){
+	await this.userRepository.update(user.id,{
+		TwoFactorAuth: false,
+		twoFactorAuthSecret:null
+	})
+  }
+
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);
 	const createdUser: UserI = await this.userRepository.save(newUser);
@@ -54,25 +62,27 @@ export class UserService {
 	return createdUser;
 	}
 
-	// async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
-	// 	(await this.userRepository.findOne(user => user.id === userId)).twoFactorAuthenticationSecret = secret;
-	//   }
-	
 
-	// async generateTwoFactorAuthenticationSecret(user: UserI) {
-	// 	const secret = authenticator.generateSecret();
-	
-	// 	const otpauthUrl = authenticator.keyuri(user.userName, 'AUTH_APP_NAME', secret);
-	
-	// 	await this.setTwoFactorAuthenticationSecret(secret, user.id);
-	
-	// 	return {
-	// 	  secret,
-	// 	  otpauthUrl
-	// 	}
-	//   }
+	async updateTwoFactorStatus(id:number, isAuth:boolean){
+		await this.userRepository.update(id,{
+			TwoFactorAuth: isAuth
+		})
+	}
+	async addAuthSecretKey(key:string,user:UserI){
 
+		// if (!user || typeof user.id !== 'number') {
+		// 	throw new Error('Invalid user data');
+		//   }
+		await this.userRepository.update(user.id,{
+			twoFactorAuthSecret: key
+			});
+	}
 
+	async findByintraIdEntitiy(intraId: string): Promise<UserEntity> {
+		return await this.userRepository.findOne({
+			where: { intraId: intraId },
+		});
+	}
 	async findByintraId(intraIdToFind: string): Promise<UserI> {
 		return await this.userRepository.findOne({
 			where: { intraId: intraIdToFind },

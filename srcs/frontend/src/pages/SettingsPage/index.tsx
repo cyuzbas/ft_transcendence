@@ -69,20 +69,20 @@ function SettingsPage() {
 
 
 	//2FA BUTTON STARTS HERE
-	const [isEnabled, setIsEnabled] = useState(false);
-	const [status, setStatus] = useState('Disable');
 	
-	const handleClick2FA = () => {
-		if (isEnabled) {
-			// 2FA CHECK HERE
+	
+	const handleClick2FA = async() => {
+		if (user.TwoFactorAuth) {
+			const response = await axios.get('http://localhost:3001/auth/disabled2fa', {withCredentials:true})
+			console.log("auth !")
+			const updatedUser = { ...user, TwoFactorAuth: false , twoFactorCorrect:false};
+			setUser(updatedUser)
+			localStorage.setItem('user', JSON.stringify(updatedUser));
 
-			setStatus('Disable');
 		} else {
-			// QR SCREEN HERE
-			setStatus('Enable');
+			window.location.href = 'http://localhost:3000/create2fa';
+
 		}
-		window.location.href = 'http://localhost:3000/create2fa';
-		setIsEnabled(!isEnabled);
 	};
   
 	return (
@@ -131,7 +131,7 @@ function SettingsPage() {
 					<div className="Change2FA">
 						<button type="submit" className="SubmitButton TwoFA" onClick={handleClick2FA}>
 							<i className="bi bi-qr-code-scan fs-1"></i>
-							<h4>{isEnabled ? 'Disable' : 'Enable'} 2FA</h4>
+							<h4>{user.TwoFactorAuth ? 'Disable' : 'Enable'} 2FA</h4>
 						</button>
 					</div>
 				</div>

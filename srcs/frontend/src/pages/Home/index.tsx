@@ -36,7 +36,7 @@ export function Home() {
               intraId: user.intraId
             }, { withCredentials: true })
 
-            swal("Saved!", "Your imaginary file has been saved!" + user.intraId + "asdasd", "success");
+            swal("Saved!", "Your name has been saved!");
           }
           catch (error) {
             swal("error", "something go wrong" + error, "ok")
@@ -70,7 +70,7 @@ export function Home() {
         <div className="ProfileMatchHistory">
           <div id="MatchHistoryTitle">&nbsp;
             <img src={pong} className='pongIcon'/>
-            <h4>MATCH HISTORY</h4>
+            <h4>MATCH STATS</h4>
             <img src={pong} className='pongIcon reverse'/>
           </div>
           <div id="MatchHistoryWin">&nbsp;

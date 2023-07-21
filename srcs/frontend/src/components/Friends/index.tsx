@@ -9,6 +9,7 @@ type User = {
     avatar: string;
     userName: string;
     intraId: string;
+	isLogged: boolean;
   };
   
 
@@ -47,12 +48,20 @@ export function Friends() {
       users.map((user, index) => (
         <div className="friends-text-image-component" key={user.intraId}>
             <div className="imageClassPP">
-              <img src={user.avatar} id="Avatar"/>
+              <img src={user.avatar} id="Avatar" alt=""/>
             </div>
             <div className="friend-component-username">{user.userName}</div>
             <div className="friend-component-username"> ID - {user.intraId}</div>
             <div className='personaddcontainer'>
+			{user.isLogged && (
+              <i className="bi bi-circle-fill indicatorOnline fs-3"></i>
+			)}
+			{!user.isLogged && (
+              <i className="bi bi-circle-fill indicatorOffline fs-3"></i>
+			)}
               <i className="bi bi-person-add fs-3"></i>
+              {/* <i className="bi bi-person-dash fs-3"></i> */}
+              {/* <i className="bi bi-person-check fs-3"></i> */}
             </div>
             {/* <img src={logo}  className="image2" /> */}
             {/* <div>logo</div> */}

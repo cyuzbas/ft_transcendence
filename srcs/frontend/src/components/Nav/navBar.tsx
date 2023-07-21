@@ -58,10 +58,13 @@ return (
         <FormControl type="text" placeholder="Search" className="" />
       </Form> */}
         <Nav className="ms-auto">
+		  <Nav.Item><Nav.Link href="/home">
+		  	<i className="bi bi-people-fill fs-3 me-2"></i>
+          </Nav.Link></Nav.Item> 
           <Nav.Item><Nav.Link href="/home">
             <text className='userName'>{user.userName}</text>
             <img src={user.avatar} className='avatar' />
-          </Nav.Link></Nav.Item> 
+          </Nav.Link></Nav.Item>  
         </Nav>
     </Navbar>
   </Styles>

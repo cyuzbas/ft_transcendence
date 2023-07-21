@@ -26,6 +26,13 @@
 	object-fit: cover;
   }
 
+  .bi-circle-fill.indicatorOnline{
+	color: rgb(9, 175, 9);
+  }
+  .bi-circle-fill.indicatorOffline{
+	color: red
+  }
+
   .friend-component-username{
 	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 	font-size: x-large;

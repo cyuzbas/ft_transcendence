@@ -35,7 +35,6 @@ export function Router() {
                   <Routes>
                     <Route path='/home' element={<Home />} />
                     <Route path='/' element={<Home />} />
-                    <Route path='/friends' element={<Friends />} />
                     <Route path='/friend' element={<Friends />} />
                     <Route path='/lobby' element={<Lobby />} />
                     <Route path='/chat' element={  <Chat/>} />

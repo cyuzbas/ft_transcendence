@@ -1,22 +1,32 @@
-.d-flex.flex-column.p-2 {
+.nav.flex-column{
+}
+
+.d-flex.flex-column {
 	background-color: rgb(88, 110, 124); 
-	position: fixed;     
+	position: fixed; 
 	height: 100%;
-	width: 75px;     
-	z-index: 1;     
+	width: 5%;
+	/* z-index: 1;      */
 	top: 0em;    
 	overflow-x: hidden;
+	align-items: center;
+	/* justify-content:center; */
+
+
 }
 
 .d-flex.mb-5{
 	padding-top: 110px;
 	padding-left: 15px;
+	/* background-color: aquamarine; */
+	/* height: 20%; */
 }
 
-.bi-house-door, .bi-controller,.bi-wechat, .bi-gear, .bi-door-open{
+.bi-house-door, .bi-controller,.bi-wechat, .bi-gear.sidebar-settings, .bi-door-open{
 	color: rgb(178,225,255);
+	height: 15%;
 }
-.bi-house-door:hover, .bi-controller:hover, .bi-wechat:hover, .bi-gear:hover, .bi-door-open:hover { 
+.bi-house-door:hover, .bi-controller:hover, .bi-wechat:hover, .sidebar-settings:hover, .bi-door-open:hover { 
 	color: white; 
 }
 

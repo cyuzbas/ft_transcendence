@@ -1,5 +1,5 @@
 import './styles.css'
-import React, { ChangeEvent, useContext, useState, useEffect } from 'react';
+import React, { ChangeEvent, useContext, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
 import { UserContext } from '../../contexts'
@@ -9,73 +9,87 @@ function SettingsPage() {
 
 
 	const { user, setUser } = useContext(UserContext)
+	const [inputText, setInputText] = useState("");
 
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+		// 👇 Store the input value to local state
+		setInputText(e.target.value);
+		console.log(e.target.value)
+	};
+
+	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	useEffect(() => {
-	  console.log("settings")
+		console.log("settings")
 	})
-  
+
 	async function showAlert() {
-	  swal({
-		title: "Are you sure?",
-		text: "Are you sure that you want to save",
-		icon: "warning",
-		dangerMode: true,
-	  })
-		.then(async (willDelete) => {
-		  if (willDelete) {
-			try {
-			  const response = await axios.post("http://localhost:3001/user/update-user-profile", {
-				userName: "cicek",
-				avatar: user.avatar,
-				intraId: user.intraId
-			  }, { withCredentials: true })
-  
-			  swal("Saved!", "Your imaginary file has been saved! " + user.intraId );
-			}
-			catch (error) {
-			  swal("error", "something go wrong" + error, "ok")
-			}
-		  }
-		});
+		swal({
+			title: "Are you sure?", 
+			text: "Are you sure that you want to save",
+			icon: "warning",
+			dangerMode: true,
+		})
+			.then(async (willDelete) => {
+				if (willDelete) {
+					try {
+						const response = await axios.post("http://localhost:3001/user/update-user-profile", {
+							userName: inputText,
+							avatar: user.avatar,
+							intraId: user.intraId
+						}, { withCredentials: true })
+						const updatedUser = { ...user, userName: inputText };
+						setUser(updatedUser)
+						localStorage.setItem('user', JSON.stringify(updatedUser));
+						swal("Saved!", "Your imaginary file has been saved! " + user.intraId);
+					}
+					catch (error) {
+						swal("error", "something go wrong" + error, "ok")
+					}
+				}
+			});
 	}
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 
-  async function postimage() {
+	async function postimage() {
 
-    if (selectedFile) {
-      const formData = new FormData()
-      const imageName = user.userName + '.png'
-      formData.append('avatar', selectedFile)
-      const headers = { 'Content-Type': 'multipart/form-data' };
-      await axios
-        .post(`http://localhost:3001/user/avatar/${imageName}`,
-          formData, { withCredentials: true, headers })
-        .then((res) => { user.avatar = res.data.avatar })
-        .catch(err => { })
-    }
-	window.location.reload();
-  }
+		if (selectedFile) {
+			const formData = new FormData()
+			formData.append('avatar', selectedFile)
+			const headers = { 'Content-Type': 'multipart/form-data' };
+			try {
+				const response = await axios
+					.post(`http://localhost:3001/user/avatar/${selectedFile.name}`,
+						formData, { withCredentials: true, headers })
+
+				const updatedUser = { ...user, avatar: `http://localhost:3001/user/avatar/${selectedFile.name}` };
+				setUser(updatedUser)
+				localStorage.setItem('user', JSON.stringify(updatedUser));
+				if (inputRef.current) {
+					inputRef.current.value = '';
+				  }
+			}
+			catch (error) {
+				console.error(error)
+			}
+		}
+	}
 
 
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
-    }
-  };
-  
+	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.files && event.target.files.length > 0) {
+			setSelectedFile(event.target.files[0]);
+		}
+	};
 
 
-	//2FA BUTTON STARTS HERE
-	
-	
-	const handleClick2FA = async() => {
+	const handleClick2FA = async () => {
 		if (user.TwoFactorAuth) {
-			const response = await axios.get('http://localhost:3001/auth/disabled2fa', {withCredentials:true})
+			const response = await axios.get('http://localhost:3001/auth/disabled2fa', { withCredentials: true })
 			console.log("auth !")
-			const updatedUser = { ...user, TwoFactorAuth: false , twoFactorCorrect:false};
+			const updatedUser = { ...user, TwoFactorAuth: false, twoFactorCorrect: false };
 			setUser(updatedUser)
 			localStorage.setItem('user', JSON.stringify(updatedUser));
 
@@ -84,24 +98,24 @@ function SettingsPage() {
 
 		}
 	};
-  
+
 	return (
-  
+
 		<div className="SettingsPageContent">
 			<div className="SettingsPageContainer">
 				<div className="ChangePP">
 					<div className="imageContainer">
-						<img src={user.avatar} className='profilePicture'  />
+						<img src={user.avatar} className='profilePicture' />
 					</div>
 					<div>
-						<input className='UploadPP' type='file' onChange={handleFileChange} accept='image/*' />
+						<input className='UploadPP' type='file' onChange={handleFileChange} accept='image/*' ref={inputRef}/>
 					</div>
 					<div className="ChangePPLine">
 						<button type="submit" className="SubmitButton" onClick={postimage}>
 							<i className="bi bi-upload fs-2"></i>
 							<h4>Upload Picture</h4>
 						</button>
-						
+
 					</div>
 					{/* <div className="ChangePPLine">
 						<button type="submit" className="SubmitButton" onClick={postimage}>
@@ -112,12 +126,14 @@ function SettingsPage() {
 				</div>
 				<div className="ChangeOthers">
 					<div className="EditName">
-						<form className="EnterName">
-							<input 
+						<form className="EnterName" 
+								onSubmit={showAlert}>
+							<input
+								onChange={handleChange}
 								className="NameInput"
-								type="text" 
+								type="text"
 								placeholder="* Change your name"
-								/>
+							/>
 						</form>
 						<button type="submit" className="SubmitButton Edit" onClick={showAlert}>
 							<i className="bi bi-pencil-square fs-5"></i>

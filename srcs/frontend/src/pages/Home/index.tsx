@@ -3,6 +3,9 @@ import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { Friends } from '../../components';
 import { UserContext } from '../../contexts'
+import FriendsToggle from './components/UserToggle';
+import Achievements from './components/Achievements';
+import Leaderboard from './components/Leaderboard';
 import swal from 'sweetalert';
 import pong from '../../img/pong.png';
 
@@ -41,32 +44,6 @@ export function Home() {
         }
       });
   }
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-
-  async function postimage() {
-
-    if (selectedFile) {
-      const formData = new FormData()
-      const imageName = user.userName + '.png'
-      formData.append('avatar', selectedFile)
-      const headers = { 'Content-Type': 'multipart/form-data' };
-      await axios
-        .post(`http://localhost:3001/user/avatar/${imageName}`,
-          formData, { withCredentials: true, headers })
-        .then((res) => { user.avatar = res.data.avatar })
-        .catch(err => { })
-    }
-  }
-
-
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
-    }
-  };
-
 
 
   return (
@@ -83,38 +60,39 @@ export function Home() {
         <div className="ProfileRankInfo">
           <div className="ProfileRankInfoLine">
             <i className="bi bi-star fs-2"></i>
-            <h4 className="UserScore">SCORE</h4>
+            <h4 className="UserScore">SCORE</h4> {/*Data from Scoretable*/}
           </div>
           <div className="ProfileRankInfoLine">
             <i className="bi bi-chevron-double-up fs-2"></i>
-            <h4 className="UserRank">RANK </h4>
+            <h4 className="UserRank">RANK </h4> {/*Data from Scoretable*/}
           </div>
         </div>
         <div className="ProfileMatchHistory">
           <div id="MatchHistoryTitle">&nbsp;
             <img src={pong} className='pongIcon'/>
-            <h4>Match History</h4>
+            <h4>MATCH HISTORY</h4>
             <img src={pong} className='pongIcon reverse'/>
           </div>
           <div id="MatchHistoryWin">&nbsp;
             <h4>WIN</h4>
             <i className="bi bi-trophy fs-4"></i>
-            <h4>2</h4>
+            <h4>2</h4> {/*Data from Scoretable*/}
           </div>
           <div id="MatchHistoryLoss">&nbsp;
             <h4>LOSS</h4>
             <i className="bi bi-x-lg fs-4"></i>
-            <h4>1</h4>
+            <h4>1</h4>  {/*Data from Scoretable*/}
           </div>
         </div>
       </div>
-      <div id="item-1" className="FriendSection item">&nbsp;
-        All users / Friends
-        <Friends />
+      <div id="item-1" className="FriendSection item">
+        <FriendsToggle />
       </div>
-      <div id="item-2" className="LeaderBoard item">&nbsp;LeaderBoard
+      <div id="item-2" className="LeaderBoard item">
+        <Leaderboard/>
       </div>
-      <div id="item-3" className="Achievement item">&nbsp;Achievement
+      <div id="item-3" className="Achievement item">
+        <Achievements/>
       </div>
     </div>
   )

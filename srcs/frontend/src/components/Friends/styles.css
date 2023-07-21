@@ -1,0 +1,33 @@
+.friends-text-image-component {
+    margin: 10px;
+	display: flex; 
+    flex-direction: row;
+    align-items: center;
+	justify-content:space-around;
+	color: rgb(75, 94, 107);
+	
+    /* background: rgb(207,231,250);
+    background: -moz-linear-gradient(top, rgba(207,231,250,1) 0%, rgba(99,147,193,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
+    background: linear-gradient(to bottom, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfe7fa', endColorstr='#6393c1',GradientType=0 ); */
+ }
+
+ .imageClassPP {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	overflow: hidden;
+  }
+  
+  .imageClassPP img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+  }
+
+  .friend-component-username{
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	font-size: x-large;
+  }
+

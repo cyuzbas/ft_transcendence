@@ -1,8 +1,9 @@
-import React from 'react';
-import { Nav, Navbar, Form, FormControl } from 'react-bootstrap';
+import React, { useContext, useState, useEffect }  from 'react';
+import { Nav, Navbar, Form, FormControl,  } from 'react-bootstrap';
 import styled from 'styled-components';
 import Intra from '../../img/ft.png';
 import Avatar from '../../img/default.png';
+import { UserContext } from '../../contexts'
 
 
 const Styles = styled.div`
@@ -34,12 +35,19 @@ const Styles = styled.div`
   }
   .avatar{
 	width: 35px;
+	height: 30px;
 	border-radius: 50%;
 	margin-right: 15px; 
 	margin-left: 15px; 
 }
 `;
-const NavigationBar = () => (
+
+
+function NavigationBar () {
+
+const { user, setUser } = useContext(UserContext)
+
+return (
   <Styles>
     <Navbar>
 	    <Navbar.Brand href="/home">
@@ -50,12 +58,14 @@ const NavigationBar = () => (
         <FormControl type="text" placeholder="Search" className="" />
       </Form> */}
         <Nav className="ms-auto">
-          <Nav.Item><Nav.Link href="/home"><text className='userName'>user.name</text>
-          <img src={Avatar} className='avatar' />
+          <Nav.Item><Nav.Link href="/home">
+            <text className='userName'>{user.userName}</text>
+            <img src={user.avatar} className='avatar' />
           </Nav.Link></Nav.Item> 
         </Nav>
     </Navbar>
   </Styles>
-)
+);
+  }
 
 export default NavigationBar;

@@ -110,7 +110,7 @@ export class UserService {
 	}
 
 	async updataAvatar(path: string, user: UserEntity): Promise<UserI>{
-			await this.userRepository.update(user,{
+			await this.userRepository.update(user.id,{
 				avatar: "http://localhost:3001/user/avatar/" + path
 			});
 			console.log("succes update avatar");

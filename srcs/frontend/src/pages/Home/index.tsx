@@ -36,7 +36,7 @@ export function Home() {
               intraId: user.intraId
             }, { withCredentials: true })
 
-            swal("Saved!", "Your imaginary file has been saved!" + user.intraId + "asdasd", "success");
+            swal("Saved!", "Your name has been saved!");
           }
           catch (error) {
             swal("error", "something go wrong" + error, "ok")
@@ -59,6 +59,18 @@ export function Home() {
         </div>
         <div className="ProfileRankInfo">
           <div className="ProfileRankInfoLine">
+            <i className="bi bi-circle-fill fs-2"  id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
+            {/* {!isGaming && user.isLogged && ( */}
+              <h4 className="UserStatus">ONLINE</h4> 
+            {/* )} */}
+            {/* {isGaming && user.isLogged && (
+              <h4 className="UserStatus">IN GAME</h4> 
+            )} */}
+            {!user.isLogged && (
+              <h4 className="UserStatus">OFFLINE</h4> 
+            )}
+          </div>
+          <div className="ProfileRankInfoLine">
             <i className="bi bi-star fs-2"></i>
             <h4 className="UserScore">SCORE</h4> {/*Data from Scoretable*/}
           </div>
@@ -70,7 +82,7 @@ export function Home() {
         <div className="ProfileMatchHistory">
           <div id="MatchHistoryTitle">&nbsp;
             <img src={pong} className='pongIcon'/>
-            <h4>MATCH HISTORY</h4>
+            <h4>MATCH STATS</h4>
             <img src={pong} className='pongIcon reverse'/>
           </div>
           <div id="MatchHistoryWin">&nbsp;

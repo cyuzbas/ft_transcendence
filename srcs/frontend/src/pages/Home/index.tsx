@@ -59,6 +59,18 @@ export function Home() {
         </div>
         <div className="ProfileRankInfo">
           <div className="ProfileRankInfoLine">
+            <i className="bi bi-circle-fill fs-2"  id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
+            {/* {!isGaming && user.isLogged && ( */}
+              <h4 className="UserStatus">ONLINE</h4> 
+            {/* )} */}
+            {/* {isGaming && user.isLogged && (
+              <h4 className="UserStatus">IN GAME</h4> 
+            )} */}
+            {!user.isLogged && (
+              <h4 className="UserStatus">OFFLINE</h4> 
+            )}
+          </div>
+          <div className="ProfileRankInfoLine">
             <i className="bi bi-star fs-2"></i>
             <h4 className="UserScore">SCORE</h4> {/*Data from Scoretable*/}
           </div>

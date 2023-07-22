@@ -28,6 +28,7 @@
 }
 .bi-house-door:hover, .bi-controller:hover, .bi-wechat:hover, .sidebar-settings:hover, .bi-door-open:hover { 
 	color: white; 
+	cursor: pointer;
 }
 
 .nav-link.logout {

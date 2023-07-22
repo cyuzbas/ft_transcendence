@@ -1,23 +1,32 @@
-.friends-text-image-component {
-    margin: 10px;
-	display: flex; 
-    flex-direction: row;
-    align-items: center;
-	justify-content:space-around;
-	color: rgb(75, 94, 107);
-	
-    /* background: rgb(207,231,250);
-    background: -moz-linear-gradient(top, rgba(207,231,250,1) 0%, rgba(99,147,193,1) 100%);
-    background: -webkit-linear-gradient(top, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
-    background: linear-gradient(to bottom, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfe7fa', endColorstr='#6393c1',GradientType=0 ); */
- }
+  .friends-text-image-component {
+  margin: 10px 0 10px 0px;
+  display: flex; 
+  flex-direction: row;
+  align-items: center;
+  /* justify-content:space-around; */
+  color: rgb(75, 94, 107);
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  
+  /* gap: 5px; */
+
+  /* background: rgb(207,231,250);
+  background: -moz-linear-gradient(top, rgba(207,231,250,1) 0%, rgba(99,147,193,1) 100%);
+  background: -webkit-linear-gradient(top, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
+  background: linear-gradient(to bottom, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfe7fa', endColorstr='#6393c1',GradientType=0 ); */
+  }
 
  .imageClassPP {
 	width: 50px;
 	height: 50px;
+  margin-left: 15px;
 	border-radius: 50%;
 	overflow: hidden;
+
+  grid-column-start: 1;
+  grid-column-end: 2;
   }
   
   .imageClassPP img {
@@ -26,15 +35,38 @@
 	object-fit: cover;
   }
 
-  .bi-circle-fill.indicatorOnline{
+  #indicatorOnline{
 	color: rgb(9, 175, 9);
   }
-  .bi-circle-fill.indicatorOffline{
-	color: red
-  }
 
-  .friend-component-username{
+  .friend-component-userName{
 	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 	font-size: x-large;
+  margin-left: 15px;
+
+  grid-column-start: 2;
+  grid-column-end: 4;
+  }
+
+  .friend-component-userID{
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: x-large;
+
+  grid-column-start: 4;
+  grid-column-end: 6;
+  }
+  .friend-component-userID:hover{
+    cursor: pointer;
+  }
+
+  .personOnlineContainer{
+  grid-column-start: 6;
+  grid-column-end: 7;
+  margin-left: 15px;
+  }
+
+  .personAddContainer{
+  grid-column-start: 7;
+  grid-column-end: 8;
   }
 

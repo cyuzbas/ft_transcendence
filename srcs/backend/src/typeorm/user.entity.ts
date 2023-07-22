@@ -35,6 +35,17 @@ export class UserEntity {
 	@Column({nullable: true})
 	twoFactorAuthSecret:string
 
+
+	@ManyToMany(() => UserEntity)
+	@JoinTable({ joinColumn: { name: 'sender_id' } })
+	requestedFriends: UserEntity[];
+
+	@ManyToMany(() => UserEntity, { cascade: true })
+	@JoinTable({ joinColumn: { name: 'userId_1' } })
+	friends: UserEntity[];
+
+
+
 	@OneToMany(() => MessageEntity, message => message.user)
 	messages: MessageEntity[];
 

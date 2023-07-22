@@ -18,6 +18,20 @@ export function Friends() {
     const [users, setUsers] = useState<User[]>([]);
     const {user, setUser} = useContext(UserContext)
 
+
+  async function sendRequest(intraId:string) {
+    try{
+        const response = await axios.get(`http://localhost:3001/friends/add/${user.intraId}/${intraId}`)
+        console.log("send friend request!");
+    }
+    catch(error){
+      console.error(error);
+    }
+    
+  }
+
+
+
   useEffect(() => {
     const fetchData = async () => {
       console.log("naber, " + user.userName);
@@ -51,7 +65,7 @@ export function Friends() {
             </div>
             <div className="friend-component-username">{user.userName}</div>
             <div className="friend-component-username"> ID - {user.intraId}</div>
-            <div className='personaddcontainer'>
+            <div className='personaddcontainer' onClick={() => sendRequest(user.intraId)}>
               <i className="bi bi-person-add fs-3"></i>
             </div>
             {/* <img src={logo}  className="image2" /> */}

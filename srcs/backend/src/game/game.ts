@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 
 export const numActPerSendData = 2;
 export const baseSpeed = 10;
-export const scoreMax = 30;
+export const scoreMax = 3;
 // export const startTime = 1e3;
 export const gameTps = 120;
 // export const ballSpeed = (baseSpeed / gameTps); //padWidth den fazla olmasin

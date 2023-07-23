@@ -38,11 +38,9 @@ export class GatewayService {
 
     addUserToQueue(userId: number) {
         if (this.queue.includes(userId)) {
-            console.log('already in the queue');
             return { status: false, message: "You are already in the queue" };
         }
         this.queue.push(userId);
-        console.log('queue: ', this.queue);//////////
         return { status: true, message: "You are in the queue" };
     }
 
@@ -58,6 +56,14 @@ export class GatewayService {
     }
 
     async createGame(server: Server, p1: UserEntity, p2: UserEntity): Promise<Res<GameEntity[]>> {
+        const gameId = [p1.id, p2.id].sort().join('vs');
+        console.log("burda: " , gameId)
+        if (this.games.has(gameId)) {
+            console.log("varsa: " , gameId)
+            
+            return { status: true, message: "A game with the same players is already running"};
+        }
+        console.log('game is created with id: ', gameId);
         let gameP1 = this.gameRepository.create({
             player: p1,
             opponent: p2,
@@ -75,7 +81,6 @@ export class GatewayService {
         } catch {
             return { status: false, message: "Could not save to database" };
         }
-        const gameId = [p1.id, p2.id].sort().join('vs');
         try {
             this.games.set(gameId, new Game(server, p1.id, p2.id, gameP1.id, gameP2.id));
         } catch {
@@ -86,12 +91,11 @@ export class GatewayService {
         return { status: true, message: 'success', payload: [gameP1, gameP2] };
     }
 
-    // endGame(gameId: string) {
-    //     const { server } = this.games.get(gameId);
-    //     server.socketsLeave(`game${gameId}`);
-    //     this.games.delete(gameId);
-    //     console.debug(gameId, "game deleted");
-    // }
+    endGame(game: Game, gameId: string) {
+        // const { server } = this.games.get(gameId);
+        game.server.socketsLeave(`game${gameId}`);
+        this.games.delete(gameId);
+    }
 
     getConnectedUserById(userId: number) {
         return [...this.users.values()].find((x) => x.id === userId);
@@ -106,13 +110,11 @@ export class GatewayService {
     }
 
     deleteUserFromQueue(userId: number) {
-        console.log('idil');
         const index = this.queue.indexOf(userId);
         if (index === -1) {
             return { status: false, message: "You are not in the queue" };
         }
         this.queue.splice(index, 1);
-        console.log('Remaining players in the queue', this.queue);
         return { status: true, message: "You have been removed from the queue" };
     }
 
@@ -121,9 +123,7 @@ export class GatewayService {
         if (!game) {
             return { status: false, message: "Game not found" };
         }
-        // console.log(game);
         const userPad = game[game.p1 === userId ? 'paddleLeft' : 'paddleRight'];
-        console.log(userPad);
         userPad.move = key;
         return { status: true, message: "move done" };
     }
@@ -144,15 +144,8 @@ export class GatewayService {
         let targetInvites = this.invites.get(targetUserId) || [];
         if (targetInvites.find(i => i.id === userId))
             return { status: false, message: "invitation send already" };
-        console.log('burda')
-        console.log(targetInvites)
         targetInvites.push({ id: userId });
-        console.log(targetInvites)
         this.invites.set(targetUserId, targetInvites);
-        console.log('burda')
-
-        console.log(this.invites)
-
         return { status: true, message: "success" };
     }
 
@@ -170,10 +163,7 @@ export class GatewayService {
     deleteInvite(myUserId: number, targetUserId: number): Res<Invite> {
         if (!this.isUserOnline(targetUserId))
             return { status: false, message: "Target is offline" };
-        console.log('simdi', this.invites);
-        console.log(myUserId);
         const myInvites = this.invites.get(myUserId) || [];
-        console.log(myInvites);
         if (!myInvites.find(i => i.id === targetUserId))
             return { status: false, message: "no invitation from the user" };
         const deleted = myInvites.find(i => i.id === targetUserId);
@@ -198,13 +188,4 @@ export class GatewayService {
     getInvites(userId: number) {
         return this.invites.get(userId);
     }
-
-    endGame(gameId: string) {
-        const { server } = this.games.get(gameId);
-        server.socketsLeave(`game${gameId}`);
-        this.games.delete(gameId);
-        console.debug(gameId, "game deleted");
-    }
-
-
 }

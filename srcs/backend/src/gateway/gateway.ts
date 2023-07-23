@@ -42,7 +42,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		
 
 	async handleConnection(client: Socket) {
-		// console.log('here')
 		const userSocket = client.handshake.auth;
 		this.logger.debug(`Client connected: [${userSocket.name}] - ${client.id}`);
 		this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
@@ -50,7 +49,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		const user = await this.userService.findUserByUserName(userSocket.name);
 		if(!user)
 			return
-		console.log('client.id: ', client.id);
 		client.join(user.id.toString());
 		client.emit('userId', user.id);
 		this.mapService.userToSocketId.set(user.id, client.id);
@@ -62,7 +60,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		const userSocket = client.handshake.auth;
 		this.logger.debug(`Client disconnected: [${userSocket.name}] - ${client.id}`);
 		this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
-		// console.log(client.rooms);
 		await this.userService.updateStatus(userSocket.name, 'offline');
 		this.onUserUpdate();
 	}
@@ -121,7 +118,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	@SubscribeMessage('matchMaking')
 	async handleMatchMaking( @ConnectedSocket() client: Socket ) {
-		console.log('gelmisss');
 		if (!client) {
 			client.emit('error', "No connection"); ///null oldugu duruma bak  frontende koy
 			return;
@@ -163,7 +159,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		const resGameCreate = await this.gatewayService.createGame(this.server, resMatching.payload[0], resMatching.payload[1]);
 		if (resGameCreate.status !== true) {
 			if (resGameCreate.message)
-			client.emit('error', resGameCreate.message);
+			// client.emit('error', resGameCreate.message);
 			socket1.leave(`game${gameId}`);
 			socket2.leave(`game${gameId}`);
 			return;
@@ -172,7 +168,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		// this.server.to(`game${gameId}`).emit('success', `Found match! Starting the game...`);
 		this.server.to(`game${gameId}`).emit('game_info', { p1: resMatching.payload[0].id, p2: resMatching.payload[1].id });
 		this.server.to(`game${gameId}`).emit('gameFound');
-		console.log(resMatching.payload[0].id,' and ', resMatching.payload[1].id, 'oyuna baslayacak');
 		// if(user.id === resMatching.payload[0].id) {
 		this.gameService.startGame(this.gatewayService.getGameByGameId(gameId));
 		// }
@@ -203,8 +198,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', 'Invalid user');
 			return;
 		}
-		console.log(data.userName);
-		console.log(data.userName);
 
         if (!data.userName) {
 			client.emit('error', 'empty username');
@@ -216,16 +209,12 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			return;
 		}
 		this.gatewayService.uninviteUser(user.id, target?.id );
-		console.log(user.id, target.id);
         const res = this.gatewayService.inviteUser(user.id, target?.id );
         if (res.status !== true) {
-			console.log(res.message);
 			client.emit('error', res.message);
             return;
         }
-		console.log("yes", user.userName);
         const invite = this.gatewayService.getInvites(target.id).find(i => i.id === user.id);
-        console.log(invite);
 		client.emit('invitesent', { ...invite, userName: target.userName });
         this.sendSocketMsgByUserId(target.id, 'gameinvite', { ...invite, userName: user.userName, id: user.id });
     }
@@ -259,10 +248,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
             return;
         }
         const target = await this.userService.findUserByUserId(data.id);
-		console.log('baaaak', user.id, target.id);
         const res = this.gatewayService.deleteInvite(user.id, target?.id);
         if (res.status !== true) {
-			console.log(res.message);
 			client.emit('error', res.message);
             return;
         }
@@ -298,7 +285,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
         this.server.to(`game${gameId}`).emit('game_info', { p1: user.id, p2: target.id });
         this.server.to(`game${gameId}`).emit('gameFound');
         this.gameService.startGame(this.gatewayService.getGameByGameId(gameId));
-		console.log('accepted');
     }
 
     // @SubscribeMessage('RejectInvitation')
@@ -347,10 +333,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	async sendSocketMsgByUserId(userId: number, event: string, payload: any = null) {
         const client = await this.userService.findUserByUserId(userId);
-		// console.log(client)
         const isClientOnline = client.isLogged;
         if (isClientOnline) {
-			// console.log('idil');
 			const socketId = this.mapService.userToSocketId.get(client.id);
 			const socket = this.server.sockets.sockets.get(socketId);
 			if (socket) {
@@ -361,45 +345,3 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
         }
     }
 }
-
-
-
-	// @SubscribeMessage('getUserStatus')
-	// async getUserStatus(@ConnectedSocket() client: Socket) {
-	// 	const users = await this.userService.getAllUsersStatus();
-	// 	client.emit('userStatus', users);
-	// }
-	
-	// @SubscribeMessage('getMemberStatus')
-	// async getMemberStatus(@MessageBody() body: RoomDto, @ConnectedSocket() client: Socket) {
-	// 	const users = await this.chatService.getRoomUsers(body.roomName);
-	// 	client.emit('memberStatus', users);
-	// }
-
-
-
-
-// handleConnection(client: Socket) {
-// 	const user = client.handshake.auth;
-// 	// console.log(user);
-// 	// this.users.push(user);
-// 	client.data.user = user;
-// 	this.logger.log(`Client connected: ${client.id}`);
-// 	this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`)
-// 	this.server.emit('newUserResponse', this.users);
-// }
-
-// handleDisconnect(client: Socket) {
-// 	const user = client.handshake.auth;
-// 	this.users = this.users.filter((users) => users.name !== user.name) 
-// 	this.server.emit('newUserResponse', this.users);
-// 	this.logger.debug(`Client disconnected: ${client.id}`);
-// 	this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`)
-// }
-
-// @SubscribeMessage('newUser')
-// onNewUser(@MessageBody() body: any) {
-// 	this.users.push(body);
-// 	// this.logger.log(body);
-// 	this.server.emit('onNewUser', this.users);
-// }

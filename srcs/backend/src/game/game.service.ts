@@ -25,6 +25,8 @@ export class GameService {
     
     // after matching with an opponent start the game.
     async startGame(game: Game) {
+        await this.userRepository.update(game.p1, { inGame: true });
+        await this.userRepository.update(game.p2, { inGame: true });
         await new Promise(resolve => setTimeout(resolve, 4000)); //3000 for the timer.. but maybe a little larger?
         game.interval = setInterval(() => this.gameLoop(game), 8); // smalller then 1000/120
     }
@@ -50,7 +52,7 @@ export class GameService {
 
                 game.server.to(`game${game.id}`).emit('success', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
                 game.server.to(`game${game.id}`).emit('game_ended', { winnerUsername, winnerId: winner, winnerScore, loserScore });
-                // this.socketService.endGame(game.id);
+                // this.socketService.endGame(game, game.id);
                 
                 return;
             }

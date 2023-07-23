@@ -4,7 +4,6 @@ import {Column, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} fro
 
 @Entity('GameEntity')
 export class GameEntity {
-
     @Expose()
     @PrimaryGeneratedColumn()
     id: number;
@@ -30,16 +29,6 @@ export class GameEntity {
         default: 0
     })
     opponentScore: number;
-
-    @Expose()
-    @Column({
-        default: 0
-    })
-    gameCount: number;
-
-    @Column()
-    @UpdateDateColumn()
-    endedAt: Date;
 
 
 }

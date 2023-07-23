@@ -56,4 +56,19 @@ export class UserEntity {
     @OneToMany(() => GameEntity, game => game.player)
     games: GameEntity[];
 
+    @Column({
+        default: 0
+    })
+    score: number;
+
+	@Column({
+        default: 0
+    })
+    totalWin: number;
+
+	@Column({
+        default: 0
+    })
+    totalLoose: number;
+
 }

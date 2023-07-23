@@ -32,6 +32,7 @@ export class GameService {
     }
 
     async gameLoop(game: Game) {
+        let i: number = 1;
         if (!game.pause) {
             this.isLose(game);
             if (game.p1Score === scoreMax || game.p2Score === scoreMax) {
@@ -41,8 +42,8 @@ export class GameService {
                 const winnerScore = Math.max(game.p1Score, game.p2Score);
                 const loserScore = Math.min(game.p1Score, game.p2Score);
 
-                await this.userRepository.update(winner, { totalWin: +1, score: +100 });
-                await this.userRepository.update(loser, { totalLoose: +1 });
+                await this.userRepository.update(winner, { totalWin: +1, score: +100, inGame: false });
+                await this.userRepository.update(loser, { totalLoose: +1, inGame: false });
 
                 const winnerObj = await this.userService.findUserByUserId(winner);  ///buraya alinin fonksiyonunu koyacaksin
 
@@ -53,7 +54,9 @@ export class GameService {
                 game.server.to(`game${game.id}`).emit('success', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
                 game.server.to(`game${game.id}`).emit('game_ended', { winnerUsername, winnerId: winner, winnerScore, loserScore });
                 // this.socketService.endGame(game, game.id);
-                
+                game.server.socketsLeave(`game${game.id}`);
+                this.socketService.games.delete(game.id);
+                // game.pause = true;
                 return;
             }
 
@@ -93,9 +96,12 @@ export class GameService {
 
         if (!game.pause) {
             this.broadcastGame(game);
+            i = 1;
         }
+        else
+            return ;
+        //  this.socketService.endGame(game, game.id);
 
-        // else if (!game.pause)
         //     end game
     }
 

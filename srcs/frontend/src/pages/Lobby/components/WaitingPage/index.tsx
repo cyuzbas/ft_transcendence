@@ -39,7 +39,13 @@ export function WaitingPage1() {
     };
   }, [socket, navigate]);
 
-  socket.emit("matchMaking");
+  useEffect(() => {
+    socket.emit("matchMaking");
+    return () => {
+      // socket.off('gameUnqueued', onCancelInvite);
+      // socket.disconnect();
+    };
+  }, []);
 
   return (
     <>

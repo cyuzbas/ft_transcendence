@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm"
-import { RoomEntity } from "./room.entity";
+import { GameEntity } from "./game.entity";
 import { MessageEntity } from "./message.entity";
 import { RoomUserEntity } from "./roomUser.entity";
 
@@ -50,5 +50,10 @@ export class UserEntity {
 	
 	@ManyToMany(() => UserEntity, user => user.blocking)
 	blockedBy: UserEntity[];
+
+	// /////////
+	@JoinTable()
+    @OneToMany(() => GameEntity, game => game.player)
+    games: GameEntity[];
 
 }

@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { CloseIcon } from '../../../assets'
 import './styles.css'
 import { Button } from '../Button'
+import { useSocket } from "../../../../../contexts"
 
 type ModalProps = {
   children: ReactNode
@@ -10,6 +11,9 @@ type ModalProps = {
 }
 
 export function Modal({ children, isOpen, setIsOpen }: ModalProps) {
+
+  const { socket } = useSocket();
+
   return (
     <div
       onClick={() => setIsOpen(false)}
@@ -17,12 +21,14 @@ export function Modal({ children, isOpen, setIsOpen }: ModalProps) {
     >
       <div onClick={(e) => e.stopPropagation()} className='modal-content'>
         <Button
-          icon={<CloseIcon style={{ position: 'absolute', top: -180, right: -180 }} />}
+          icon={<CloseIcon />}
           className='close-button'
-          style={{ position: 'relative' }}
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            console.log('cancel');
+            socket.emit('cancelMatching');
+            setIsOpen(false);
+          }}
         />
-
         {children}
       </div>
     </div>

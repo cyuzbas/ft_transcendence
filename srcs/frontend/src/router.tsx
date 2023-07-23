@@ -11,10 +11,11 @@ import Navbar from './components/Nav/navBar';
 import SideBar from './components/Nav/sideBar';
 import React, { useContext } from 'react';
 import './components/Nav/main.css';
+import { Random, FriendGame } from './pages/Game/components/Online/index'
+import { WaitingPage1, WaitingPage2 } from './pages/Lobby/components/WaitingPage';
 
 
 export function Router() {
-  const {user} = useContext(UserContext)
   return (
     <React.Fragment>
             <BrowserRouter>
@@ -43,6 +44,10 @@ export function Router() {
                     <Route path='/create2fa' element={  <Create2fa/>} />
                     {/* <Route path='/verify2fa' element={  <Verify2fa/>} /> */}
                     {/* <Route path='/chat' element={<Chat />} /> */}
+                    <Route path='/random' element={<Random />} />
+                    <Route path='/friendgame' element={<FriendGame />} />
+                    <Route path='/findingopponent' element={<WaitingPage1 />} />
+                    <Route path='/waitingreply' element={<WaitingPage2 />} />
                     {gameModes.map((mode: GameMode) => (
                       <Route
                         key={mode}

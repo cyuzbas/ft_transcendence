@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 
 export const numActPerSendData = 2;
 export const baseSpeed = 10;
-export const scoreMax = 3;
+export const scoreMax = 30;
 // export const startTime = 1e3;
 export const gameTps = 120;
 // export const ballSpeed = (baseSpeed / gameTps); //padWidth den fazla olmasin
@@ -67,7 +67,6 @@ export class Pad {
 export class Game {
   
   interval: NodeJS.Timer;
-  sendTest: number;
   pause: boolean;
   p1Score: number;
   p2Score: number;
@@ -96,7 +95,6 @@ export class Game {
 
     this.server = server;
     this.interval = null;
-    this.sendTest = 1;
     this.pause = false;
     this.p1Score = 0;
     this.p2Score = 0;

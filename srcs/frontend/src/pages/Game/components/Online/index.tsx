@@ -12,7 +12,6 @@ interface GameState {
   p2Score: number;
   p1: string;
   p2: string;
-  tps: number;
 }
 
 export function Random() {
@@ -76,8 +75,8 @@ export function Random() {
         <div className='game-container'> 
           {gameState && (
             <>
-              {/* <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
-              <div style={{ position: 'absolute', top: `calc(${gameState.ball.y} * 1vh)`, left: `calc(${gameState.ball.x} * 1vw`, height: `2.5vh`, width: `2.5vh`, backgroundColor: 'var(--foreground-color)', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} /> */}
+              <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
+              <div style={{ position: 'absolute', top: `calc(${gameState.ball.y} * 1vh)`, left: `calc(${gameState.ball.x} * 1vw`, height: `2.5vh`, width: `2.5vh`, backgroundColor: 'var(--foreground-color)', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} />
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleLeft.y} * 1vw)`, left: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleRight.y} * 1vw)`, right: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
             </>

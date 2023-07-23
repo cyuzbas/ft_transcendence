@@ -132,7 +132,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', 'Invalid user');
 			return;
 		}
-		console.log('match making requested for socker', client.id);
+		console.log('match making requested for socket', client.id);
 		const resQueued = this.gatewayService.addUserToQueue(user.id);
 		if (resQueued.status !== true) {
 			client.emit('error', resQueued.message);
@@ -149,29 +149,34 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		const socket2Id = this.mapService.userToSocketId.get(user2.id);
 		const socket1 = this.server.sockets.sockets.get(socket1Id);
 		const socket2 = this.server.sockets.sockets.get(socket2Id);
+		
 		socket1.emit('matchFound'); //bu oldugunda bir insatlling effecti koyabilirsin?
 		socket2.emit('matchFound'); //bu oldugunda bir insatlling effecti koyabilirsin?
-        const gameId = [resMatching.payload[0].id, resMatching.payload[1].id].sort().join('vs');
-        socket1.join(`game${gameId}`);
-        socket2.join(`game${gameId}`);
+		const gameId = [resMatching.payload[0].id, resMatching.payload[1].id].sort().join('vs');
+		socket1.join(`game${gameId}`);
+		socket2.join(`game${gameId}`);
 		if (socket1.rooms.has(`game${gameId}`) && socket2.rooms.has(`game${gameId}`)) {
 			console.log(`two users are in the room game${gameId}`);
 		} else {
 			console.log(`Error: One or both users have not joined game room: game${gameId}`);
 		}
-        const resGameCreate = await this.gatewayService.createGame(this.server, resMatching.payload[0], resMatching.payload[1]);
-        if (resGameCreate.status !== true) {
+		const resGameCreate = await this.gatewayService.createGame(this.server, resMatching.payload[0], resMatching.payload[1]);
+		if (resGameCreate.status !== true) {
 			if (resGameCreate.message)
 			client.emit('error', resGameCreate.message);
-            socket1.leave(`game${gameId}`);
-            socket2.leave(`game${gameId}`);
-            return;
-        }
-        // this.server.to(`game${gameId}`).emit('success', `Found match! Starting the game...`);
-        this.server.to(`game${gameId}`).emit('game_info', { p1: resMatching.payload[0].id, p2: resMatching.payload[1].id });
-        this.server.to(`game${gameId}`).emit('gameFound');
+			socket1.leave(`game${gameId}`);
+			socket2.leave(`game${gameId}`);
+			return;
+		}
+		
+		// this.server.to(`game${gameId}`).emit('success', `Found match! Starting the game...`);
+		this.server.to(`game${gameId}`).emit('game_info', { p1: resMatching.payload[0].id, p2: resMatching.payload[1].id });
+		this.server.to(`game${gameId}`).emit('gameFound');
 		console.log(resMatching.payload[0].id,' and ', resMatching.payload[1].id, 'oyuna baslayacak');
-        this.gameService.startGame(this.gatewayService.getGameByGameId(gameId));
+		// if(user.id === resMatching.payload[0].id) {
+		this.gameService.startGame(this.gatewayService.getGameByGameId(gameId));
+		// }
+		// return;
 	}
 
 	@SubscribeMessage('cancelMatching')
@@ -286,9 +291,9 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
         // Notify and remove invite from store
         client.emit('gameAccepted', `You accepted ${target.userName}'s invite`);
         socket.emit('gameAccepted', `Your invitation accepted by ${user.userName}`);
-        client.emit('game_invite_del', { ...res.payload, userName: user.userName });
+        // client.emit('game_invite_del', { ...res.payload, userName: user.userName });
         this.sendSocketMsgByUserId(target.id, 'success', `${user.userName} accepted your invite`);
-        this.sendSocketMsgByUserId(target.id, 'game_invite_accepted', { ...res.payload, userName: user.userName });
+        this.sendSocketMsgByUserId(user.id, 'game_invite_accepted', { ...res.payload, userName: user.userName });
         // Stop queue animation and send to game page??
         this.server.to(`game${gameId}`).emit('game_info', { p1: user.id, p2: target.id });
         this.server.to(`game${gameId}`).emit('gameFound');
@@ -296,30 +301,30 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		console.log('accepted');
     }
 
-    @SubscribeMessage('RejectInvitation')
-    async refuseInvite( @MessageBody() data: Invite, @ConnectedSocket() client: Socket ) {
-        const userSocket = client.handshake.auth;
-		const user = await this.userService.findUserByUserId(userSocket.id);
-        if (!user || !('id' in data)) {
-            client.emit('error', "Invalid data");
-            return;
-        }
-        const target = this.gatewayService.getConnectedUserById(data.id);
-        const res = this.gatewayService.deleteInvite(user.id, target?.id);
-        if (res.status !== true) {
-            client.emit('error', res.message);
-            return;
-        }
-        // Notify and remove invite from store
-        client.emit('success', `You refused ${target.userName}'s invite`);
-        client.emit('game_invite_del', { ...res.payload, userName: user.userName });
-        this.sendSocketMsgByUserId(target.id, 'warning', `${user.userName} refused your invite`);
-        this.sendSocketMsgByUserId(target.id, 'game_invite_refused', { ...res.payload, userName: user.userName });
-    }
+    // @SubscribeMessage('RejectInvitation')
+    // async refuseInvite( @MessageBody() data: Invite, @ConnectedSocket() client: Socket ) {
+    //     const userSocket = client.handshake.auth;
+	// 	const user = await this.userService.findUserByUserId(userSocket.id);
+    //     if (!user || !('id' in data)) {
+    //         client.emit('error', "Invalid data");
+    //         return;
+    //     }
+    //     const target = this.gatewayService.getConnectedUserById(data.id);
+    //     const res = this.gatewayService.deleteInvite(user.id, target?.id);
+    //     if (res.status !== true) {
+    //         client.emit('error', res.message);
+    //         return;
+    //     }
+    //     // Notify and remove invite from store
+    //     client.emit('success', `You refused ${target.userName}'s invite`);
+    //     client.emit('game_invite_del', { ...res.payload, userName: user.userName });
+    //     this.sendSocketMsgByUserId(target.id, 'warning', `${user.userName} refused your invite`);
+    //     this.sendSocketMsgByUserId(target.id, 'game_invite_refused', { ...res.payload, userName: user.userName });
+    // }
 	
 	@SubscribeMessage('keyDown')
     async KeyDown( @MessageBody() data: string, @ConnectedSocket() client: Socket ) {
-        if (!client || !['ArrowUp', 'ArrowDown', 'Esc'].includes(data)) {
+        if (!client || !['ArrowUp', 'ArrowDown'].includes(data)) {
             client.emit('error', "Invalid data");
             return ;
         }

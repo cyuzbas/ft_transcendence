@@ -3,22 +3,122 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GatewayService } from 'src/gateway/gateway.service';
 import { Repository } from 'typeorm';
 import { GameEntity } from '../typeorm/game.entity';
+import { UserEntity } from '../typeorm/user.entity';
 import { Game, ballSizeY, padHeight } from './game';
 import { Ball } from './game';
 import { Pad } from './game';
 import { PadMove } from './game';
 import { scoreMax } from "./game";
-import { gameTps } from "./game";
 import { numActPerSendData } from "./game";
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class GameService {
     constructor(
         @InjectRepository(GameEntity)
         private gameRepository: Repository<GameEntity>,
+        @InjectRepository(UserEntity)
+        private userRepository: Repository<UserEntity>,
         private socketService: GatewayService,
+        private userService: UserService,
     ) {}
+    
+    // after matching with an opponent start the game.
+    async startGame(game: Game) {
+        await new Promise(resolve => setTimeout(resolve, 4000)); //3000 for the timer.. but maybe a little larger?
+        game.interval = setInterval(() => this.gameLoop(game), 8); // smalller then 1000/120
+    }
 
+    async gameLoop(game: Game) {
+        if (!game.pause) {
+            this.isLose(game);
+            if (game.p1Score === scoreMax || game.p2Score === scoreMax) {
+                clearInterval(game.interval);
+                const winner = game.p1Score === scoreMax ? game.p1 : game.p2;
+                const loser = winner === game.p1 ? game.p2 : game.p1;
+                const winnerScore = Math.max(game.p1Score, game.p2Score);
+                const loserScore = Math.min(game.p1Score, game.p2Score);
+
+                await this.userRepository.update(winner, { totalWin: +1, score: +100 });
+                await this.userRepository.update(loser, { totalLoose: +1 });
+
+                const winnerObj = await this.userService.findUserByUserId(winner);  ///buraya alinin fonksiyonunu koyacaksin
+
+                let winnerUsername: String;
+                if (!winnerObj) winnerUsername = "unKnown";
+                else winnerUsername = winnerObj.userName;
+
+                game.server.to(`game${game.id}`).emit('success', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
+                game.server.to(`game${game.id}`).emit('game_ended', { winnerUsername, winnerId: winner, winnerScore, loserScore });
+                // this.socketService.endGame(game.id);
+                
+                return;
+            }
+
+            this.isCollisionWall(game.ball);
+            
+            if (game.ball.x <= game.paddleLeft.x + game.paddleLeft.width &&
+                game.ball.x + game.ball.sizeX >= game.paddleLeft.x &&
+                game.ball.directionX < 0) {
+                this.isCollisionPaddle(game.paddleLeft, game.ball);
+            }
+
+            else if (game.ball.x + game.ball.sizeX >= game.paddleRight.x &&
+                    game.ball.x <= game.paddleRight.x + game.paddleRight.width &&
+                    game.ball.directionX > 0) {
+                this.isCollisionPaddle(game.paddleRight, game.ball);
+            }
+
+            // Add velocity to ball
+            game.ball.x += game.ball.directionX;
+            game.ball.y += game.ball.directionY;
+
+            // Make sure ball is stil inside the game
+            game.ball.x = Math.min(game.ball.x, 100 - game.ball.sizeX);
+            game.ball.x = Math.max(game.ball.x, 0);
+            game.ball.y = Math.min(game.ball.y, 100 - game.ball.sizeY);
+            game.ball.y = Math.max(game.ball.y, 0);
+
+            if (game.paddleLeft.move === -1)
+                this.padUp(game.paddleLeft);
+            else if (game.paddleLeft.move === 1)
+                this.padDown(game.paddleLeft);
+            if (game.paddleRight.move === -1)
+                this.padUp(game.paddleRight);
+            else if (game.paddleRight.move === 1)
+                this.padDown(game.paddleRight);
+        }
+
+        if (!game.pause) {
+            this.broadcastGame(game);
+        }
+
+        // else if (!game.pause)
+        //     end game
+    }
+
+    // if ball is out of game, update the scores in the database, and reset the game.
+    async isLose(game: Game) {
+        if (game.ball.x <= 0 || game.ball.x + game.ball.sizeX >= 100) {
+            if (game.ball.x <= 0)
+                game.p2Score++;
+            else
+                game.p1Score++;
+            try {
+                await this.gameRepository.update(game.dbIdP1, { playerScore: game.p1Score, opponentScore: game.p2Score });
+                await this.gameRepository.update(game.dbIdP2, { playerScore: game.p2Score, opponentScore: game.p1Score });
+            } catch {
+                game.server.to(`game${game.id}`).emit('error', "could not update score in database");
+            }
+            this.reset(game);
+            // put a popup in the frontend maybe?
+            if (game.p2Score !== scoreMax && game.p1Score !== scoreMax) {
+                game.server.to(`game${game.id}`).emit('success', `Score: ${game.p1Score} - ${game.p2Score}`);
+            }
+        }
+    }
+
+    // reset every data to the initial state, pause the game for 3 sec and restart it.
     reset(game: Game) {
         game.ball.x = 50;
         game.ball.y = 50;
@@ -34,8 +134,9 @@ export class GameService {
         game.paddleRight.y = 50;
         game.paddleRight.move = 0;
         game.paddleRight.reversed = 1;
-        this.broadcastGame(game);
+
         game.pause = true;
+
         this.broadcastGame(game);
         setTimeout(() => {
             game.pause = false
@@ -69,96 +170,8 @@ export class GameService {
         }
     }
 
-    async isLose(game: Game) {
-        // top canvas disina cikti
-        if (game.ball.x <= 0 || game.ball.x + game.ball.sizeX >= 100) {
-            if (game.ball.x <= 0)
-                game.p2Score++;
-            else
-                game.p1Score++;
-            try {
-                await this.gameRepository.update(game.dbIdP1, { playerScore: game.p1Score, opponentScore: game.p2Score });
-                await this.gameRepository.update(game.dbIdP2, { playerScore: game.p2Score, opponentScore: game.p1Score });
-            } catch {
-                game.server.to(`game${game.id}`).emit('error', "could not update score in database");
-            }
-            this.reset(game);
-            // max score koydum ama? sanki random game icin mantikli bence kalsin evet kalsin, sor en iyisi
-            if (game.p2Score !== scoreMax && game.p1Score !== scoreMax) {
-                game.server.to(`game${game.id}`).emit('success', `Score: ${game.p1Score} - ${game.p2Score}`);
-            }
-        }
-    }
-
-    async gameLoop(game: Game) {
-        // console.log(1);
-        if (!game.pause) {
-            this.isLose(game);
-            if (game.p1Score === scoreMax || game.p2Score === scoreMax) {
-                clearInterval(game.interval);
-                const winner = game.p1Score === scoreMax ? game.p1 : game.p2;
-                const winnerScore = Math.max(game.p1Score, game.p2Score);
-                const loserScore = Math.min(game.p1Score, game.p2Score);
-
-                const winnerObj = this.socketService.getConnectedUserById(winner);  ///buraya alinin fonksiyonunu koyacaksin
-
-                let winnerUsername: String;
-                if (!winnerObj) winnerUsername = "unKnown";
-                else winnerUsername = winnerObj.userName;
-
-                game.server.to(`game${game.id}`).emit('success', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
-                game.server.to(`game${game.id}`).emit('game_ended', { winnerUsername, winnerId: winner, winnerScore, loserScore });
-                // this.socketService.endGame(game.id);
-                
-                return;
-            }
-
-            this.isCollisionWall(game.ball);
-        // console.log(2);
-            
-            if (game.ball.x <= game.paddleLeft.x + game.paddleLeft.width &&
-                game.ball.x + game.ball.sizeX >= game.paddleLeft.x &&
-                game.ball.directionX < 0) {
-                this.isCollisionPaddle(game.paddleLeft, game.ball);
-            }
-            else if (game.ball.x + game.ball.sizeX >= game.paddleRight.x &&
-                    game.ball.x <= game.paddleRight.x + game.paddleRight.width &&
-                    game.ball.directionX > 0) {
-                this.isCollisionPaddle(game.paddleRight, game.ball);
-            }
-            // console.log(3);
-
-            // Add velocity to ball
-            game.ball.x += game.ball.directionX;
-            game.ball.y += game.ball.directionY;
-
-            // Make sure coordinates stay positive between 0 and 100
-            game.ball.x = Math.min(game.ball.x, 100 - game.ball.sizeX);
-            game.ball.x = Math.max(game.ball.x, 0);
-            game.ball.y = Math.min(game.ball.y, 100 - game.ball.sizeY);
-            game.ball.y = Math.max(game.ball.y, 0);
-
-            if (game.paddleLeft.move === -1)
-                this.padUp(game.paddleLeft);
-            else if (game.paddleLeft.move === 1)
-                this.padDown(game.paddleLeft);
-            if (game.paddleRight.move === -1)
-                this.padUp(game.paddleRight);
-            else if (game.paddleRight.move === 1)
-                this.padDown(game.paddleRight);
-        }
-        // if (game.sendTest === numActPerSendData && !game.pause) {
-            this.broadcastGame(game);
-        //     game.sendTest = 1;
-        // }
-        // else if (!game.pause)
-        //     game.sendTest++;
-    }
-
     broadcastGame(game: Game) {
-        // console.log('gameid backend', `game${game.id}`);
         game.server.to(`game${game.id}`).emit('gameData', {
-            packetId: game.packetId++,
             ball: game.ball,
             paddleLeft: game.paddleLeft,
             paddleRight: game.paddleRight,
@@ -167,8 +180,6 @@ export class GameService {
             p2Score: game.p2Score,
             p1: game.p1,
             p2: game.p2,
-            // tps: Math.floor(gameTps / numActPerSendData)
-            // Timesteps Per Second: Oyun programlaması veya fizik simülasyonlarında sıklıkla kullanılan bir terimdir. "Timestep", oyunun her güncelleme adımı veya simülasyon adımıdır. "tps" ise, bir saniyedeki güncelleme adımlarının sayısını ifade eder. Yani, kaç tane güncelleme adımının bir saniye içinde gerçekleştiğini belirtir. Tps değeri, oyunun veya simülasyonun hızını ve akıcılığını etkiler. Daha yüksek bir tps değeri, daha hızlı güncelleme adımlarını ifade eder ve oyunun veya simülasyonun daha akıcı ve hızlı çalışmasını sağlar.
         });
     }
 
@@ -188,21 +199,5 @@ export class GameService {
             pad.y = 100 - pad.height;
         else
             pad.y += padHeight;
-    }
-
-    //matchmaking olduktan sonra game i baslatmak icin
-    async startGame(game: Game) {
-        await new Promise(resolve => setTimeout(resolve, 3000)); //burayi 1000 mi 3000 mi karar vermelisin
-        game.interval = setInterval(() => this.gameLoop(game), 1000 / gameTps);
-        console.log('game loop bitti');
-    }
-
-    async updateDbScore(game: Game) {
-        try {
-            await this.gameRepository.update(game.dbIdP1, { playerScore: game.p1Score, opponentScore: game.p2Score });
-            await this.gameRepository.update(game.dbIdP2, { playerScore: game.p2Score, opponentScore: game.p1Score });
-        } catch {
-            game.server.to(`game${game.id}`).emit('error', "could not update score in database");
-        }
     }
 }

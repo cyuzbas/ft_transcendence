@@ -5,7 +5,7 @@ import { Friends } from '../../components';
 import { UserContext } from '../../contexts'
 import FriendsToggle from './components/UserToggle';
 import Achievements from './components/Achievements';
-import Leaderboard from './components/Leaderboard';
+import Leaderboard from './components/LeadToggle';
 import swal from 'sweetalert';
 import pong from '../../img/pong.png';
 
@@ -55,21 +55,20 @@ export function Home() {
             <img src={user.avatar} id="Avatar"/>
           </div>
           <h4 className="UserName">{user.userName}</h4>
-          <h4 className="UserID"> ID - {user.intraId}</h4>
-        </div>
-        <div className="ProfileRankInfo">
-          <div className="ProfileRankInfoLine">
-            <i className="bi bi-circle-fill fs-2"  id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
+          <div className="ProfileStatusInfo">
+            <i className="bi bi-circle-fill fs-5"  id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
             {/* {!isGaming && user.isLogged && ( */}
-              <h4 className="UserStatus">ONLINE</h4> 
+              <h4 className="UserStatus">Online</h4> 
             {/* )} */}
             {/* {isGaming && user.isLogged && (
-              <h4 className="UserStatus">IN GAME</h4> 
+              <h4 className="UserStatus">In Game</h4> 
             )} */}
             {!user.isLogged && (
-              <h4 className="UserStatus">OFFLINE</h4> 
+              <h4 className="UserStatus">Offline</h4> 
             )}
           </div>
+        </div>
+        <div className="ProfileRankInfo">
           <div className="ProfileRankInfoLine">
             <i className="bi bi-star fs-2"></i>
             <h4 className="UserScore">SCORE</h4> {/*Data from Scoretable*/}

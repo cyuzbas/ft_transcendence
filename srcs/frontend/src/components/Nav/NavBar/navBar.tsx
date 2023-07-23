@@ -1,11 +1,11 @@
 import React, { useContext, useState, useRef }  from 'react';
 import { Nav, Navbar, Form, FormControl,  } from 'react-bootstrap';
 import styled from 'styled-components';
-import Intra from '../../img/ft.png';
-import Avatar from '../../img/default.png';
-import { UserContext } from '../../contexts'
-import { Friends } from '../Friends';
-import { Request } from './FriendRequest/FriendRequest';
+import Intra from '../../../img/ft.png';
+import Avatar from '../../../img/default.png';
+import { UserContext } from '../../../contexts'
+import { Friends } from '../../Friends';
+import { Request } from '../FriendRequest/FriendRequest';
 import './styles.css'
 
 
@@ -63,12 +63,6 @@ return (
         <div className="friend-drop-down-container" ref={dropdownRef}>
 		  	  <i className="bi bi-people-fill fs-3 me-2" onClick={(e) => handleDropDownFocus(open)}></i>
           {open && (
-            // <ul>
-            //   <li>Item 1</li>
-            //   <li>Item 2</li>
-            //   <li>Item 3</li>
-            //   <li>Item 4</li>
-            // </ul>
             <ul>
               <li>
                 <Request/>

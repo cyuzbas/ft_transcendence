@@ -7,8 +7,9 @@ import { Friends } from './components';
 import SettingsPage from './pages/SettingsPage'
 import Create2fa from './pages/Create2fa'
 import Verify2fa from './pages/Verify2fa'
-import Navbar from './components/Nav/navBar';
+import Navbar from './components/Nav/NavBar/navBar';
 import SideBar from './components/Nav/SideBar/sideBar';
+import NotFound from './pages/NotFound/index';
 import React, { useContext } from 'react';
 import './components/Nav/main.css';
 
@@ -40,6 +41,7 @@ export function Router() {
                     <Route path='/chat' element={  <Chat/>} />
                     <Route path='/settings' element={  <SettingsPage/>} />
                     <Route path='/create2fa' element={  <Create2fa/>} />
+                    <Route path='*' element={ <NotFound/> } />
                     {gameModes.map((mode: GameMode) => (
                       <Route
                         key={mode}

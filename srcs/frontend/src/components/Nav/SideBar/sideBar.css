@@ -22,11 +22,11 @@
 	/* height: 20%; */
 }
 
-.bi-house-door, .bi-controller,.bi-wechat, .bi-gear.sidebar-settings, .bi-door-open{
+.bi-house-door, .bi-controller,.bi-wechat, .bi-gear.sidebar-settings, .bi-door-open, .bi-person{
 	color: rgb(178,225,255);
 	height: 15%;
 }
-.bi-house-door:hover, .bi-controller:hover, .bi-wechat:hover, .sidebar-settings:hover, .bi-door-open:hover { 
+.bi-house-door:hover, .bi-controller:hover, .bi-wechat:hover, .sidebar-settings:hover, .bi-door-open:hover, .bi-person:hover { 
 	color: white; 
 	cursor: pointer;
 }

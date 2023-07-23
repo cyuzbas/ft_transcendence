@@ -1,6 +1,7 @@
 import './styles.css'
 import React, { useState, useContext } from 'react';
 import { UserContext } from '../../../../contexts'
+import MatchHistory from '../MatchHistory';
 
 function LeaderBoard() {
 
@@ -55,31 +56,32 @@ function LeaderBoard() {
 			</div>
 		)}
 		{isMatchHistoryVisible && (
-			<div className="MatchHistorySection">
-				<div className={isWon ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'}>
-					<div className="imageUserMatch">
-						<img src={user.avatar} id="Avatar" alt=""/>
-					</div>
-					<div>5</div>
-					<div>VS</div>
-					<div>3</div>
-					<div className="imageUserMatch">
-              			<img src={user.avatar} id="Avatar" alt=""/>
-            		</div>
-				</div>
-				<div className={isLost ? 'UserMatchHistory userLostMatch' : 'UserMatchHistory userWonMatch'}>
-					<div className="imageUserMatch">
-						<img src={user.avatar} id="Avatar" alt=""/>
-					</div>
-					<div>5</div>
-					<div>VS</div>
-					<div>3</div>
-					<div className="imageUserMatch">
-              			<img src={user.avatar} id="Avatar" alt=""/>
-            		</div>
-				</div>
-				<div className="UserScores"></div>
-			</div>
+			<MatchHistory/>
+			// <div className="MatchHistorySection">
+			// 	<div className={isWon ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'}>
+			// 		<div className="imageUserMatch">
+			// 			<img src={user.avatar} id="Avatar" alt=""/>
+			// 		</div>
+			// 		<div>5</div>
+			// 		<div>VS</div>
+			// 		<div>3</div>
+			// 		<div className="imageUserMatch">
+            //   			<img src={user.avatar} id="Avatar" alt=""/>
+            // 		</div>
+			// 	</div>
+			// 	<div className={isLost ? 'UserMatchHistory userLostMatch' : 'UserMatchHistory userWonMatch'}>
+			// 		<div className="imageUserMatch">
+			// 			<img src={user.avatar} id="Avatar" alt=""/>
+			// 		</div>
+			// 		<div>5</div>
+			// 		<div>VS</div>
+			// 		<div>3</div>
+			// 		<div className="imageUserMatch">
+            //   			<img src={user.avatar} id="Avatar" alt=""/>
+            // 		</div>
+			// 	</div>
+			// 	<div className="UserScores"></div>
+			// </div>
 		)}
 	</div>
 	);

@@ -78,6 +78,13 @@
     margin-top: 15px;
  }
 
+ .ProfileStatusInfo{
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+ }
+
  .ProfileRankInfo {
     /* background-color: rgb(88, 110, 124); */
     display: flex;

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSocket } from '../../../../contexts';
 import { Timer } from '../Timer/index';
-import { useNavigate } from 'react-router-dom'
 import './styles.css'
 
 interface GameState {
@@ -20,18 +19,6 @@ export function Random() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [timer, setTimer] = useState(false);
   const { socket } = useSocket();
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const gameEndHandler = (data: any) => {
-  //     console.log(data.message);
-  //     navigate('/lobby');
-  //   };
-  //   socket.on('gameEnd', gameEndHandler);
-  //   return () => {
-  //     socket.off('gameEnd', gameEndHandler);
-  //   };
-  // }, [socket]);
 
   useEffect(() => {
     const gameDataHandler = (data: GameState) => {
@@ -89,8 +76,8 @@ export function Random() {
         <div className='game-container'> 
           {gameState && (
             <>
-              <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
-              <div style={{ position: 'absolute', top: `calc(${gameState.ball.y} * 1vh)`, left: `calc(${gameState.ball.x} * 1vw`, height: `2.5vh`, width: `2.5vh`, backgroundColor: 'var(--foreground-color)', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} />
+              {/* <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
+              <div style={{ position: 'absolute', top: `calc(${gameState.ball.y} * 1vh)`, left: `calc(${gameState.ball.x} * 1vw`, height: `2.5vh`, width: `2.5vh`, backgroundColor: 'var(--foreground-color)', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} /> */}
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleLeft.y} * 1vw)`, left: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleRight.y} * 1vw)`, right: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
             </>
@@ -106,18 +93,6 @@ export function FriendGame() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [timer, setTimer] = useState(false);
   const { socket } = useSocket();
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const gameEndHandler = (data: any) => {
-  //     console.log(data.message);
-  //     navigate('/lobby');
-  //   };
-  //   socket.on('gameEnd', gameEndHandler);
-  //   return () => {
-  //     socket.off('gameEnd', gameEndHandler);
-  //   };
-  // }, [socket]);
 
   useEffect(() => {
     const gameDataHandler = (data: GameState) => {
@@ -167,6 +142,7 @@ export function FriendGame() {
   return (
     <>
       <div>
+        {/* friend game */}
         {timer && (
           <>
             <Timer />

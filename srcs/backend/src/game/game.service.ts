@@ -6,13 +6,17 @@ import { GameEntity } from '../typeorm/game.entity';
 import { Game, ballSizeY, padHeight } from './game';
 import { Ball } from './game';
 import { Pad } from './game';
+import { PadMove } from './game';
 import { scoreMax } from "./game";
 import { gameTps } from "./game";
 import { numActPerSendData } from "./game";
 
+function randNumber(min: number, max: number) {
+    return Math.max(Math.min(Math.random() * (max - min + 1) + min, max), min);
+}
+
 @Injectable()
 export class GameService {
-
     constructor(
         @InjectRepository(GameEntity)
         private gameRepository: Repository<GameEntity>,
@@ -106,9 +110,10 @@ export class GameService {
                 if (!winnerObj) winnerUsername = "unKnown";
                 else winnerUsername = winnerObj.userName;
 
-                game.server.to(`game${game.id}`).emit('success', `${winnerUsername} won the game: ${winnerScore} - ${loserScore}`);
-                game.server.to(`game${game.id}`).emit('gameEnd', { winnerUsername, winnerId: winner, winnerScore, loserScore });
+                game.server.to(`game${game.id}`).emit('success', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
+                game.server.to(`game${game.id}`).emit('game_ended', { winnerUsername, winnerId: winner, winnerScore, loserScore });
                 // this.socketService.endGame(game.id);
+                
                 return;
             }
 
@@ -127,11 +132,11 @@ export class GameService {
             }
             // console.log(3);
 
-            // velocity ekle topa
+            // Add velocity to ball
             game.ball.x += game.ball.directionX;
             game.ball.y += game.ball.directionY;
 
-            // top coordinateleri 0 ve 100 arasinda
+            // Make sure coordinates stay positive between 0 and 100
             game.ball.x = Math.min(game.ball.x, 100 - game.ball.sizeX);
             game.ball.x = Math.max(game.ball.x, 0);
             game.ball.y = Math.min(game.ball.y, 100 - game.ball.sizeY);
@@ -146,12 +151,12 @@ export class GameService {
             else if (game.paddleRight.move === 1)
                 this.padDown(game.paddleRight);
         }
-        if (game.sendTest === numActPerSendData && !game.pause) {
+        // if (game.sendTest === numActPerSendData && !game.pause) {
             this.broadcastGame(game);
-            game.sendTest = 1;
-        }
-        else if (!game.pause)
-            game.sendTest++;
+        //     game.sendTest = 1;
+        // }
+        // else if (!game.pause)
+        //     game.sendTest++;
     }
 
     broadcastGame(game: Game) {

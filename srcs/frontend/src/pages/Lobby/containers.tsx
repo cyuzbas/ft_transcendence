@@ -77,7 +77,7 @@ export const BottomCard = styled.div`
     }
 `
 
-export const Form = styled.form`
+export const Card = styled.form`
   background-color: rgba(88, 110, 124, 0.1);
   display: flex;
   align-items: center;

@@ -33,8 +33,7 @@ export function Lobby() {
     <Components.Container>
       {settings ? (
         <Components.OfflineContainer settings={settings}>
-          <Settings isOpen={isSettingsModalOpen} setIsOpen={setIsSettingsModalOpen} />
-          <Components.Form>
+          <Components.Card>
             <Components.TopCard>
               <img src={SoloImg} alt="Solo" className='img1'/>
               <Link to='/solo' className='games1'>SOLO</Link>
@@ -43,12 +42,13 @@ export function Lobby() {
               <img src={MultiImg} alt="Multi" className='img2'/>
               <Link to='/multiplayer' className='games2'>MULTIPLAYER</Link>
             </Components.BottomCard>
-          </Components.Form>
+          <Settings isOpen={isSettingsModalOpen} setIsOpen={setIsSettingsModalOpen} />
+          </Components.Card>
         </Components.OfflineContainer>
       ) : (
         <Components.OnlineContainer settings={settings}>
           {/* <WaitingPage isOpen={isLookingForOpponent} setIsOpen={setIsLookingForOpponent} /> */}
-          <Components.Form>
+          <Components.Card>
 
             <Link to='/findingopponent' className='mylink'>Random Game</Link>
             
@@ -74,7 +74,7 @@ export function Lobby() {
             {/* <Link to='/invitation' className='button'>Random Game</Link> */}
             {/* <Components.Button onClick={handleRandomGame}>Random Game</Components.Button> */}
             {/* <Components.Button onClick={handleInvitation}>Invite a Friend</Components.Button> */}
-          </Components.Form>
+          </Components.Card>
         </Components.OnlineContainer>
       )}
   

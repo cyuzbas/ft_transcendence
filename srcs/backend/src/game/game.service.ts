@@ -11,10 +11,6 @@ import { scoreMax } from "./game";
 import { gameTps } from "./game";
 import { numActPerSendData } from "./game";
 
-function randNumber(min: number, max: number) {
-    return Math.max(Math.min(Math.random() * (max - min + 1) + min, max), min);
-}
-
 @Injectable()
 export class GameService {
     constructor(

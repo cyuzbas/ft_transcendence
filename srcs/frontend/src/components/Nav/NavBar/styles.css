@@ -29,6 +29,7 @@ background-color: rgb(88, 110, 124);
     align-items: center;
     justify-content: center;
     position: relative;
+    margin-right: 20px;
 } 
 .friend-drop-down-container ul {
     margin: 0;
@@ -51,6 +52,5 @@ background-color: rgb(88, 110, 124);
     border-radius: 5px;
     width: 100%;
     padding: 10px 20px;
-    cursor: pointer;
     transition: background-color ease .2s;
 }

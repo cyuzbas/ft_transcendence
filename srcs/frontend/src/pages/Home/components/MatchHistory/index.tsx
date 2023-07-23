@@ -4,7 +4,7 @@ import { UserContext } from '../../../../contexts'
 
 function MatchHistory() {
 
-	const { user, setUser } = useContext(UserContext);
+	const { user } = useContext(UserContext);
 
 	//FROM DATABASE OPONENT GAMES, REAL DATA WILL COME
 	const isWon = true;
@@ -14,28 +14,29 @@ function MatchHistory() {
 	// There will be array of oponents match
 		<div className="MatchHistorySection">
 			<div className={isWon ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'}>
-				<div className="imageUserMatch">
+				<div className="imageUserMatch" id="imageFirstUser">
 					<img src={user.avatar} id="Avatar" alt=""/>
 				</div>
-				<div className="MatchHistoryScore">5</div>
-				<div>VS</div>
-				<div className="MatchHistoryScore">3</div>
-				<div className="imageUserMatch">
+				<div className="MatchHistoryScore" id="ScoreFirstUser">5</div>
+				<div className="VS">-</div>
+				<div className="MatchHistoryScore" id="ScoreSecondUser">3</div>
+				<div className="imageUserMatch" id="imageSecondUser">
 					<img src={user.avatar} id="Avatar" alt=""/>
 				</div>
 			</div>
 			<div className={isLost ? 'UserMatchHistory userLostMatch' : 'UserMatchHistory userWonMatch'}>
-				<div className="imageUserMatch">
-					<img src={user.avatar} id="Avatar" alt=""/>
+				<div className="imageUserMatch" id="imageFirstUser">
+						<img src={user.avatar} id="Avatar" alt=""/>
+					</div>
+					<div className="MatchHistoryScore" id="ScoreFirstUser">18</div>
+					<div className="VS">-</div>
+					<div className="MatchHistoryScore" id="ScoreSecondUser">22</div>
+					<div className="imageUserMatch" id="imageSecondUser">
+						<img src={user.avatar} id="Avatar" alt=""/>
+					</div>
 				</div>
-				<div className="MatchHistoryScore">5</div>
-				<div>VS</div>
-				<div className="MatchHistoryScore">3</div>
-				<div className="imageUserMatch">
-					<img src={user.avatar} id="Avatar" alt=""/>
-				</div>
-			</div>
-			<div className="UserScores"></div>
+			<div className="DummyContent"></div>
+			<div className="DummyContent"></div>
 		</div>
 	);
 	}

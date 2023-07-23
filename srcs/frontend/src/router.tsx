@@ -1,21 +1,20 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { UserProvider, GameProvider, UserContext } from './contexts';
+import { UserProvider, GameProvider } from './contexts';
 import { GameMode, gameModes } from './pages/Game/logic/types'
-import { Game, Lobby, Home, Chat, Login } from './pages'
+import { Game, Lobby, Home, Chat } from './pages'
 import { SocketProvider } from './contexts/SocketContext/provider';
 import { Friends } from './components';
 import SettingsPage from './pages/SettingsPage'
 import Create2fa from './pages/Create2fa'
-import Verify2fa from './pages/Verify2fa'
 import Navbar from './components/Nav/NavBar/navBar';
 import SideBar from './components/Nav/SideBar/sideBar';
 import NotFound from './pages/NotFound/index';
-import React, { useContext } from 'react';
+import React from 'react';
 import './components/Nav/main.css';
+import { Profile } from './pages/Profile/index';
 
 
 export function Router() {
-  const {user} = useContext(UserContext)
   return (
     <React.Fragment>
             <BrowserRouter>
@@ -41,6 +40,7 @@ export function Router() {
                     <Route path='/chat' element={  <Chat/>} />
                     <Route path='/settings' element={  <SettingsPage/>} />
                     <Route path='/create2fa' element={  <Create2fa/>} />
+                    <Route path='/profile' element={  <Profile/>} />
                     <Route path='*' element={ <NotFound/> } />
                     {gameModes.map((mode: GameMode) => (
                       <Route

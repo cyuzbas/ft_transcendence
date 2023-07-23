@@ -1,7 +1,7 @@
 import './styles.css'
 import { Friends } from '../../../../components';
 import React, { useState } from 'react';
-import Switch from "react-switch";
+import FriendsSection from '../FriendsSection';
 
 function FriendsToggle() {
 
@@ -52,27 +52,7 @@ function FriendsToggle() {
 				<div className="fake-all-users"></div>
 			</div>
 		)}
-		{isFriendsVisible && (
-			<div id="AllFriends" className="UsersSection">
-				{/* <Friends/> */}
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				
-			</div>
-		)}
+		{isFriendsVisible && ( <FriendsSection/> )}
 	</div>
 	);
   };

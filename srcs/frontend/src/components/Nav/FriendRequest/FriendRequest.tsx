@@ -15,7 +15,7 @@ type User = {
   
 export function Request() {
     const [users, setUsers] = useState<User[]>([]);
-    const {user, setUser} = useContext(UserContext)
+    const {user} = useContext(UserContext)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,10 +50,10 @@ export function Request() {
             </div>
             <div className="friendRequestUsername">{user.userName}</div>
             <div className='friendReject'>
-              <i className="bi bi-x-lg fs45"></i>
+              <i className="bi bi-x-lg fs-4"></i>
             </div>
             <div className='friendAccept'>
-              <i className="bi bi-check2 fs-4"></i>
+              <i className="bi bi-check2 fs-3"></i>
             </div>
         </div>
       ))

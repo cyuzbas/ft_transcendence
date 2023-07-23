@@ -2,9 +2,7 @@ import React, { useContext, useState, useRef }  from 'react';
 import { Nav, Navbar, Form, FormControl,  } from 'react-bootstrap';
 import styled from 'styled-components';
 import Intra from '../../../img/ft.png';
-import Avatar from '../../../img/default.png';
 import { UserContext } from '../../../contexts'
-import { Friends } from '../../Friends';
 import { Request } from '../FriendRequest/FriendRequest';
 import './styles.css'
 
@@ -61,7 +59,11 @@ return (
       <Nav className="ms-auto">
 		  <Nav.Item>
         <div className="friend-drop-down-container" ref={dropdownRef}>
-		  	  <i className="bi bi-people-fill fs-3 me-2" onClick={(e) => handleDropDownFocus(open)}></i>
+		  	  <i className="bi bi-people-fill fs-3 me-2 friendsRequestButton" onClick={(e) => handleDropDownFocus(open)}>
+            <span className="position-absolute top-0 start-90 translate-middle p-1 bg-ligh border border-light rounded-circle">
+              <span className="visually-hidden">New alerts</span>
+            </span>
+          </i>
           {open && (
             <ul>
               <li>

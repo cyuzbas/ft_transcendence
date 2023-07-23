@@ -1,28 +1,22 @@
-import './styles.css'
-import React, { useContext, useEffect } from 'react';
+import './style.css'
+import React, { useContext } from 'react';
 import { UserContext } from '../../contexts'
-import FriendsToggle from './components/UserToggle';
-import LeaderMatchToggle from './components/LeadToggle';
-import Achievements from './components/Achievements';
 import pong from '../../img/pong.png';
+import Achievements from '../Home/components/Achievements';
+import MatchHistory from '../Home/components/MatchHistory/index';
+import FriendsSection from '../Home/components/FriendsSection/index';
 
 
-export function Home() {
+export function Profile() {
 
 
   const { user } = useContext(UserContext)
 
 
-  useEffect(() => {
-    console.log("home")
-  })
-
-
   return (
 
-    <div className="PageMain">
+    <div className="PageProfile">
       <div id="item-0" className="ProfileSection item">&nbsp;
-        {/* <ProfileSection/> */}
         <div className="ProfileInfo">
          <div className="imageClass">
             <img src={user.avatar} id="Avatar" alt="User Avatar"/>
@@ -70,11 +64,21 @@ export function Home() {
         </div>
       </div>
       <div id="item-1" className="FriendSection item">
-        <FriendsToggle />
+        <div className="Friend-UsersSection">
+          <div className="title-box">
+            <div className="ProfileComponentTitle">FRIENDS</div>
+          </div>
+          <FriendsSection/>
+        </div>
       </div>
-      <div id="item-2" className="LeaderBoard item">
-        <LeaderMatchToggle/>
-      </div>
+        <div id="item-2" className="LeaderBoard item">
+          <div className="LeaderBoard-MatchHistorySection">
+            <div className="title-box">
+              <div className="ProfileComponentTitle">MATCH HISTORY</div>
+            </div>
+            <MatchHistory/>
+          </div>
+        </div>
       <div id="item-3" className="Achievement item">
         <Achievements/>
       </div>

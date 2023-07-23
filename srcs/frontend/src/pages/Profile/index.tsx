@@ -38,11 +38,11 @@ export function Profile() {
         <div className="ProfileRankInfo">
           <div className="ProfileRankInfoLine">
             <i className="bi bi-star fs-2"></i>
-            <h4 className="UserScore">SCORE</h4> {/*Data from Scoretable*/}
+            <h4 className="UserScore">SCORE  - {user.score}</h4> {/*Data from Scoretable*/}
           </div>
           <div className="ProfileRankInfoLine">
             <i className="bi bi-chevron-double-up fs-2"></i>
-            <h4 className="UserRank">RANK </h4> {/*Data from Scoretable*/}
+            <h4 className="UserRank">RANK - {user.rank}</h4> {/*Data from Scoretable*/}
           </div>
         </div>
         <div className="ProfileMatchStats">
@@ -54,12 +54,12 @@ export function Profile() {
           <div id="MatchStatsWin">&nbsp;
             <h4>WIN</h4>
             <i className="bi bi-trophy fs-4"></i>
-            <h4>2</h4> {/*Data from Scoretable*/}
+            <h4>{user.totalWin}</h4> {/*Data from Scoretable*/}
           </div>
           <div id="MatchStatsLoss">&nbsp;
             <h4>LOSS</h4>
             <i className="bi bi-x-lg fs-4"></i>
-            <h4>1</h4>  {/*Data from Scoretable*/}
+            <h4>{user.totalLoose}</h4>  {/*Data from Scoretable*/}
           </div>
         </div>
       </div>

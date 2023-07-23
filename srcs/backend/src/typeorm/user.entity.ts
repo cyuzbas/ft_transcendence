@@ -35,6 +35,9 @@ export class UserEntity {
 	@Column({nullable: true})
 	twoFactorAuthSecret:string
 
+	@Column({nullable: true})
+	rank: number;
+
 	@OneToMany(() => MessageEntity, message => message.user)
 	messages: MessageEntity[];
 
@@ -50,5 +53,24 @@ export class UserEntity {
 	
 	@ManyToMany(() => UserEntity, user => user.blocking)
 	blockedBy: UserEntity[];
+
+	// @JoinTable()
+    // @OneToMany(() => GameEntity, game => game.player)
+    // games: GameEntity[];
+
+    @Column({
+        default: 1
+    })
+    score: number;
+
+	@Column({
+        default: 2
+    })
+    totalWin: number;
+
+	@Column({
+        default: 0
+    })
+    totalLoose: number;
 
 }

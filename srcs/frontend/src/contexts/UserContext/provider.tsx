@@ -13,6 +13,10 @@ export type User = {
   isLogged: boolean;
   TwoFactorAuth: boolean;
   twoFactorCorrect: boolean;
+  score: number;
+  totalWin: number;
+  totalLoose: number;
+  rank: number;
 };
 
 export interface UserContextInterface {
@@ -30,7 +34,11 @@ const defaultState = {
     userRole: '',
     isLogged: false,
     TwoFactorAuth: false,
-    twoFactorCorrect: false
+    twoFactorCorrect: false,
+    score: 1,
+    totalWin: 2,
+    totalLoose: 0,
+    rank: 1
   },
   setUser: (user: User) => { }
 } as UserContextInterface;
@@ -59,7 +67,11 @@ export function UserProvider({ children }: UserProviderProps) {
       userRole: '',
       isLogged: false,
       TwoFactorAuth: false,
-      twoFactorCorrect: false
+      twoFactorCorrect: false,
+      score: 0,
+      totalWin: 0,
+      totalLoose: 0,
+      rank: 1
     };
   });
 

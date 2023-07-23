@@ -5,12 +5,13 @@ import FriendsToggle from './components/UserToggle';
 import LeaderMatchToggle from './components/LeadToggle';
 import Achievements from './components/Achievements';
 import pong from '../../img/pong.png';
+import { Score } from '../Game/components/Score/index';
 
 
 export function Home() {
 
 
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext);
 
 
   useEffect(() => {
@@ -22,7 +23,6 @@ export function Home() {
 
     <div className="PageMain">
       <div id="item-0" className="ProfileSection item">&nbsp;
-        {/* <ProfileSection/> */}
         <div className="ProfileInfo">
          <div className="imageClass">
             <img src={user.avatar} id="Avatar" alt="User Avatar"/>
@@ -43,13 +43,17 @@ export function Home() {
         </div>
         <div className="ProfileRankInfo">
           <div className="ProfileRankInfoLine">
-            <i className="bi bi-star fs-2"></i>
-            <h4 className="UserScore">SCORE</h4> {/*Data from Scoretable*/}
+            <h4 className="UserScore">SCORE</h4>
           </div>
           <div className="ProfileRankInfoLine">
-            <i className="bi bi-chevron-double-up fs-2"></i>
-            <h4 className="UserRank">RANK </h4> {/*Data from Scoretable*/}
+          <i className="bi bi-star fs-2"></i>
+
+            <h4 className="UserScore">{user.score}</h4>
           </div>
+          {/* <div className="ProfileRankInfoLine">
+            <i className="bi bi-chevron-double-up fs-2"></i>
+            <h4 className="UserRank">RANK - {user.rank}</h4>
+          </div> */}
         </div>
         <div className="ProfileMatchStats">
           <div id="MatchStatsTitle">&nbsp;
@@ -60,12 +64,12 @@ export function Home() {
           <div id="MatchStatsWin">&nbsp;
             <h4>WIN</h4>
             <i className="bi bi-trophy fs-4"></i>
-            <h4>2</h4> {/*Data from Scoretable*/}
+            <h4>{user.totalWin}</h4>
           </div>
           <div id="MatchStatsLoss">&nbsp;
             <h4>LOSS</h4>
             <i className="bi bi-x-lg fs-4"></i>
-            <h4>1</h4>  {/*Data from Scoretable*/}
+            <h4>{user.totalLoose}</h4>
           </div>
         </div>
       </div>

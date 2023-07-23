@@ -8,6 +8,7 @@ type User = {
     userName: string;
     intraId: string;
 	  isLogged: boolean;
+	  score: number;
   };
   
 

@@ -59,7 +59,7 @@
 	color: rgb(75, 94, 107);
 	margin-left: 100px;
  }
- .unearned {
+ #unearned {
 	filter: grayscale(100%);
  }
 

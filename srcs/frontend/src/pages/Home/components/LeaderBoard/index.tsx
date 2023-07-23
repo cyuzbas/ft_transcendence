@@ -8,6 +8,8 @@ type User = {
     userName: string;
     intraId: string;
 	isLogged: boolean;
+	score: number;
+	rank: number;
   };
 
 function LeaderBoard() {
@@ -41,28 +43,28 @@ function LeaderBoard() {
   return (
 	<>
 	<div className="UserScoreSection">
-    {Array.isArray(users) ? (
-      users.map((user, index) => (
-			<div className="UserScoreComponent" key={user.intraId}>
-				<div className='UserScoreHash'>
-					<i className="bi bi-hash fs-3"></i>
+		{Array.isArray(users) ? (
+			users
+			.sort((a, b) => b.score - a.score)
+			.map((user, index) => {
+				user.rank = index + 1;
+				return(
+				<div className="UserScoreComponent" key={user.intraId}>
+					<div className='UserScoreHash'>
+						<i className="bi bi-hash fs-3"></i>
+					</div>
+					<div className="UserScoreRank">{user.rank}</div>
+					<div className="imageClassUS">
+						<img src={user.avatar} id="Avatar" alt=""/>
+					</div>
+					<div className="UserScoreUsername">{user.userName}</div>
+					<div className="UserScoreValue">{user.score}</div>
 				</div>
-				<div className="UserScoreRank">{/* {user.userRank} */}{index + 1}</div>
-				<div className="imageClassUS">
-					<img src={user.avatar} id="Avatar" alt=""/>
-				</div>
-				<div className="UserScoreUsername">{user.userName}</div>
-				<div className="UserScoreValue">{/* {user.userScore} */}120</div>
-			</div>
-		))
+				);
+			})
 		) : (
-			<p>No users found</p>
-			)}
-		{/* <div className="UserScores"></div>
-		<div className="UserScores"></div>
-		<div className="UserScores"></div>
-		<div className="UserScores"></div>
-		<div className="UserScores"></div> */}
+				<p>No users found</p>
+		)}
 	</div>
     </>
 	);

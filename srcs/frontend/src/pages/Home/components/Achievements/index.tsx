@@ -12,9 +12,7 @@ import fail from '../../../../img/achievements/epicFail.png'
 
 function Achievements() {
 
-	// const { user, setUser } = useContext(UserContext)
-
-	// There needs to be isSepecicificBadgeEarned in user, so I can check.
+	const { user, setUser } = useContext(UserContext)
 
   return (
 	<div className="AchievementsSection">
@@ -24,49 +22,47 @@ function Achievements() {
 			<div className="BadgesSection">
 				<div className="badges">
 					<div className="badgeClass">
-					{/* {user.isSocialBadgeEarned && ( */}
-						<img src={fresPaddle} className='badgeimage'/>
-					{/* )} */}
+						<img src={fresPaddle} className="badgeimage" id={user.userName?"earned":"unearned"}/>
 					{/* {!user.isSocialBadgeEarned && ( */}
-						{/* <img src={social} className='socialBadge unearned'/> */}
+						{/* <img src={social} className="socialBadge unearned"/> */}
 					{/* )} */}
 					</div>
 					<h4 className="badgeText">FRESH PADDLE</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={whisperer} className='badgeimage unearned'/>
+						<img src={whisperer} className="badgeimage" id={user.totalWin?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">PONG WHISPERER</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={chatterBox} className='badgeimage'/>
+						<img src={chatterBox} className="badgeimage" /*id={room.roomName?"earned":"unearned"}*//>
 					</div>
 					<h4 className="badgeText">CHATTERBOX</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={social} className='badgeimage'/>
+						<img src={social} className="badgeimage" /*id={user.friends?"earned":"unearned"}*//>
 					</div>
 					<h4 className="badgeText">SOCIAL BUTTERFLY</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={chameleon} className='badgeimage unearned'/>
+						<img src={chameleon} className="badgeimage" /*id={user.chameleon?"earned":"unearned"}*//>
 					</div>
 					<h4 className="badgeText">CHAMELEON PLAYER</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={rivalry} className='badgeimage unearned'/>
+						<img src={rivalry} className="badgeimage" id={user.totalWin?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText ">FRIENDLY RIVALRY</h4>
 				</div>
 				
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={fail} className='badgeimage'/>
+						<img src={fail} className="badgeimage" id={user.totalLoose ?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">EPIC FAIL</h4>
 				</div>

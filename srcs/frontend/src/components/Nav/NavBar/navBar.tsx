@@ -60,9 +60,11 @@ return (
 		  <Nav.Item>
         <div className="friend-drop-down-container" ref={dropdownRef}>
 		  	  <i className="bi bi-people-fill fs-3 me-2 friendsRequestButton" onClick={(e) => handleDropDownFocus(open)}>
+            {/* {friendRequest && ( */}
             <span className="position-absolute top-0 start-90 translate-middle p-1 bg-ligh border border-light rounded-circle">
               <span className="visually-hidden">New alerts</span>
             </span>
+            {/* )} */}
           </i>
           {open && (
             <ul>

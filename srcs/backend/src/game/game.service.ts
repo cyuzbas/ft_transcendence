@@ -26,7 +26,7 @@ export class GameService {
         await this.userRepository.update(game.p1, { inGame: true });
         await this.userRepository.update(game.p2, { inGame: true });
         await new Promise(resolve => setTimeout(resolve, 4000)); //3000 for the timer.. but maybe a little larger?
-        game.interval = setInterval(() => this.gameLoop(game), 1000/120); // smalller then 1000/120
+        game.interval = setInterval(() => this.gameLoop(game), 1000/40); // smalller then 1000/120
     }
 
     async gameLoop(game: Game) {
@@ -153,12 +153,12 @@ export class GameService {
         game.paddleRight.move = 0;
         game.paddleRight.reversed = 1;
 
-        game.pause = true;
+        // game.pause = true;
 
         this.broadcastGame(game);
-        setTimeout(() => {
-            game.pause = false
-        }, 3000); //bu timer ile ayni olmali
+        // setTimeout(() => {
+        //     game.pause = false
+        // }, 3000); //bu timer ile ayni olmali
     }
 
     isCollisionWall(ball: Ball) {

@@ -1,15 +1,15 @@
 import { Server } from "socket.io";
 
 export const numActPerSendData = 2;
-export const baseSpeed = 10;
+export const baseSpeed = 100;
 export const scoreMax = 3;
 // export const startTime = 1e3;
 export const gameTps = 120;
-// export const ballSpeed = (baseSpeed / gameTps); //padWidth den fazla olmasin
+export const ballSpeed = (baseSpeed / gameTps); //padWidth den fazla olmasin
 export const ballSizeX = 2.4;
 export const ballSizeY = 3.2;
-export const ballSpeedInc = 100/120 / 25;
-export const padSpeed = 0.02;
+export const ballSpeedInc = ballSpeed / 25;
+export const padSpeed = (baseSpeed / gameTps);
 export const padHeight = 15;
 export const padWidth = 1.25;
 export const paddleLeftStartX = padWidth * 2;
@@ -55,12 +55,12 @@ export class Pad {
 
   constructor(startX: number, height: number) {
     this.x = startX;
-    this.y = 50;
+    this.y = 50 - padHeight / 2
     this.height = height;
     this.width = padWidth;
     this.speed = padSpeed;
     this.move = PadMove.STATIC;
-    this.reversed = 1;
+    // this.reversed = 1;
   }
 }
 

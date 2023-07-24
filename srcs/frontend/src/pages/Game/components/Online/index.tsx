@@ -105,7 +105,7 @@ export function Random() {
               
               {gameState.isCustom && (
                 // <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vh)`, left: `calc(${gameState.block.x} * 1vw`, height: `100px`, width: `10px`, backgroundColor: 'var(--foreground-color)', transform: 'translate(-50%, -50%)' }} />
-                <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vw)`, left: `calc(50 * 1vw)`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
+                <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vw)`, left: `calc(20 * 1vw)`, height: `calc(15 * 1vh)`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
               )}
             </>
           )}

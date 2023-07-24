@@ -105,6 +105,10 @@ export class GameService {
 
             if(game.isCustom) {
                 this.moveBlock(game.block);
+
+                if (game.ball.x + game.ball.sizeX >= game.block.x && game.ball.x <= game.block.x + game.block.width) {
+                    this.isCollisionBlock(game.block, game.ball);
+                }
                 // this.isCollisionWall(game.block);
 
                 // if ((game.ball.x <= game.block.x + game.block.sizeX &&
@@ -252,10 +256,19 @@ export class GameService {
     }
 
     moveBlock(block: Pad) {
-        block.speed = 0.02;
         if (block.y + block.height + block.speed >= 100 || block.y - block.speed <= 0) {
           block.reversed *= -1;
         }
-        block.y += block.reversed * block.speed;
+        block.y += block.reversed * block.speed * 0.5;
       }
+
+    isCollisionBlock(block: Pad, ball: Ball) {
+       if (ball.x + ball.sizeX >= block.x && ball.x <= block.x + block.width) {
+          if (ball.y + ball.sizeY > block.y && ball.y < block.y + block.height) {
+            ball.directionX = -ball.directionX; // reverse the ball's x-direction
+          }
+        }
+    }
+
+
 }

@@ -109,7 +109,9 @@ export class Game {
     this.paddleLeft = new Pad(paddleLeftStartX, customPadHeight);
     this.paddleRight = new Pad(paddleRightStartX, customPadHeight);
     this.block = new Pad(paddleblockStartX, customPadHeight);
-    this.block.x = 50;
+    this.block.x = 20;
+    this.block.y = 20;
+    // this.block.height = 50;
     this.p1 = p1;
     this.p2 = p2;
     this.id = [p1, p2].sort().join('vs');

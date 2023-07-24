@@ -82,6 +82,7 @@ export class Game {
   dbIdP2: number;
   type: GameType;
   isCustom: boolean;
+  block: Ball; 
 
   constructor(
     server: Server,
@@ -102,6 +103,7 @@ export class Game {
     this.p1Score = 0;
     this.p2Score = 0;
     this.ball = new Ball(-modeSpeed * Math.cos(Math.PI / 4), modeSpeed);
+    this.block = new Ball(-modeSpeed * Math.cos(Math.PI / 4), modeSpeed);
     this.paddleLeft = new Pad(paddleLeftStartX, customPadHeight);
     this.paddleRight = new Pad(paddleRightStartX, customPadHeight);
     this.p1 = p1;
@@ -109,6 +111,7 @@ export class Game {
     this.id = [p1, p2].sort().join('vs');
     this.dbIdP1 = dbIdP1;
     this.dbIdP2 = dbIdP2;
+
     if (type == GameType.CLASSIC)
       this.isCustom = false;
     else

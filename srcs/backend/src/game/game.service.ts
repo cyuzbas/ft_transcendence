@@ -89,7 +89,6 @@ export class GameService {
             game.ball.x += game.ball.directionX;
             game.ball.y += game.ball.directionY;
 
-            // Make sure ball is stil inside the game
             game.ball.x = Math.min(game.ball.x, 100 - game.ball.sizeX);
             game.ball.x = Math.max(game.ball.x, 0);
             game.ball.y = Math.min(game.ball.y, 100 - game.ball.sizeY);
@@ -104,25 +103,24 @@ export class GameService {
             else if (game.paddleRight.move === 1)
                 this.padDown(game.paddleRight);
 
-            
-                game.ball.x = Math.min(game.ball.x, 100 - game.ball.sizeX);
-                game.ball.x = Math.max(game.ball.x, 0);
-                game.ball.y = Math.min(game.ball.y, 100 - game.ball.sizeY);
-                game.ball.y = Math.max(game.ball.y, 0);
-                game.ball.x += game.ball.directionX;
-                game.ball.y += game.ball.directionY;
-                this.isCollisionWall(game.ball);
+            if(game.isCustom) {
+                this.isCollisionWall(game.block);
+                // game.block.x += game.block.directionX;
+                game.block.y += game.block.directionY;
+                game.block.x = Math.min(game.block.x, 100 - game.block.sizeX);
+                game.block.x = Math.max(game.block.x, 0);
+                game.block.y = Math.min(game.block.y, 100 - game.block.sizeY);
+                game.block.y = Math.max(game.block.y, 0);
+
+                // paddle a carpma
+            }
         }
 
         if (!game.pause) {
             this.broadcastGame(game);
-            i = 1;
         }
         else
             return ;
-        //  this.socketService.endGame(game, game.id);
-
-        //     end game
     }
 
     // if ball is out of game, update the scores in the database, and reset the game.
@@ -207,6 +205,7 @@ export class GameService {
         game.server.to(`game${game.id}`).emit('gameData', {
             isCustom: game.isCustom,
             ball: game.ball,
+            block: game.block,
             paddleLeft: game.paddleLeft,
             paddleRight: game.paddleRight,
             pause: game.pause,

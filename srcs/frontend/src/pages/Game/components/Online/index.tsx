@@ -66,13 +66,13 @@ export function Random() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (['ArrowUp', 'ArrowDown', 'Esc'].includes(event.key)) {
+      if (['w', 's', 'Esc'].includes(event.key)) {
         socket.emit('keyDown', event.key);
       }
     };
   
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (['ArrowUp', 'ArrowDown', 'Esc'].includes(event.key)) {
+      if (['w', 's', 'Esc'].includes(event.key)) {
         socket.emit('keyUp', event.key);
       }
     };
@@ -99,10 +99,38 @@ export function Random() {
           {gameState && (
             <>
               <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
-              <div style={{ position: 'absolute', top: `calc(${gameState.ball.y} * 1vh)`, left: `calc(${gameState.ball.x} * 1vw)`, height: `2.5vh`, width: `2.5vh`, backgroundColor: 'var(--foreground-color)', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} />
-              <div style={{ position: 'absolute', top: `calc(${gameState.paddleLeft.y} * 1vw)`, left: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
-              <div style={{ position: 'absolute', top: `calc(${gameState.paddleRight.y} * 1vw)`, right: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
-              
+              <div 
+                style={{
+                  position: 'absolute',
+                  top: `calc(${gameState.ball.y}vh)`,
+                  left: `calc(${gameState.ball.x}vw`,
+                  height: `2.5vh`,
+                  width: `2.5vh`,
+                  backgroundColor: 'var(--foreground-color)',
+                  borderRadius: '50%',
+                  transform: 'translate(-50%, -50%)'
+                }}
+              />
+              <div
+                style={{ position: 'absolute',
+                  top: `calc(${gameState.paddleLeft.y}vw)`,
+                  left: `1vh`,
+                  height: `10vh`,
+                  width: `1vh`,
+                  backgroundColor: 'var(--foreground-color)',
+                  transform: 'translateY(-50%)' 
+                }}
+              />
+              <div
+                style={{ position: 'absolute',
+                  top: `calc(${gameState.paddleRight.y}vw)`,
+                  right: `1vh`,
+                  height: `10vh`,
+                  width: `1vh`,
+                  backgroundColor: 'var(--foreground-color)',
+                  transform: 'translateY(-50%)'
+                }}
+              />
               {gameState.isCustom && (
                 // <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vh)`, left: `calc(${gameState.block.x} * 1vw`, height: `100px`, width: `10px`, backgroundColor: 'var(--foreground-color)', transform: 'translate(-50%, -50%)' }} />
                 <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vw)`, left: `calc(20 * 1vw)`, height: `calc(15 * 1vh)`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
@@ -170,13 +198,13 @@ export function FriendGame() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (['ArrowUp', 'ArrowDown', 'Esc'].includes(event.key)) {
+      if (['w', 's', 'Esc'].includes(event.key)) {
         socket.emit('keyDown', event.key);
       }
     };
   
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (['ArrowUp', 'ArrowDown', 'Esc'].includes(event.key)) {
+      if (['w', 's', 'Esc'].includes(event.key)) {
         socket.emit('keyUp', event.key);
       }
     };
@@ -204,7 +232,18 @@ export function FriendGame() {
           {gameState && (
             <>
               <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
-              <div style={{ position: 'absolute', top: `calc(${gameState.ball.y} * 1vh)`, left: `calc(${gameState.ball.x} * 1vw`, height: `2.5vh`, width: `2.5vh`, backgroundColor: 'var(--foreground-color)', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} />
+              <div 
+                style={{
+                  position: 'absolute',
+                  top: `calc(${gameState.ball.y - 50}vh)`,
+                  left: `calc(${gameState.ball.x - 50}vw`,
+                  height: `2.5vh`,
+                  width: `2.5vh`,
+                  backgroundColor: 'var(--foreground-color)',
+                  borderRadius: '50%',
+                  transform: 'translate(-50%, -50%)'
+                }}
+              />
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleLeft.y} * 1vw)`, left: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleRight.y} * 1vw)`, right: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
             </>

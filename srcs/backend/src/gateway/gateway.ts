@@ -247,7 +247,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
             return;
         }
         client.emit('invitationCanceled', { ...res.payload, userName: target.userName });
-        this.sendSocketMsgByUserId(target.id, 'invitation_deleted', { ...res.payload, userName: user.userName });
+        this.sendSocketMsgByUserId(target.id, 'invitationDeleted', { ...res.payload, userName: user.userName });
         this.sendSocketMsgByUserId(target.id, 'warning', `${user.userName} cancelled their invitation`);
     }
 
@@ -323,7 +323,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 	
 	@SubscribeMessage('keyDown')
     async KeyDown( @MessageBody() data: string, @ConnectedSocket() client: Socket ) {
-        if (!client || !['ArrowUp', 'ArrowDown'].includes(data)) {
+        if (!client || !['w', 's'].includes(data)) {
             client.emit('error', "Invalid data");
             return ;
         }
@@ -335,8 +335,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
         }
 
         let move = 0;
-        if (data === 'ArrowUp') move = -1;
-        if (data === 'ArrowDown') move = 1;
+        if (data === 'w') move = -1;
+        if (data === 's') move = 1;
 
         const res = this.gatewayService.movePaddle(user.id, move);
         if (res.status !== true) {
@@ -348,12 +348,13 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
         const client = await this.userService.findUserByUserId(userId);
         const isClientOnline = client.isLogged;
         if (isClientOnline) {
+			console.log('isclient online');
 			const socketId = this.mapService.userToSocketId.get(client.id);
 			const socket = this.server.sockets.sockets.get(socketId);
 			if (socket) {
 				socket.emit(event, payload);
 			} else {
-				console.error(`No socket found for ID: ${socketId}`);
+				console.log(`No socket found for ID: ${socketId}`);
 			}
         }
     }

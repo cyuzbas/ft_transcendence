@@ -5,6 +5,7 @@ import { useState,useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useSocket } from "../../../../contexts"
 import queryString from 'query-string';
+import './styles.css'
 
 export enum GameType {
   CLASSIC = 0,
@@ -51,10 +52,24 @@ export function WaitingPage1() {
     };
   }, []);
 
+  const handleClose = () => {
+    socket.emit("cancelMatching");
+    console.log('idil');
+    setIsLookingForOpponent(false);
+    navigate('/lobby');
+  };
+
   return (
     <>
       {isLookingForOpponent && (
-        <div>Looking for an opponent</div>
+        <div className='installing'>
+          <p className="loader"></p>
+          <p>Looking for an opponent</p>
+          <button className='close' onClick={handleClose}>
+            Cancel Game Request
+          </button>
+        </div>
+        
       )}
     </>
   )
@@ -62,6 +77,7 @@ export function WaitingPage1() {
 
 export function WaitingPage3() {
   const [isLookingForOpponent, setIsLookingForOpponent] = useState(true);
+  const [isClose, setIsClose] = useState(false)
   const { socket } = useSocket();
   const navigate = useNavigate();
 
@@ -100,10 +116,24 @@ export function WaitingPage3() {
     };
   }, []);
 
+
+  const handleClose = () => {
+    socket.emit("cancelMatching");
+    console.log('idil');
+    setIsLookingForOpponent(false);
+    navigate('/lobby');
+  };
+
   return (
     <>
       {isLookingForOpponent && (
-        <div>Looking for an opponent</div>
+        <div className='installing'>
+          <p className="loader"></p>
+          <p>Looking for an opponent</p>
+          <button className='close' onClick={handleClose}>
+            Cancel Game Request
+          </button>
+        </div>
       )}
     </>
   )
@@ -151,22 +181,32 @@ export function WaitingPage2() {
     socket.on("error", onCancelInvite);
     return () => {
       socket.off('error', onCancelInvite);
-      // socket.disconnect();
     };
   }, [socket, navigate]);
 
   useEffect(() => {
     socket.emit("Invite", { userName: username });
     return () => {
-      // socket.off('gameUnqueued', onCancelInvite);
-      // socket.disconnect();
     };
   }, []);
+
+  const handleClose = () => {
+    socket.emit("Uninvite", { userName: username });
+    console.log('idil');
+    setIsLookingForOpponent(false);
+    navigate('/lobby');
+  };
 
   return (
     <>
       {isLookingForOpponent && (
-        <div>Waiting reply from your friend</div>
+        <div className='installing'>
+          <p className="loader"></p>
+          <p>Hang tight! Your friend is still thinking it over...</p>
+          <button className='close' onClick={handleClose}>
+            Cancel Invite
+          </button>
+        </div>
       )}
     </>
   )

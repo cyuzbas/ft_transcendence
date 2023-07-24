@@ -56,7 +56,21 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 		return () => {
 		  socket.off('gameinvite', onGameInvite);
 		};
-	  }, []);
+	  });
+
+	  useEffect(() => {
+		function onInvitationDeleted(data: any) {
+			console.log('Invitation deleted event received', data);
+		  setGameInvitation(false);
+		}
+		
+
+		socket.on('invitationDeleted', onInvitationDeleted);
+		
+		return () => {
+		  socket.off('invitationDeleted', onInvitationDeleted);
+		};
+	  });
 
 	  useEffect(() => {
 		function onAccept(data: any) {

@@ -116,6 +116,7 @@ export class GatewayService {
     }
 
     deleteUserFromQueue(userId: number) {
+        // console.log(this.queueClassic);
         if (this.queueClassic.includes(userId)) {
             const index = this.queueClassic.indexOf(userId);
             if (index === -1) {
@@ -130,6 +131,7 @@ export class GatewayService {
             }
             this.queueCustom.splice(index, 1);
         }
+        // console.log(this.queueClassic);
         return { status: true, message: "You have been removed from the queue" };
     }
 

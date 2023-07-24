@@ -106,8 +106,20 @@ export class GameService {
             if(game.isCustom) {
                 this.moveBlock(game.block);
 
-                if (game.ball.x + game.ball.sizeX >= game.block.x && game.ball.x <= game.block.x + game.block.width) {
-                    this.isCollisionBlock(game.block, game.ball);
+                // if (game.ball.x + game.ball.sizeX >= game.block.x && game.ball.x <= game.block.x + game.block.width) {
+                //     this.isCollisionBlock(game.block, game.ball);
+                // }
+
+                if (game.ball.x <= game.block.x + game.block.width &&
+                    game.ball.x + game.ball.sizeX >= game.block.x &&
+                    game.ball.directionX < 0) {
+                    this.isCollisionPaddle(game.block, game.ball);
+                }
+    
+                else if (game.ball.x + game.ball.sizeX >= game.block.x &&
+                        game.ball.x <= game.block.x + game.block.width &&
+                        game.ball.directionX > 0) {
+                    this.isCollisionPaddle(game.block, game.ball);
                 }
                 // this.isCollisionWall(game.block);
 

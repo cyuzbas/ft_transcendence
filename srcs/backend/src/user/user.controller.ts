@@ -34,11 +34,6 @@ export class UserController {
         return this.userService.updataAvatar(imageName,req.user);
 	}
 
-    @Get('all')
-    getAllUser(){
-        console.log("\n\nget all user\n\n")
-        return this.userService.findByAllUser();
-    }
     @Get(':intraId')
     getUserByintraId(@Param('intraId') id: string){
         return this.userService.findByintraId(id)

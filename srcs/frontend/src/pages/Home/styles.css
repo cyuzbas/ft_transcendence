@@ -23,7 +23,7 @@
  }
    
  .ProfileSection {
-    margin-left: 10px;
+    /* margin-left: 10px; */
     margin-right: 10px;
     grid-area: label0;
     display: flex;
@@ -33,7 +33,7 @@
  }
 
  .FriendSection {
-    margin-left: 10px;
+    /* margin-left: 10px; */
     grid-area: label1;  
 
  }
@@ -53,6 +53,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    color: rgb(75, 94, 107);
     padding-left: 30px;
     padding-right: 30px;
  }
@@ -74,12 +75,7 @@
   }
 
  .UserName {
-    color: rgb(75, 94, 107);
     margin-top: 15px;
- }
-
- .UserID {
-    color: rgb(75, 94, 107);
  }
 
  .ProfileRankInfo {
@@ -89,6 +85,7 @@
     justify-content: center;
     align-items: center;
     height: 220px;
+    width: 80%;
     /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); */
     /* grid-area: profile1; */
     border-right: 2px solid rgb(75, 94, 107, 0.2);
@@ -103,21 +100,18 @@
     margin: 20px;
     padding-left: 30px;
     padding-right: 40px;
+    color: rgb(75, 94, 107);
+
  }
 
- .bi-star, .bi-chevron-double-up {
+ .bi-star, .bi-chevron-double-up, .bi-circle-fill {
     color: rgb(75, 94, 107);
     /* color: rgb(88, 110, 124); */
     /* color: rgb(178,225,255); */
     margin-right: 20px;
  }
- .bi-star:hover,  .bi-chevron-double-up:hover {
-    color: rgb(75, 94, 107);
-    /* color: rgb(88, 110, 124); */
-    /* color: rgb(178,225,255); */
- }
 
- .UserScore, .UserRank {
+ .UserScore, .UserRank, .UserStatus {
     color: rgb(75, 94, 107);
     /* color: rgb(88, 110, 124); */
     /* color: rgb(178,225,255); */

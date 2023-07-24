@@ -1,13 +1,14 @@
-.LeaderBoardSection {
+.LeaderBoard-MatchHistoryToggleSection {
 	height: 100%;
 	width: 100%;
 	position: relative;
 	padding: 15px;
 	overflow: hidden;
+
 }
 
-.title-box {
-	width: 250px;
+.leader-button-box {
+	width: 340px;
 	margin: 15px auto;
 	position: relative;
 	top: 20px;
@@ -15,6 +16,38 @@
 	border-radius: 30px;
 }
 
+.leader-toggle-button {
+	padding: 10px 30px;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	position: relative;
+	color: rgb(43, 45, 46);
+	font-weight: 500;
+
+}
+
+#leader-btn-color {
+	top: 0;
+	position: absolute;
+	width: 50%;
+	height: 100%;
+	background: linear-gradient(to right, #396478,rgb(228, 234, 234));
+	border-radius: 30px ;
+	transition: 0.5s;
+}
+
+#match-btn-color {
+	top: 0;
+	left: 0;
+	position: absolute;
+	width: 50%;
+	height: 100%;
+	background: linear-gradient(to right, #396478,rgb(228, 234, 234));
+	border-radius: 30px ;
+	transition: 0.5s;
+	left: 170px;
+}
 
 .LeaderBoardTitle {
 	padding: 10px 30px;
@@ -26,7 +59,7 @@
 	font-weight: 500;
 }
 
-.UserScoreSection{
+.UserScoreSection .MatchHistorySection{
 	padding-top: 20px;
 	height: 100%;
 	overflow-x: scroll;
@@ -34,6 +67,7 @@
 	position: absolute;
 	width: 100%;
 	transition: 0.5s;
+	padding-bottom: 120px;
 	/* background-color: antiquewhite; */
 }
 
@@ -51,3 +85,34 @@
     background: linear-gradient(to bottom, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfe7fa', endColorstr='#6393c1',GradientType=0 );  
  }
+
+ .UserMatchHistory {
+	margin: 10px;
+	width: 87%;
+	/* background: transparent; */
+
+    height: 60px;
+    display: flex;
+ }
+
+ .userWonMatch {
+	background-color: rgba(84, 241, 84, 0.2);
+ }
+
+ .userLostMatch {
+	background-color: rgb(255, 0, 0, 0.2);
+ }
+
+ .imageUserMatch {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	overflow: hidden;
+
+  }
+  
+  .imageUserMatch img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+  }

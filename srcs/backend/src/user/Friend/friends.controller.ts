@@ -10,18 +10,56 @@ import { join } from 'path';
 import * as fs from "fs";
 import { FriendsService } from './friends.service';
 import { UserI } from '../user.interface';
+import { get } from 'http';
 
 @Controller('friends')
 export class FriendsController {
     constructor(private readonly userService: UserService,
         private readonly friendsService: FriendsService) { }
 
+        @Get('allUser/:intraId')
+        async getAllUser(@Param('intraId') intraId:string){
+            const getUser = await this.userService.findByintraIdEntitiy(intraId)
+            console.log("get user " + getUser)
+            if(!getUser)
+                return
+            const users = await this.userService.findByAllUser()
+            const friendsUser = await this.friendsService.getFriends(getUser.id)
+            const friendsQuery = await this.friendsService.getFriendsQuery(getUser.id)
+            const friendsSend = await this.friendsService.getFriendsQuery1(getUser.id);
+            if(!friendsUser)
+                return
+            console.log("user friens is " + JSON.stringify(friendsUser))
+            const allUsers = {friends:[], query:[], nonFriends:[], me:[]}            
+          
+            users.forEach((user) => {
+                if(!user){}
+                else if (friendsUser.map(friend=>friend.id).includes(user.id)) {
+                    allUsers.friends.push(user);
+                }
+                else if(user.id == getUser.id){
+                    allUsers.me.push(user)
+                }
+                else if(friendsQuery.map(query => query.id).includes(user.id)){
+                    allUsers.query.push(user)
+                }
+                else if(friendsSend && friendsSend.map(query => query.id).includes(user.id)){
+                    allUsers.query.push(user)
+                }
+                else if(user.userName == "admin"){}
+                else {
+                    allUsers.nonFriends.push(user);
+                }
+              });
+              return allUsers;
+        }
+
     @Post('add/:myId/:friendId')
-    async sendFriendRequest(@Body() requestBody: { myIntraId: string, friendIntraId: string }) {
-        const { myIntraId, friendIntraId } = requestBody; 
+    async sendFriendRequest(
+        @Param('myId')myIntraId:string,
+    @Param('friendId') friendIntraId:string ) {
         const friend = await this.userService.findByintraIdEntitiy(friendIntraId);
         const user = await this.userService.findByintraIdEntitiy(myIntraId);
-        
         if (user.id == friend.id) {
             return;
         }
@@ -54,7 +92,7 @@ export class FriendsController {
     async friendRequestAnswer(  
         @Param('myId') myIntraId: string,
         @Param('friendId') friendIntraId: string,
-        @Param('answer') answer: boolean,):Promise<Boolean>{
+        @Param('answer') answer: string,):Promise<Boolean>{
     
     console.log(myIntraId + "gelen" + friendIntraId)
     const friend = await this.userService.findByintraId(friendIntraId);

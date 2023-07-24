@@ -42,10 +42,10 @@ export class FriendsService {
             return true;
     }
 
-    async friendRequestAnswer(user: UserI, friend: UserI, answer: Boolean): Promise<Boolean> {
+    async friendRequestAnswer(user: UserI, friend: UserI, answer: string): Promise<Boolean> {
         //answer == true(accept)
         user.requestedFriends = await this.getFriendsQuery(user.id)
-        console.log(user.requestedFriends)
+        console.log("nawrajksf" + user.requestedFriends)
         const index = user.requestedFriends.findIndex((getFriend) => getFriend.id === friend.id);
         //delete requestarray
         if (index !== -1) {
@@ -56,8 +56,10 @@ export class FriendsService {
             console.log("index " + index);
             return false;
         }
-
-        if (answer) {
+        
+        console.log("answer is " + answer  + typeof answer)
+        if (answer === "true") {
+            console.log("answer true icinde ???")
             user.friends = await this.getFriends(user.id)
             if(user.friends === undefined)
                 user.friends = [];
@@ -77,6 +79,16 @@ export class FriendsService {
             .where('user.id = :userId', { userId })
             .getOne();
         return user.friends;
+    }
+    
+    async getFriendsQuery1(userId: number): Promise<UserI[]> {
+        const user = await this.userRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.requestedFriends', 'requested')
+            .where('user.id = :userId', { userId })
+            // .select(['userEntityId'])
+            .getOne();
+        return user.requestedFriends;
     }
 
 

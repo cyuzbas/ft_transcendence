@@ -16,7 +16,7 @@ export function Login(){
 				<h1>FT_TRANSCENDENCE</h1>
 			</div>
 			<button className='LoginWith42' onClick={goToLogin} >
-				<img src={fourtytwo} className='ftLogo'></img>
+				<img src={fourtytwo} className='ftLogo' alt='42 Logo'></img>
 				<text className='ftLogin-text'>LOGIN WITH 42</text>
 			</button>
 		</div>

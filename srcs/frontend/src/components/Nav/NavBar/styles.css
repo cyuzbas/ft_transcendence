@@ -1,11 +1,13 @@
 .navbar { 
 background-color: rgb(88, 110, 124); 
 }
+
 .icon{
     width: 40px;
     border-radius: 50%;
     margin-left: 20px;
 }	
+
 .brand{
     font-size: x-large;
     margin-left: 8px;
@@ -17,6 +19,7 @@ background-color: rgb(88, 110, 124);
     left: 20%;
     right: 20%;
 }
+
 .avatar{
     width: 35px;
     height: 30px;
@@ -24,6 +27,12 @@ background-color: rgb(88, 110, 124);
     margin-right: 15px; 
     margin-left: 15px; 
 }
+
+.friendsRequestButton:hover{
+    color: white;
+    cursor: pointer;
+}
+
 .friend-drop-down-container {
     display: flex;
     align-items: center;
@@ -31,6 +40,7 @@ background-color: rgb(88, 110, 124);
     position: relative;
     margin-right: 20px;
 } 
+
 .friend-drop-down-container ul {
     margin: 0;
     padding: 0;
@@ -54,3 +64,4 @@ background-color: rgb(88, 110, 124);
     padding: 10px 20px;
     transition: background-color ease .2s;
 }
+

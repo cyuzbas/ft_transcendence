@@ -4,9 +4,7 @@
   flex-direction: row;
   align-items: center;
 	font-size: 20px;
-
   color: rgb(75, 94, 107);
-
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   }
@@ -43,6 +41,11 @@
   grid-column-start: 4;
   grid-column-end: 6;
   }
+
+  .visitUserProfile{
+  color: rgb(75, 94, 107);
+  }
+
   .friend-component-userID:hover{
     cursor: pointer;
   }

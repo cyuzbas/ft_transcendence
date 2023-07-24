@@ -1,6 +1,7 @@
 import './styles.css';
 import axios from 'axios';
 import { UserContext } from '../../contexts'
+import { Link } from 'react-router-dom';
 import React, { useContext, useState, useEffect } from 'react';
 
 type User = {
@@ -10,27 +11,15 @@ type User = {
 	  isLogged: boolean;
   };
   
-
-
-  
 export function Friends() {
     const [users, setUsers] = useState<User[]>([]);
-    const {user, setUser} = useContext(UserContext)
+    const {user} = useContext(UserContext)
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("naber, " + user.userName);
       try {
         const response = await axios.get('http://localhost:3001/user/all');
         setUsers(response.data);
-
-        console.log("response fetch data!");
-        console.log(response.data.user);
-        Array.isArray(users) ? (
-            users.map((userName, avatar) => (
-                console.log(userName + " and " + avatar)
-            ))
-     ) : (console.log("nobody!"))
       } catch (error) {
         console.error(error);
         console.log("ERROR!!")
@@ -46,10 +35,12 @@ export function Friends() {
       users.map((user, index) => (
         <div className="friends-text-image-component" key={user.intraId}>
             <div className="imageClassPP">
-              <img src={user.avatar} id="Avatar" alt=""/>
+              <img src={user.avatar} id="Avatar" alt="Avatar"/>
             </div>
             <div className="friend-component-userName">{user.userName}</div>
-            <div className="friend-component-userID"> ID - {user.intraId}</div>
+            <div className="friend-component-userID">
+              <Link to={`/profile/${user.intraId}`} className="visitUserProfile">{user.intraId}</Link>
+            </div>
             <div className='personOnlineContainer'>
               <i className="bi bi-circle-fill fs-5"
                 id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>

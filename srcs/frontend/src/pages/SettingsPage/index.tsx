@@ -3,7 +3,6 @@ import React, { ChangeEvent, useContext, useState, useEffect, useRef } from 'rea
 import axios from 'axios';
 import swal from 'sweetalert';
 import { UserContext } from '../../contexts'
-import { Settings } from '../../contexts/SettingsContext/types';
 
 function SettingsPage() {
 
@@ -38,10 +37,10 @@ function SettingsPage() {
 							avatar: user.avatar,
 							intraId: user.intraId
 						}, { withCredentials: true })
-						const updatedUser = { ...user, userName: inputText };
+						const updatedUser = { ...user, userName: inputText};
 						setUser(updatedUser)
 						localStorage.setItem('user', JSON.stringify(updatedUser));
-						swal("Saved!", "Your imaginary file has been saved! " + user.intraId);
+						swal("Saved!", "Your name has been saved! " + user.intraId);
 					}
 					catch (error) {
 						swal("error", "something go wrong" + error, "ok")
@@ -105,7 +104,7 @@ function SettingsPage() {
 			<div className="SettingsPageContainer">
 				<div className="ChangePP">
 					<div className="imageContainer">
-						<img src={user.avatar} className='profilePicture' />
+						<img src={user.avatar} className='profilePicture' alt='Avatar'/>
 					</div>
 					<div>
 						<input className='UploadPP' type='file' onChange={handleFileChange} accept='image/*' ref={inputRef}/>

@@ -36,20 +36,12 @@ function FriendsToggle() {
 		{isAllUsersVisible && (
 			<div id="AllUsers" className="UsersSection">
 				<Friends/>
+				{/* <div className="fake-all-users"></div>
 				<div className="fake-all-users"></div>
 				<div className="fake-all-users"></div>
 				<div className="fake-all-users"></div>
 				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
+				<div className="fake-all-users"></div> */}
 			</div>
 		)}
 		{isFriendsVisible && ( <FriendsSection/> )}

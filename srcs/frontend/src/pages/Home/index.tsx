@@ -5,7 +5,6 @@ import FriendsToggle from './components/UserToggle';
 import LeaderMatchToggle from './components/LeadToggle';
 import Achievements from './components/Achievements';
 import pong from '../../img/pong.png';
-import { Score } from '../Game/components/Score/index';
 
 
 export function Home() {

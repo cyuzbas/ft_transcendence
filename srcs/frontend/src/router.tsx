@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { UserProvider, GameProvider } from './contexts';
+import { UserProvider, GameProvider, UserContext } from './contexts';
 import { GameMode, gameModes } from './pages/Game/logic/types'
 import { Game, Lobby, Home, Chat } from './pages'
 import { SocketProvider } from './contexts/SocketContext/provider';
@@ -8,39 +8,38 @@ import SettingsPage from './pages/SettingsPage'
 import Create2fa from './pages/Create2fa'
 import Navbar from './components/Nav/NavBar/navBar';
 import SideBar from './components/Nav/SideBar/sideBar';
-import NotFound from './pages/NotFound/index';
-import React from 'react';
+import NotFound from './pages/NotFound';
+import React, { useContext } from 'react';
 import './components/Nav/main.css';
-import { Profile } from './pages/Profile/index';
+import Profile from './pages/Profile';
 
 
 export function Router() {
   return (
     <React.Fragment>
-            <BrowserRouter>
-              <UserProvider>
-
-      <section>
-        <div className='NavContent'>
-          <Navbar />
-        </div>
-      </section>
-      <section>
-        <div className='FullPage'>
-          <div className='SideContent'>
-            <SideBar />
-          </div>
-          <div className='MainContent'>
+      <BrowserRouter>
+        <UserProvider>
+          <section>
+            <div className='NavContent'>
+              <Navbar />
+            </div>
+          </section>
+          <section>
+            <div className='FullPage'>
+              <div className='SideContent'>
+                <SideBar />
+              </div>
+              <div className='MainContent'>
                 <SocketProvider>
                   <Routes>
-                    <Route path='/home' element={<Home />} />
-                    <Route path='/' element={<Home />} />
-                    <Route path='/friend' element={<Friends />} />
-                    <Route path='/lobby' element={<Lobby />} />
-                    <Route path='/chat' element={  <Chat/>} />
-                    <Route path='/settings' element={  <SettingsPage/>} />
-                    <Route path='/create2fa' element={  <Create2fa/>} />
-                    <Route path='/profile' element={  <Profile/>} />
+                    <Route path='/home' element={ <Home />} />
+                    <Route path='/' element={ <Home />} />
+                    <Route path='/lobby' element={ <Lobby />} />
+                    <Route path='/chat' element={ <Chat/> } />
+                    <Route path='/settings' element={ <SettingsPage/>} />
+                    <Route path='/create2fa' element={ <Create2fa/>} />
+                    <Route path='/profile/:id' element={ <Profile/>} />
+                    <Route path='/profile' element={ <Profile/>} />
                     <Route path='*' element={ <NotFound/> } />
                     {gameModes.map((mode: GameMode) => (
                       <Route
@@ -55,11 +54,11 @@ export function Router() {
                     ))}
                   </Routes>
                 </SocketProvider>
-          </div>
-        </div>
-      </section>
-      </UserProvider>
-            </BrowserRouter>
+              </div>
+            </div>
+          </section>
+        </UserProvider>
+      </BrowserRouter>
     </React.Fragment>
   )
 

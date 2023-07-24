@@ -27,12 +27,11 @@
 	width: 100px;
 }
 
-.friendReject{
+.friendReject, .friendAccept{
 	margin-left: 15px;
 	cursor: pointer;
 }
 
-.friendAccept{
-	margin-left: 15px;
-	cursor: pointer;
+.friendReject:hover, .friendAccept:hover {
+	color: white;
 }

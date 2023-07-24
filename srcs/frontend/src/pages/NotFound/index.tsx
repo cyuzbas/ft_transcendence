@@ -1,9 +1,5 @@
 import Particle from '../Login/Particle';
-import fourtytwo from '../../img/ft.png'
 import './styles.css'
-import { useState, ChangeEvent, useContext } from 'react';
-import axios from 'axios';
-import { User, UserContext } from '../../contexts';
 
 function NotFound() {
 

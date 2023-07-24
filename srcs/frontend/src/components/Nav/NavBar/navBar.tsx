@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef }  from 'react';
-import { Nav, Navbar, Form, FormControl,  } from 'react-bootstrap';
+import { Nav, Navbar, Form, FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import Intra from '../../../img/ft.png';
 import { UserContext } from '../../../contexts'
@@ -15,14 +15,8 @@ const Styles = styled.div`
   }
   
   .navbar-brand {
-    font-size: 1.4em;
     color: rgb(178,225,255);
     &:hover { color: white; }
-  }
-  .form-center {
-    position: absolute !important;
-    left: 20%;
-    right: 20%;
   }
 
   `;
@@ -30,7 +24,7 @@ const Styles = styled.div`
 
 function NavigationBar () {
 
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const[open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const handleDropDownFocus = (state: boolean) => {
@@ -77,7 +71,7 @@ return (
           </Nav.Item> 
           <Nav.Item><Nav.Link href="/home">
             <text className='userName'>{user.userName}</text>
-            <img src={user.avatar} className='avatar'/>
+            <img src={user.avatar} className='avatar' alt='Avatar'/>
           </Nav.Link></Nav.Item>  
         </Nav>
     </Navbar>

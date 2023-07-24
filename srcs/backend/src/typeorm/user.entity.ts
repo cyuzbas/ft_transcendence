@@ -38,6 +38,9 @@ export class UserEntity {
 	@Column({nullable: true})
 	rank: number;
 
+	@Column({nullable : true})
+	achievementChameleon: boolean = false;
+
 	@OneToMany(() => MessageEntity, message => message.user)
 	messages: MessageEntity[];
 

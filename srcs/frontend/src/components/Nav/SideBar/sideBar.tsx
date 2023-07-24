@@ -2,9 +2,12 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import './sideBar.css';
 import { useUser } from '../../../contexts/UserContext';
 import axios from 'axios';
+import React, { useContext } from 'react';
+import { UserContext } from '../../../contexts'
 
 function SideBar() {
 	
+	const {user} = useContext(UserContext)
 	const { clearUser } = useUser();
 
 	async function logout() {
@@ -41,7 +44,7 @@ function SideBar() {
 			</a>
 		  </li>
 		  <li className="nav-item">
-			<a href="/profile" className="nav-link mb-5">
+			<a href={`/profile/${user.intraId}`} className="nav-link mb-5">
 			  <i className="bi bi-person fs-2"></i>
 			</a>
 		  </li>
@@ -51,9 +54,9 @@ function SideBar() {
 			</a>
 		  </li>
 		  <li className="nav-item">
-			<a onClick={logout} className="nav-link logout">
+			<button onClick={logout} className="nav-link logout">
 			  <i className="bi bi-door-open fs-2"></i>
-			</a>
+			</button>
 		  </li>
 		</ul>
 	   </div>

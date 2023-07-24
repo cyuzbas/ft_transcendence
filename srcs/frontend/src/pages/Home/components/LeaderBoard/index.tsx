@@ -36,7 +36,6 @@ function LeaderBoard() {
 			console.log("ERROR!!")
 		  }
 		};
-	
 		fetchData();
 	  }, []);
 

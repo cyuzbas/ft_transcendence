@@ -91,19 +91,13 @@ export class GatewayService {
         return { status: true, message: 'success', payload: [gameP1, gameP2] };
     }
 
-    endGame(game: Game, gameId: string) {
-        // const { server } = this.games.get(gameId);
-        game.server.socketsLeave(`game${gameId}`);
-        this.games.delete(gameId);
-    }
+    // getConnectedUserById(userId: number) {
+    //     return [...this.users.values()].find((x) => x.id === userId);
+    // }   /////bunun yerine users service koydun onu game'e de degistirmeyi unutma
 
-    getConnectedUserById(userId: number) {
-        return [...this.users.values()].find((x) => x.id === userId);
-    }   /////bunun yerine users service koydun onu game'e de degistirmeyi unutma
-
-    getUserKVByUserId(userId: number) {
-        return [...this.users.entries()].find((u) => u[1].id === userId);
-    }
+    // getUserKVByUserId(userId: number) {
+    //     return [...this.users.entries()].find((u) => u[1].id === userId);
+    // }
 
     getGameByGameId(gameId: string) {
         return this.games.get(gameId);
@@ -137,8 +131,9 @@ export class GatewayService {
             return { status: false, message: "invitation to yourself?" };
         if (!this.isUserOnline(targetUserId))
             return { status: false, message: "target is offline" };
-        if (this.isInGame(targetUserId))
+        if (!this.isInGame(targetUserId))
             return { status: false, message: "target is already playing a game" };
+        // console.log("idil");
         if (this.isInQueue(targetUserId))
             return { status: false, message: "target is already queued for a random game" };
         let targetInvites = this.invites.get(targetUserId) || [];
@@ -175,14 +170,14 @@ export class GatewayService {
         return (this.queue.includes(userId))
     }
 
-    isInGame(userId: number) {
-        return [...this.games.values()].find(g => g.p1 === userId || g.p2 === userId)
+    async isInGame(userId: number) {
+        const user = await this.userService.findUserByUserId(userId);
+        return(!!user.inGame);
     }
 
     async isUserOnline(userId: number)  {
         const user = await this.userService.findUserByUserId(userId);
         return(!!user.isLogged);
-        // return (!!this.getConnectedUserById(userId));
     }
 
     getInvites(userId: number) {

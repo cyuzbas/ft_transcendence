@@ -97,7 +97,7 @@ export function WaitingPage2() {
     }
     socket.on("error", onCancelInvite);
     return () => {
-      socket.off('gameUnqueued', onCancelInvite);
+      socket.off('error', onCancelInvite);
       // socket.disconnect();
     };
   }, [socket, navigate]);

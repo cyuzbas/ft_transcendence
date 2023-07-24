@@ -7,9 +7,7 @@ import { UserEntity } from '../typeorm/user.entity';
 import { Game, ballSizeY, padHeight } from './game';
 import { Ball } from './game';
 import { Pad } from './game';
-import { PadMove } from './game';
 import { scoreMax } from "./game";
-import { numActPerSendData } from "./game";
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -28,7 +26,7 @@ export class GameService {
         await this.userRepository.update(game.p1, { inGame: true });
         await this.userRepository.update(game.p2, { inGame: true });
         await new Promise(resolve => setTimeout(resolve, 4000)); //3000 for the timer.. but maybe a little larger?
-        game.interval = setInterval(() => this.gameLoop(game), 8); // smalller then 1000/120
+        game.interval = setInterval(() => this.gameLoop(game), 1000/120); // smalller then 1000/120
     }
 
     async gameLoop(game: Game) {
@@ -42,17 +40,29 @@ export class GameService {
                 const winnerScore = Math.max(game.p1Score, game.p2Score);
                 const loserScore = Math.min(game.p1Score, game.p2Score);
 
-                await this.userRepository.update(winner, { totalWin: +1, score: +100, inGame: false });
-                await this.userRepository.update(loser, { totalLoose: +1, inGame: false });
+                await this.userRepository.increment({ id: winner }, 'totalWin', 1);
+                await this.userRepository.increment({ id: winner }, 'score', 100);
+                await this.userRepository.update(winner, { inGame: false });
+
+                await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
+                await this.userRepository.update(loser, { inGame: false });
 
                 const winnerObj = await this.userService.findUserByUserId(winner);  ///buraya alinin fonksiyonunu koyacaksin
+                const loserObj = await this.userService.findUserByUserId(loser);  ///buraya alinin fonksiyonunu koyacaksin
 
                 let winnerUsername: String;
                 if (!winnerObj) winnerUsername = "unKnown";
                 else winnerUsername = winnerObj.userName;
 
-                game.server.to(`game${game.id}`).emit('success', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
-                game.server.to(`game${game.id}`).emit('game_ended', { winnerUsername, winnerId: winner, winnerScore, loserScore });
+                let loserUsername: String;
+                if (!loserObj) loserUsername = "unKnown";
+                else loserUsername = loserObj.userName;
+                
+                console.log('pleaseeee ', game.id);
+                game.server.to(`game${game.id}`).emit('gameEnd', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
+                console.log('pleaseeee ', game.id);
+                
+                // game.server.to(`game${game.id}`).emit('gameEnd', { winnerUsername, loserUsername, winnerScore, loserScore });
                 // this.socketService.endGame(game, game.id);
                 game.server.socketsLeave(`game${game.id}`);
                 this.socketService.games.delete(game.id);
@@ -197,7 +207,7 @@ export class GameService {
         else if (pad.y + pad.height - pad.reversed * pad.speed >= 100)
             pad.y = 100 - pad.height;
         else
-            pad.y -= padHeight ;
+            pad.y -= pad.reversed * pad.speed;
     }
 
     padDown(pad: Pad) {
@@ -206,6 +216,6 @@ export class GameService {
         else if (pad.y + pad.height + pad.reversed * pad.speed >= 100)
             pad.y = 100 - pad.height;
         else
-            pad.y += padHeight;
+            pad.y += pad.reversed * pad.speed;
     }
 }

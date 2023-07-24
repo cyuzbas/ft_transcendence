@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSocket } from '../../../../contexts';
 import { Timer } from '../Timer/index';
+import { useNavigate } from 'react-router-dom'
 import './styles.css'
 
 interface GameState {
@@ -17,7 +18,10 @@ interface GameState {
 export function Random() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [timer, setTimer] = useState(false);
+  const [end, setEnd] = useState(false);
+  const [message, setMessage] = useState('');
   const { socket } = useSocket();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const gameDataHandler = (data: GameState) => {
@@ -40,6 +44,21 @@ export function Random() {
       socket.off('gameFound', gameFoundHandler);
     };
   }, [socket]);
+
+  useEffect(() => {
+    const gameEndHandler = (data: string) => {
+      setMessage(data);
+      console.log(data);
+      setTimer(false);
+      setGameState(null);
+      setEnd(true);
+      navigate('/lobby');
+    };
+    socket.on('gameEnd', gameEndHandler);
+    return () => {
+      socket.off('gameEnd', gameEndHandler);
+    };
+  }, [socket, message]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -82,6 +101,11 @@ export function Random() {
             </>
           )}
         </div>
+        {/* {end && (
+          <>
+            {message}
+          </>
+        )} */}
       </div>
     </>
   );
@@ -91,7 +115,10 @@ export function Random() {
 export function FriendGame() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [timer, setTimer] = useState(false);
+  const [end, setEnd] = useState(false);
+  const [message, setMessage] = useState('');
   const { socket } = useSocket();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const gameDataHandler = (data: GameState) => {
@@ -114,6 +141,21 @@ export function FriendGame() {
       socket.off('gameFound', gameFoundHandler);
     };
   }, [socket]);
+
+  useEffect(() => {
+    const gameEndHandler = (data: string) => {
+      setMessage(data);
+      console.log(data);
+      setTimer(false);
+      setGameState(null);
+      setEnd(true);
+      navigate('/lobby');
+    };
+    socket.on('gameEnd', gameEndHandler);
+    return () => {
+      socket.off('gameEnd', gameEndHandler);
+    };
+  }, [socket, message]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

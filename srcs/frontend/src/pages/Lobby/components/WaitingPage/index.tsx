@@ -6,6 +6,10 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useSocket } from "../../../../contexts"
 import queryString from 'query-string';
 
+export enum GameType {
+  CLASSIC = 0,
+  CUSTOM = 1,
+}
 
 export function WaitingPage1() {
   const [isLookingForOpponent, setIsLookingForOpponent] = useState(true);
@@ -40,7 +44,56 @@ export function WaitingPage1() {
   }, [socket, navigate]);
 
   useEffect(() => {
-    socket.emit("matchMaking");
+    socket.emit("matchMaking", {type: 'CLASSIC'});
+    return () => {
+      socket.off('matchMaking');
+      // socket.disconnect();
+    };
+  }, []);
+
+  return (
+    <>
+      {isLookingForOpponent && (
+        <div>Looking for an opponent</div>
+      )}
+    </>
+  )
+}
+
+export function WaitingPage3() {
+  const [isLookingForOpponent, setIsLookingForOpponent] = useState(true);
+  const { socket } = useSocket();
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    function onMatched() {
+        console.log('matched');
+        setIsLookingForOpponent(false);
+        navigate('/random');
+    }
+    socket.on("matchFound", onMatched);
+    return () => {
+      socket.off('matchFound', onMatched);
+      // socket.disconnect();
+    };
+  }, [socket, navigate]);
+
+  useEffect(() => {
+    function onCancelMatching() {
+        console.log('cancel');
+        setIsLookingForOpponent(false);
+        navigate('/lobby');
+    }
+    socket.on("gameUnqueued", onCancelMatching);
+    return () => {
+      socket.off('gameUnqueued', onCancelMatching);
+      // socket.disconnect();
+    };
+  }, [socket, navigate]);
+
+  useEffect(() => {
+    socket.emit("matchMaking", {type: 'CUSTOM'});
     return () => {
       // socket.off('gameUnqueued', onCancelInvite);
       // socket.disconnect();

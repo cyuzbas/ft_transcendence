@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {UserEntity} from '../typeorm/user.entity';
-import { GameEntity } from '../typeorm/game.entity'
+import { GameEntity, GameType } from '../typeorm/game.entity'
 import { UserService } from '../user/user.service'
 import { Game } from '../game/game'
 import { Server } from 'socket.io';
@@ -15,13 +15,15 @@ export type Res<Payload> = {
 
 export interface Invite {
     id: number;
+    type: GameType;
 }
 
 @Injectable()
 export class GatewayService {
 
     private users: Map<string, UserEntity>;
-    public queue: number[];
+    public queueClassic: number[];
+    public queueCustom: number[];
     public games: Map<string, Game>;
     public invites: Map<number, Invite[]>;
 
@@ -31,39 +33,49 @@ export class GatewayService {
         private gameRepository: Repository<GameEntity>
     ) {
         this.users = new Map();
-        this.queue = [];
+        this.queueClassic = [];
+        this.queueCustom = [];
         this.games = new Map();
         this.invites = new Map();
     }
 
-    addUserToQueue(userId: number) {
-        if (this.queue.includes(userId)) {
+    addUserToQueue(userId: number, type: GameType) {
+        if (this.queueClassic.includes(userId) || this.queueCustom.includes(userId)) {
             return { status: false, message: "You are already in the queue" };
         }
-        this.queue.push(userId);
-        return { status: true, message: "You are in the queue" };
+        if (type === GameType.CLASSIC) {
+            this.queueClassic.push(userId);
+            return { status: true, message: "You are in the queue" };
+        }
+        if (type === GameType.CUSTOM) {
+            this.queueCustom.push(userId);
+            return { status: true, message: "You are in the queue" };
+        }
+        return { status: false, message: "something wrong?" };
     }
 
     async findMatch(): Promise<Res<UserEntity[]>> {
-        if (this.queue.length > 1) {
-            const queue = this.queue;
+        if (this.queueClassic.length > 1) {
+            const queue = this.queueClassic;
             const [p1, p2] = await Promise.all(queue.splice(0, 2).map(p => this.userService.findUserByUserId(p)));
             if (!p1 || !p2)
                 return { status: false, message: "Couldn't find any online user" };
             return { status: true, message: "Match found", payload: [p1, p2] };
-            }
+        }
+        else if (this.queueCustom.length > 1) {
+            const queue = this.queueCustom;
+            const [p1, p2] = await Promise.all(queue.splice(0, 2).map(p => this.userService.findUserByUserId(p)));
+            if (!p1 || !p2)
+                return { status: false, message: "Couldn't find any online user" };
+            return { status: true, message: "Match found", payload: [p1, p2] };
+        }
         return { status: false, message: "Lost connection" };
     }
 
-    async createGame(server: Server, p1: UserEntity, p2: UserEntity): Promise<Res<GameEntity[]>> {
+    async createGame(server: Server, p1: UserEntity, p2: UserEntity, type: GameType): Promise<Res<GameEntity[]>> {
         const gameId = [p1.id, p2.id].sort().join('vs');
-        console.log("burda: " , gameId)
-        if (this.games.has(gameId)) {
-            console.log("varsa: " , gameId)
-            
+        if (this.games.has(gameId))
             return { status: true, message: "A game with the same players is already running"};
-        }
-        console.log('game is created with id: ', gameId);
         let gameP1 = this.gameRepository.create({
             player: p1,
             opponent: p2,
@@ -82,7 +94,7 @@ export class GatewayService {
             return { status: false, message: "Could not save to database" };
         }
         try {
-            this.games.set(gameId, new Game(server, p1.id, p2.id, gameP1.id, gameP2.id));
+            this.games.set(gameId, new Game(server, p1.id, p2.id, gameP1.id, gameP2.id, type));
         } catch {
             await this.gameRepository.delete(gameP1.id);
             await this.gameRepository.delete(gameP2.id);
@@ -104,11 +116,20 @@ export class GatewayService {
     }
 
     deleteUserFromQueue(userId: number) {
-        const index = this.queue.indexOf(userId);
-        if (index === -1) {
-            return { status: false, message: "You are not in the queue" };
+        if (this.queueClassic.includes(userId)) {
+            const index = this.queueClassic.indexOf(userId);
+            if (index === -1) {
+                return { status: false, message: "You are not in the queue" };
+            }
+            this.queueClassic.splice(index, 1);
         }
-        this.queue.splice(index, 1);
+        else if (this.queueCustom.includes(userId)) {
+            const index = this.queueCustom.indexOf(userId);
+            if (index === -1) {
+                return { status: false, message: "You are not in the queue" };
+            }
+            this.queueCustom.splice(index, 1);
+        }
         return { status: true, message: "You have been removed from the queue" };
     }
 
@@ -126,7 +147,9 @@ export class GatewayService {
         return [...this.games.values()].find(g => [g.p1, g.p2].includes(userId));
     }
 
-    inviteUser(userId: number, targetUserId: number): Res<boolean> {
+    inviteUser(userId: number, targetUserId: number, type: GameType): Res<boolean> {
+        if (this.isInQueue(userId))
+            return { status: false, message: "you are in the queue" };
         if (targetUserId === userId)
             return { status: false, message: "invitation to yourself?" };
         if (!this.isUserOnline(targetUserId))
@@ -139,19 +162,8 @@ export class GatewayService {
         let targetInvites = this.invites.get(targetUserId) || [];
         if (targetInvites.find(i => i.id === userId))
             return { status: false, message: "invitation send already" };
-        targetInvites.push({ id: userId });
+        targetInvites.push({ id: userId, type });
         this.invites.set(targetUserId, targetInvites);
-        return { status: true, message: "success" };
-    }
-
-    uninviteUser(myUserId: number, targetUserId: number): Res<Invite> {
-        if (!this.isUserOnline(targetUserId))
-            return { status: false, message: "Target is offline" };
-        const targetInvites = this.invites.get(targetUserId) || [];
-        if (!targetInvites.find(i => i.id === myUserId))
-            return { status: false, message: "You haven't invited this user" };
-        const deleted = targetInvites.find(i => i.id === myUserId);
-        this.invites.set(targetUserId, targetInvites.filter(i => i.id !== myUserId));
         return { status: true, message: "success" };
     }
 
@@ -167,12 +179,12 @@ export class GatewayService {
     }
 
     isInQueue(userId: number) {
-        return (this.queue.includes(userId))
+        return (this.queueClassic.includes(userId) || this.queueCustom.includes(userId))
     }
 
     async isInGame(userId: number) {
         const user = await this.userService.findUserByUserId(userId);
-        return(!!user.inGame);
+        return(user.inGame);
     }
 
     async isUserOnline(userId: number)  {
@@ -182,5 +194,9 @@ export class GatewayService {
 
     getInvites(userId: number) {
         return this.invites.get(userId);
+    }
+
+    isInviting(userId: number) {
+        return [...this.invites.values()].find(invites => !!invites.find(i => i.id === userId));
     }
 }

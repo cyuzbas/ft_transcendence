@@ -10,6 +10,7 @@ import { RoomUserDto } from "src/dto/roomUser.dto";
 import { GatewayService, Invite } from "./gateway.service";
 import { GameService } from "../game/game.service";
 import { Injectable } from '@nestjs/common';
+import { GameType } from "src/typeorm/game.entity";
 
 
 @Injectable()
@@ -117,9 +118,9 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 	// /////////////////////////////////////////////////////////////////////
 
 	@SubscribeMessage('matchMaking')
-	async handleMatchMaking( @ConnectedSocket() client: Socket ) {
-		if (!client) {
-			client.emit('error', "No connection"); ///null oldugu duruma bak  frontende koy
+	async handleMatchMaking( @MessageBody() data: { type: GameType }, @ConnectedSocket() client: Socket ) {
+		if (!client || !("type" in data)) {
+			client.emit('error', "No connection or no type!"); ///null oldugu duruma bak  frontende koy
 			return;
 		}
 		const userSocket = client.handshake.auth;
@@ -128,8 +129,17 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', 'Invalid user');
 			return;
 		}
-		console.log('match making requested for socket', client.id);
-		const resQueued = this.gatewayService.addUserToQueue(user.id);
+		if (this.gatewayService.isInviting(user.id)) {
+			client.emit('error', 'No random game after sending an invitation');
+            return;
+        }
+		// if (this.gatewayService.isInGame(user.id)) {
+		// 	client.emit('error', 'In the game');
+        //     return;
+        // }
+		console.log(data);
+		// errorler icin bisi koy
+		const resQueued = this.gatewayService.addUserToQueue(user.id, data.type);
 		if (resQueued.status !== true) {
 			client.emit('error', resQueued.message);
 			return;
@@ -156,7 +166,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		} else {
 			console.log(`Error: One or both users have not joined game room: game${gameId}`);
 		}
-		const resGameCreate = await this.gatewayService.createGame(this.server, resMatching.payload[0], resMatching.payload[1]);
+		const resGameCreate = await this.gatewayService.createGame(this.server, resMatching.payload[0], resMatching.payload[1], data.type);
 		if (resGameCreate.status !== true) {
 			if (resGameCreate.message)
 			// client.emit('error', resGameCreate.message);
@@ -191,16 +201,19 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
     }
 
 	@SubscribeMessage('Invite')
-    async inviteUser( @MessageBody() data: { userName: string }, @ConnectedSocket() client: Socket ) {
+    async inviteUser( @MessageBody() data: { userName: string, type: GameType }, @ConnectedSocket() client: Socket ) {
 		const userSocket = client.handshake.auth;
 		const user = await this.userService.findUserByUserName(userSocket.name);
 		if (!user) {
-			client.emit('error', 'Invalid user');
+			client.emit('error', 'invalid user');
 			return;
 		}
-
         if (!data.userName) {
 			client.emit('error', 'empty username');
+            return;
+        }
+		if (this.gatewayService.isInGame(user.id)) {
+            client.emit('error', 'in game');
             return;
         }
         const target = await this.userService.findUserByUserName(data.userName);
@@ -208,8 +221,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', 'Invalid user');
 			return;
 		}
-		this.gatewayService.uninviteUser(user.id, target?.id );
-        const res = this.gatewayService.inviteUser(user.id, target?.id );
+		// this.gatewayService.uninviteUser(user.id, target?.id );
+        const res = this.gatewayService.inviteUser(user.id, target?.id, data.type );
         if (res.status !== true) {
 			client.emit('error', res.message);
             return;
@@ -228,7 +241,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
             return;
         }
         const target = await this.userService.findUserByUserName(data.userName);
-        const res = this.gatewayService.uninviteUser(user.id, target?.id);
+        const res = this.gatewayService.deleteInvite(user.id, target?.id);
         if (res.status !== true) {
             client.emit('error', res.message);
             return;
@@ -253,7 +266,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', res.message);
             return;
         }
-        const resGameCreate = await this.gatewayService.createGame(this.server, user, target);
+        const resGameCreate = await this.gatewayService.createGame(this.server, user, target, data.type);
         if (resGameCreate.status !== true) {
 			client.emit('error', resGameCreate.message);
             return;
@@ -287,26 +300,26 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
         this.gameService.startGame(this.gatewayService.getGameByGameId(gameId));
     }
 
-    // @SubscribeMessage('RejectInvitation')
-    // async refuseInvite( @MessageBody() data: Invite, @ConnectedSocket() client: Socket ) {
-    //     const userSocket = client.handshake.auth;
-	// 	const user = await this.userService.findUserByUserId(userSocket.id);
-    //     if (!user || !('id' in data)) {
-    //         client.emit('error', "Invalid data");
-    //         return;
-    //     }
-    //     const target = this.gatewayService.getConnectedUserById(data.id);
-    //     const res = this.gatewayService.deleteInvite(user.id, target?.id);
-    //     if (res.status !== true) {
-    //         client.emit('error', res.message);
-    //         return;
-    //     }
-    //     // Notify and remove invite from store
-    //     client.emit('success', `You refused ${target.userName}'s invite`);
-    //     client.emit('game_invite_del', { ...res.payload, userName: user.userName });
-    //     this.sendSocketMsgByUserId(target.id, 'warning', `${user.userName} refused your invite`);
-    //     this.sendSocketMsgByUserId(target.id, 'game_invite_refused', { ...res.payload, userName: user.userName });
-    // }
+    @SubscribeMessage('RejectInvitation')
+    async refuseInvite( @MessageBody() data: Invite, @ConnectedSocket() client: Socket ) {
+        const userSocket = client.handshake.auth;
+		const userDto = await this.userService.findUserByUserName(userSocket.name);
+		const user = await this.userService.findUserByUserId(userDto.id);
+        if (!user || !('id' in data)) {
+            client.emit('error', "Invalid data");
+            return;
+        }
+        const target = await this.userService.findUserByUserId(data.id);
+        const res = this.gatewayService.deleteInvite(user.id, target?.id);
+        if (res.status !== true) {
+            client.emit('error', res.message);
+            return;
+        }
+        client.emit('success', `You refused ${target.userName}'s invite`);
+        client.emit('inviteDeleted', { ...res.payload, userName: user.userName });
+        this.sendSocketMsgByUserId(target.id, 'warning', `${user.userName} refused your invite`);
+        this.sendSocketMsgByUserId(target.id, 'inviteRefused', { ...res.payload, userName: user.userName });
+    }
 	
 	@SubscribeMessage('keyDown')
     async KeyDown( @MessageBody() data: string, @ConnectedSocket() client: Socket ) {

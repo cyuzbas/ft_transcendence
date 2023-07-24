@@ -9,6 +9,7 @@ import { Ball } from './game';
 import { Pad } from './game';
 import { scoreMax } from "./game";
 import { UserService } from 'src/user/user.service';
+import { GameType } from '../typeorm/game.entity';
 
 @Injectable()
 export class GameService {
@@ -40,12 +41,13 @@ export class GameService {
                 const winnerScore = Math.max(game.p1Score, game.p2Score);
                 const loserScore = Math.min(game.p1Score, game.p2Score);
 
-                await this.userRepository.increment({ id: winner }, 'totalWin', 1);
-                await this.userRepository.increment({ id: winner }, 'score', 100);
                 await this.userRepository.update(winner, { inGame: false });
+                await this.userRepository.increment({ id: winner }, 'totalWin', 1);
+                // if game type a gore score
+                await this.userRepository.increment({ id: winner }, 'score', 100);
 
-                await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
                 await this.userRepository.update(loser, { inGame: false });
+                await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
 
                 const winnerObj = await this.userService.findUserByUserId(winner);  ///buraya alinin fonksiyonunu koyacaksin
                 const loserObj = await this.userService.findUserByUserId(loser);  ///buraya alinin fonksiyonunu koyacaksin
@@ -153,6 +155,11 @@ export class GameService {
         game.paddleRight.move = 0;
         game.paddleRight.reversed = 1;
 
+        // if (game.type === GameType.CUSTOM) {
+        //     // 
+        // }
+        
+
         // game.pause = true;
 
         this.broadcastGame(game);
@@ -190,6 +197,7 @@ export class GameService {
 
     broadcastGame(game: Game) {
         game.server.to(`game${game.id}`).emit('gameData', {
+            type: game.type,
             ball: game.ball,
             paddleLeft: game.paddleLeft,
             paddleRight: game.paddleRight,

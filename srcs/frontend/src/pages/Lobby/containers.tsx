@@ -121,7 +121,7 @@ export const Card = styled.form`
     }
   }
 
-  .mylink, .flap {
+  .mylink1, .mylink2, .flap {
    border-radius: 20px;
    border: 1px solid rgb(88, 110, 124);
    background-color: rgb(88, 110, 124, 0.5);

@@ -1,10 +1,11 @@
 import { Server } from "socket.io";
+import { GameType } from "src/typeorm/game.entity";
 
 export const numActPerSendData = 2;
 export const baseSpeed = 100;
 export const scoreMax = 3;
 // export const startTime = 1e3;
-export const gameTps = 120;
+export const gameTps = 40;
 export const ballSpeed = (baseSpeed / gameTps); //padWidth den fazla olmasin
 export const ballSizeX = 2.4;
 export const ballSizeY = 3.2;
@@ -60,7 +61,7 @@ export class Pad {
     this.width = padWidth;
     this.speed = padSpeed;
     this.move = PadMove.STATIC;
-    // this.reversed = 1;
+    this.reversed = 1;
   }
 }
 
@@ -79,7 +80,8 @@ export class Game {
   id: string;
   dbIdP1: number;
   dbIdP2: number;
-  packetId: number;
+  type: GameType;
+  isCustom: boolean;
 
   constructor(
     server: Server,
@@ -87,6 +89,7 @@ export class Game {
     p2: number,
     dbIdP1: number,
     dbIdP2: number,
+    type: GameType,
     customPadHeight = padHeight,
     customBallSpeed = 100/120,
     customAccelBall = ballSpeedInc,
@@ -106,7 +109,10 @@ export class Game {
     this.id = [p1, p2].sort().join('vs');
     this.dbIdP1 = dbIdP1;
     this.dbIdP2 = dbIdP2;
-    this.packetId = 0;
+    if (type == GameType.CLASSIC)
+      this.isCustom = false;
+    else
+      this.isCustom = true;
   }
 
 }

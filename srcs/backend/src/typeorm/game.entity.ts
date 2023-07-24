@@ -2,6 +2,11 @@ import { Expose, Type } from "class-transformer";
 import {UserEntity} from "src/typeorm/user.entity";
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 
+export enum GameType {
+    CLASSIC = 'CLASSIC',
+    CUSTOM = 'CUSTOM',
+}
+
 @Entity('GameEntity')
 export class GameEntity {
     @Expose()
@@ -30,5 +35,9 @@ export class GameEntity {
     })
     opponentScore: number;
 
-
+    @Expose()
+    @Column({
+        default: GameType.CLASSIC
+    })
+    type: string;
 }

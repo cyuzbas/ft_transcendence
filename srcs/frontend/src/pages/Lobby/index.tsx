@@ -50,7 +50,8 @@ export function Lobby() {
           {/* <WaitingPage isOpen={isLookingForOpponent} setIsOpen={setIsLookingForOpponent} /> */}
           <Components.Card>
 
-            <Link to='/findingopponent' className='mylink'>Random Game</Link>
+            <Link to='/findingopponentClassic' className='mylink1'>CLASSIC GAME</Link>
+            <Link to='/findingopponentCustom' className='mylink2'>CUSTOM GAME</Link>
             
             {/* add hereee */}
             {!isOpen && (

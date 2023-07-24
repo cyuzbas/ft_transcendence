@@ -44,7 +44,8 @@ export class GameService {
                 await this.userRepository.update(winner, { inGame: false });
                 await this.userRepository.increment({ id: winner }, 'totalWin', 1);
                 // if game type a gore score
-                await this.userRepository.increment({ id: winner }, 'score', 100);
+                let score = game.isCustom ? 150 : 100;
+                await this.userRepository.increment({ id: winner }, 'score', score);
 
                 await this.userRepository.update(loser, { inGame: false });
                 await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
@@ -60,9 +61,7 @@ export class GameService {
                 if (!loserObj) loserUsername = "unKnown";
                 else loserUsername = loserObj.userName;
                 
-                console.log('pleaseeee ', game.id);
                 game.server.to(`game${game.id}`).emit('gameEnd', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
-                console.log('pleaseeee ', game.id);
                 
                 // game.server.to(`game${game.id}`).emit('gameEnd', { winnerUsername, loserUsername, winnerScore, loserScore });
                 // this.socketService.endGame(game, game.id);
@@ -104,6 +103,15 @@ export class GameService {
                 this.padUp(game.paddleRight);
             else if (game.paddleRight.move === 1)
                 this.padDown(game.paddleRight);
+
+            
+                game.ball.x = Math.min(game.ball.x, 100 - game.ball.sizeX);
+                game.ball.x = Math.max(game.ball.x, 0);
+                game.ball.y = Math.min(game.ball.y, 100 - game.ball.sizeY);
+                game.ball.y = Math.max(game.ball.y, 0);
+                game.ball.x += game.ball.directionX;
+                game.ball.y += game.ball.directionY;
+                this.isCollisionWall(game.ball);
         }
 
         if (!game.pause) {
@@ -197,7 +205,7 @@ export class GameService {
 
     broadcastGame(game: Game) {
         game.server.to(`game${game.id}`).emit('gameData', {
-            type: game.type,
+            isCustom: game.isCustom,
             ball: game.ball,
             paddleLeft: game.paddleLeft,
             paddleRight: game.paddleRight,

@@ -13,7 +13,7 @@ interface GameState {
   p2Score: number;
   p1: string;
   p2: string;
-  type: number;
+  isCustom: boolean;
 }
 
 export function Random() {
@@ -28,6 +28,7 @@ export function Random() {
     const gameDataHandler = (data: GameState) => {
       // console.log('++++++++++++++++Received game data:', data);
       setGameState(data);
+      // console.log(data.isCustom);
     };
     socket.on('gameData', gameDataHandler);
     return () => {
@@ -92,19 +93,22 @@ export function Random() {
             <Timer />
           </>
         )}
-        <div className='game-container'> 
+        <div className='game-container'>
           {gameState && (
             <>
-              {gameState.type && (
-                <div style={{ position: 'absolute', top: `calc(${gameState.paddleRight.y} * 1vw)`, right:`10vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
-              )}
               <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
               <div style={{ position: 'absolute', top: `calc(${gameState.ball.y} * 1vh)`, left: `calc(${gameState.ball.x} * 1vw`, height: `2.5vh`, width: `2.5vh`, backgroundColor: 'var(--foreground-color)', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} />
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleLeft.y} * 1vw)`, left: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleRight.y} * 1vw)`, right: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
+              
+              {gameState.isCustom && (
+                <div style={{ position: 'absolute', top: `50px`, right: `50px`, height: `50px`, width: `1vh`, color: `red` }} />
+              )}
             </>
           )}
         </div>
+
+
         {/* {end && (
           <>
             {message}

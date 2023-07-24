@@ -212,10 +212,10 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', 'empty username');
             return;
         }
-		if (this.gatewayService.isInGame(user.id)) {
-            client.emit('error', 'in game');
-            return;
-        }
+		// if (this.gatewayService.isInGame(user.id)) {
+        //     client.emit('error', 'in game');
+        //     return;
+        // }
         const target = await this.userService.findUserByUserName(data.userName);
 		if (!target) {
 			client.emit('error', 'Invalid user');

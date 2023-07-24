@@ -8,6 +8,7 @@ type User = {
     userName: string;
     intraId: string;
 	  isLogged: boolean;
+	  score: number;
   };
   
 
@@ -15,7 +16,7 @@ type User = {
   
 export function Request() {
     const [users, setUsers] = useState<User[]>([]);
-    const {user, setUser} = useContext(UserContext)
+    const {user} = useContext(UserContext)
 
 
 
@@ -69,10 +70,11 @@ export function Request() {
             </div>
             <div className="friendRequestUsername">{user.userName}</div>
             <div className='friendReject'>
-              <i className="bi bi-x-lg fs45" onClick={(e) => answerRequest(user.intraId, "false")}/>
+              <i className="bi bi-x-lg fs-4" onClick={(e) => answerRequest(user.intraId, "false")}/>
             </div>
             <div className='friendAccept'>
-              <i className="bi bi-check2 fs-4" onClick={(e) => answerRequest(user.intraId, "true")}/>
+              <i className="bi bi-check2 fs-3" onClick={(e) => answerRequest(user.intraId, "true")}/>
+
             </div>
         </div>
       ))

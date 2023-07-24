@@ -17,6 +17,11 @@ export class FriendsController {
     constructor(private readonly userService: UserService,
         private readonly friendsService: FriendsService) { }
 
+        @Get('allUsers')
+        getAllUsers(){
+            return this.userService.findByAllUser();
+        }
+    
         @Get('allUser/:intraId')
         async getAllUser(@Param('intraId') intraId:string){
             const getUser = await this.userService.findByintraIdEntitiy(intraId)

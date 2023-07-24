@@ -18,7 +18,10 @@ export class UserEntity {
 	@Column({ name: 'intraId',nullable: true, unique: true })
   	intraId: string;
 
- 	@Column({nullable: true })
+	@Column({ name: 'intraName',nullable: true, unique: true })
+  	intraName: string;
+ 	
+	@Column({nullable: true })
 	public avatar: string;
 
 
@@ -45,6 +48,11 @@ export class UserEntity {
 	friends: UserEntity[];
 
 
+	@Column({nullable: true})
+	rank: number;
+
+	@Column({nullable : true})
+	achievementChameleon: boolean = false;
 
 	@OneToMany(() => MessageEntity, message => message.user)
 	messages: MessageEntity[];
@@ -61,5 +69,24 @@ export class UserEntity {
 	
 	@ManyToMany(() => UserEntity, user => user.blocking)
 	blockedBy: UserEntity[];
+
+	// @JoinTable()
+    // @OneToMany(() => GameEntity, game => game.player)
+    // games: GameEntity[];
+
+    @Column({
+        default: 1
+    })
+    score: number;
+
+	@Column({
+        default: 2
+    })
+    totalWin: number;
+
+	@Column({
+        default: 0
+    })
+    totalLoose: number;
 
 }

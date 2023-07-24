@@ -1,9 +1,8 @@
 import Particle from '../Login/Particle';
-import fourtytwo from '../../img/ft.png'
 import './styles.css'
 import { useState, ChangeEvent, useContext } from 'react';
 import axios from 'axios';
-import { User, UserContext } from '../../contexts';
+import { UserContext } from '../../contexts';
 
 function Verify2fa() {
 
@@ -19,7 +18,7 @@ function Verify2fa() {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (inputText.length != 6)
+		if (inputText.length !== 6)
 			console.error("wrong 2factor key!!")
 		else {
 			try {
@@ -67,9 +66,7 @@ function Verify2fa() {
 							<i className="bi bi-send fs-3 LoginSend2fa"></i>
 						</button>
 					</form>
-
 				</div>
-
 			</div>
 		</>
 	);

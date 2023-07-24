@@ -1,5 +1,4 @@
 import './styles.css'
-import Intra from '../../img/ft.png';
 import { useContext, ChangeEvent, useState } from 'react';
 import axios from 'axios';
 import QRCodeImage from './qrCodeCreate';
@@ -18,7 +17,7 @@ function Auth2faPage() {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (inputText.length != 6)
+		if (inputText.length !== 6)
 			console.error("wrong 2factor key!!")
 		else {
 			try {

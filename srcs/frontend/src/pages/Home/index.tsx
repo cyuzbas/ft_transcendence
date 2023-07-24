@@ -1,49 +1,21 @@
 import './styles.css'
-import React, { useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import { Friends } from '../../components';
+import React, { useContext, useEffect } from 'react';
 import { UserContext } from '../../contexts'
 import FriendsToggle from './components/UserToggle';
+import LeaderMatchToggle from './components/LeadToggle';
 import Achievements from './components/Achievements';
-import Leaderboard from './components/Leaderboard';
-import swal from 'sweetalert';
 import pong from '../../img/pong.png';
 
 
 export function Home() {
 
 
-  const { user, setUser } = useContext(UserContext)
+  const { user } = useContext(UserContext);
 
 
   useEffect(() => {
     console.log("home")
   })
-
-  async function showAlert() {
-    swal({
-      title: "Are you sure?",
-      text: "Are you sure that you want to save",
-      icon: "warning",
-      dangerMode: true,
-    })
-      .then(async (willDelete) => {
-        if (willDelete) {
-          try {
-            const response = await axios.post("http://localhost:3001/user/update-user-profile", {
-              userName: "cicek",
-              avatar: user.avatar,
-              intraId: user.intraId
-            }, { withCredentials: true })
-
-            swal("Saved!", "Your name has been saved!");
-          }
-          catch (error) {
-            swal("error", "something go wrong" + error, "ok")
-          }
-        }
-      });
-  }
 
 
   return (
@@ -52,48 +24,51 @@ export function Home() {
       <div id="item-0" className="ProfileSection item">&nbsp;
         <div className="ProfileInfo">
          <div className="imageClass">
-            <img src={user.avatar} id="Avatar"/>
+            <img src={user.avatar} id="Avatar" alt="User Avatar"/>
           </div>
           <h4 className="UserName">{user.userName}</h4>
-          <h4 className="UserID"> ID - {user.intraId}</h4>
+          <div className="ProfileStatusInfo">
+            <i className="bi bi-circle-fill fs-5"  id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
+            {/* {!isGaming && user.isLogged && ( */}
+              <h4 className="UserStatus">Online</h4> 
+            {/* )} */}
+            {/* {isGaming && user.isLogged && (
+              <h4 className="UserStatus">In Game</h4> 
+            )} */}
+            {!user.isLogged && (
+              <h4 className="UserStatus">Offline</h4> 
+            )}
+          </div>
         </div>
         <div className="ProfileRankInfo">
           <div className="ProfileRankInfoLine">
-            <i className="bi bi-circle-fill fs-2"  id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
-            {/* {!isGaming && user.isLogged && ( */}
-              <h4 className="UserStatus">ONLINE</h4> 
-            {/* )} */}
-            {/* {isGaming && user.isLogged && (
-              <h4 className="UserStatus">IN GAME</h4> 
-            )} */}
-            {!user.isLogged && (
-              <h4 className="UserStatus">OFFLINE</h4> 
-            )}
+            <h4 className="UserScore">SCORE</h4>
           </div>
           <div className="ProfileRankInfoLine">
-            <i className="bi bi-star fs-2"></i>
-            <h4 className="UserScore">SCORE</h4> {/*Data from Scoretable*/}
+          <i className="bi bi-star fs-2"></i>
+
+            <h4 className="UserScore">{user.score}</h4>
           </div>
-          <div className="ProfileRankInfoLine">
+          {/* <div className="ProfileRankInfoLine">
             <i className="bi bi-chevron-double-up fs-2"></i>
-            <h4 className="UserRank">RANK </h4> {/*Data from Scoretable*/}
-          </div>
+            <h4 className="UserRank">RANK - {user.rank}</h4>
+          </div> */}
         </div>
-        <div className="ProfileMatchHistory">
-          <div id="MatchHistoryTitle">&nbsp;
-            <img src={pong} className='pongIcon'/>
+        <div className="ProfileMatchStats">
+          <div id="MatchStatsTitle">&nbsp;
+            <img src={pong} className='pongIcon'  alt='pong icon'/>
             <h4>MATCH STATS</h4>
-            <img src={pong} className='pongIcon reverse'/>
+            <img src={pong} className='pongIcon reverse' alt='pong icon'/>
           </div>
-          <div id="MatchHistoryWin">&nbsp;
+          <div id="MatchStatsWin">&nbsp;
             <h4>WIN</h4>
             <i className="bi bi-trophy fs-4"></i>
-            <h4>2</h4> {/*Data from Scoretable*/}
+            <h4>{user.totalWin}</h4>
           </div>
-          <div id="MatchHistoryLoss">&nbsp;
+          <div id="MatchStatsLoss">&nbsp;
             <h4>LOSS</h4>
             <i className="bi bi-x-lg fs-4"></i>
-            <h4>1</h4>  {/*Data from Scoretable*/}
+            <h4>{user.totalLoose}</h4>
           </div>
         </div>
       </div>
@@ -101,7 +76,7 @@ export function Home() {
         <FriendsToggle />
       </div>
       <div id="item-2" className="LeaderBoard item">
-        <Leaderboard/>
+        <LeaderMatchToggle/>
       </div>
       <div id="item-3" className="Achievement item">
         <Achievements/>

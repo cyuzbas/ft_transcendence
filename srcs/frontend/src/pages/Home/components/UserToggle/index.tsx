@@ -1,7 +1,8 @@
 import './styles.css'
 import { Friends } from '../../../../components';
-import React, { useState } from 'react';
-import Switch from "react-switch";
+import React, { useContext, useState } from 'react';
+import FriendsSection from '../FriendsSection';
+import { UserContext } from '../../../../contexts';
 
 function FriendsToggle() {
 
@@ -21,7 +22,7 @@ function FriendsToggle() {
 		setToggleButton(false);
 
 	};
-
+	const {user} = useContext(UserContext)
 
   return (
 	<div className="Friend-UsersSection">
@@ -36,43 +37,15 @@ function FriendsToggle() {
 		{isAllUsersVisible && (
 			<div id="AllUsers" className="UsersSection">
 				<Friends/>
+				{/* <div className="fake-all-users"></div>
 				<div className="fake-all-users"></div>
 				<div className="fake-all-users"></div>
 				<div className="fake-all-users"></div>
 				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
+				<div className="fake-all-users"></div> */}
 			</div>
 		)}
-		{isFriendsVisible && (
-			<div id="AllFriends" className="UsersSection">
-				{/* <Friends/> */}
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				<div className="fake-all-users"></div>
-				
-			</div>
-		)}
+		{isFriendsVisible && ( <FriendsSection id={user.intraId} />)}
 	</div>
 	);
   };

@@ -2,6 +2,7 @@ import './styles.css';
 import axios from 'axios';
 import { UserContext } from '../../contexts'
 import React, { useContext, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 
 enum userStatus {
@@ -42,18 +43,6 @@ export function Friends() {
 
   }
 
-
-  // async function answerRequest(intraId:string) {
-  //   try{
-  //         const response = await axios.post(`http://localhost:3001/friends/friend-request/${user.intraId}/${intraId}/${false}`)
-  //         console.log(response.data)
-
-  //   }
-  //   catch(error){
-  //     console.error(error);
-  //   }
-
-  // }
 
 
   async function removeFriend(intraId: string) {
@@ -104,7 +93,9 @@ export function Friends() {
             </div>
 
             <div className="friend-component-userName">{user.userName}</div>
-            <div className="friend-component-userID"> ID - {user.intraId}</div>
+            <div className="friend-component-userID">
+              <Link to={`/profile/${user.intraId}`} className="visitUserProfile">{user.intraId}</Link>
+            </div>
             <div className='personOnlineContainer'>
               <i className="bi bi-circle-fill fs-5"
                 id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>

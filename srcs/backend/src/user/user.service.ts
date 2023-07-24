@@ -91,7 +91,10 @@ export class UserService {
 
 	async findByAllUser(): Promise<UserI[]> {
 		const users: UserEntity[] = await this.userRepository.find();
-		return users as UserI[];
+		const filteredUsers = users.filter((user) => user.userName !== "admin");
+
+
+		return filteredUsers as UserI[];
 	}
 
 	async findByID(idToFind: number): Promise<UserI> {

@@ -1,11 +1,9 @@
 import React, { useContext, useState, useRef }  from 'react';
-import { Nav, Navbar, Form, FormControl,  } from 'react-bootstrap';
+import { Nav, Navbar, Form, FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-import Intra from '../../img/ft.png';
-import Avatar from '../../img/default.png';
-import { UserContext } from '../../contexts'
-import { Friends } from '../Friends';
-import { Request } from './FriendRequest/FriendRequest';
+import Intra from '../../../img/ft.png';
+import { UserContext } from '../../../contexts'
+import { Request } from '../FriendRequest/FriendRequest';
 import './styles.css'
 
 
@@ -17,14 +15,8 @@ const Styles = styled.div`
   }
   
   .navbar-brand {
-    font-size: 1.4em;
     color: rgb(178,225,255);
     &:hover { color: white; }
-  }
-  .form-center {
-    position: absolute !important;
-    left: 20%;
-    right: 20%;
   }
 
   `;
@@ -32,7 +24,7 @@ const Styles = styled.div`
 
 function NavigationBar () {
 
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const[open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const handleDropDownFocus = (state: boolean) => {
@@ -61,14 +53,14 @@ return (
       <Nav className="ms-auto">
 		  <Nav.Item>
         <div className="friend-drop-down-container" ref={dropdownRef}>
-		  	  <i className="bi bi-people-fill fs-3 me-2" onClick={(e) => handleDropDownFocus(open)}></i>
+		  	  <i className="bi bi-people-fill fs-3 me-2 friendsRequestButton" onClick={(e) => handleDropDownFocus(open)}>
+            {/* {friendRequest && ( */}
+            <span className="position-absolute top-0 start-90 translate-middle p-1 bg-ligh border border-light rounded-circle">
+              <span className="visually-hidden">New alerts</span>
+            </span>
+            {/* )} */}
+          </i>
           {open && (
-            // <ul>
-            //   <li>Item 1</li>
-            //   <li>Item 2</li>
-            //   <li>Item 3</li>
-            //   <li>Item 4</li>
-            // </ul>
             <ul>
               <li>
                 <Request/>
@@ -79,7 +71,7 @@ return (
           </Nav.Item> 
           <Nav.Item><Nav.Link href="/home">
             <text className='userName'>{user.userName}</text>
-            <img src={user.avatar} className='avatar'/>
+            <img src={user.avatar} className='avatar' alt='Avatar'/>
           </Nav.Link></Nav.Item>  
         </Nav>
     </Navbar>

@@ -1,5 +1,5 @@
 
-.PageMain{
+.PageProfile{
     display: grid; 
     height: 100vh;
     gap: 10px;
@@ -29,19 +29,6 @@
     flex-direction: row;
     align-items: center;
 
- }
-
- .FriendSection {
-    grid-area: label1;  
- }
-
- .LeaderBoard {
-    grid-area: label2;
- }
-
- .Achievement {
-    margin-right: 10px;
-    grid-area: label3;  
  }
 
  .ProfileInfo{
@@ -192,3 +179,38 @@
     transform: scaleX(-1);
  }
 
+ .Friend-UsersSection {
+	height: 100%;
+	width: 100%;
+	position: relative;
+	padding: 15px;
+	overflow: hidden;
+}
+
+ .LeaderBoard-MatchHistorySection {
+	height: 100%;
+	width: 100%;
+	position: relative;
+	padding: 15px;
+	overflow: hidden;
+
+}
+
+ .title-box {
+	width: 250px;
+	margin: 15px auto;
+	position: relative;
+	top: 20px;
+	box-shadow: 0 0 20px 5px #fff;
+	border-radius: 30px;
+}
+
+ .ProfileComponentTitle {
+	padding: 10px 30px;
+	background: transparent;
+	border: 0;
+	position: relative;
+	color: rgb(43, 45, 46);
+	text-align: center;
+	font-weight: 500;
+}

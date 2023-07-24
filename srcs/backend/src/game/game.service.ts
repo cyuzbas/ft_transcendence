@@ -104,15 +104,32 @@ export class GameService {
                 this.padDown(game.paddleRight);
 
             if(game.isCustom) {
-                this.isCollisionWall(game.block);
-                // game.block.x += game.block.directionX;
-                game.block.y += game.block.directionY;
-                game.block.x = Math.min(game.block.x, 100 - game.block.sizeX);
-                game.block.x = Math.max(game.block.x, 0);
-                game.block.y = Math.min(game.block.y, 100 - game.block.sizeY);
-                game.block.y = Math.max(game.block.y, 0);
+                this.moveBlock(game.block);
+                // this.isCollisionWall(game.block);
 
-                // paddle a carpma
+                // if ((game.ball.x <= game.block.x + game.block.sizeX &&
+                //     game.ball.x + game.ball.sizeX >= game.block.x) &&
+                //     (game.ball.y + game.ball.sizeY > game.block.y  &&
+                //     game.ball.y < game.block.y + game.block.sizeY) ) {
+                //     game.ball.directionX *= -1;   
+                // }
+            
+                // if ((game.ball.x + game.ball.sizeX >= game.block.x &&
+                //     game.ball.x <= game.block.x + game.block.sizeX) &&
+                //     (game.ball.y + game.ball.sizeY > game.block.y  &&
+                //     game.ball.y < game.block.y + game.block.sizeY) &&
+                //     game.ball.directionX > 0) {
+                //     game.ball.directionX *= -1;   
+                // }
+    
+                // // game.block.x += game.block.directionX;
+                // game.block.y += game.block.directionY;
+                // game.block.x = Math.min(game.block.x, 100 - game.block.sizeX);
+                // game.block.x = Math.max(game.block.x, 0);
+                // game.block.y = Math.min(game.block.y, 100 - game.block.sizeY);
+                // game.block.y = Math.max(game.block.y, 0);
+
+                // // paddle a carpma
             }
         }
 
@@ -233,4 +250,12 @@ export class GameService {
         else
             pad.y += pad.reversed * pad.speed;
     }
+
+    moveBlock(block: Pad) {
+        block.speed = 0.02;
+        if (block.y + block.height + block.speed >= 100 || block.y - block.speed <= 0) {
+          block.reversed *= -1;
+        }
+        block.y += block.reversed * block.speed;
+      }
 }

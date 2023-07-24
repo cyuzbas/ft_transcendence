@@ -6,9 +6,10 @@ import './styles.css'
 
 interface GameState {
   ball: { x: number; y: number; sizeX: number; sizeY: number; };
-  block: { x: number; y: number; sizeX: number; sizeY: number; };
+  // block: { x: number; y: number; sizeX: number; sizeY: number; };
   paddleLeft: { x: number; y: number; width: number; height: number; };
   paddleRight: { x: number; y: number; width: number; height: number; };
+  block: { x: number; y: number; width: number; height: number; };
   pause: boolean;
   p1Score: number;
   p2Score: number;
@@ -98,12 +99,13 @@ export function Random() {
           {gameState && (
             <>
               <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
-              <div style={{ position: 'absolute', top: `calc(${gameState.ball.y} * 1vh)`, left: `calc(${gameState.ball.x} * 1vw`, height: `2.5vh`, width: `2.5vh`, backgroundColor: 'var(--foreground-color)', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} />
+              <div style={{ position: 'absolute', top: `calc(${gameState.ball.y} * 1vh)`, left: `calc(${gameState.ball.x} * 1vw)`, height: `2.5vh`, width: `2.5vh`, backgroundColor: 'var(--foreground-color)', borderRadius: '50%', transform: 'translate(-50%, -50%)' }} />
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleLeft.y} * 1vw)`, left: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
               <div style={{ position: 'absolute', top: `calc(${gameState.paddleRight.y} * 1vw)`, right: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
               
               {gameState.isCustom && (
-                <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vh)`, left: `calc(${gameState.block.x} * 1vw`, height: `100px`, width: `10px`, backgroundColor: 'var(--foreground-color)', transform: 'translate(-50%, -50%)' }} />
+                // <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vh)`, left: `calc(${gameState.block.x} * 1vw`, height: `100px`, width: `10px`, backgroundColor: 'var(--foreground-color)', transform: 'translate(-50%, -50%)' }} />
+                <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vw)`, left: `calc(50 * 1vw)`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
               )}
             </>
           )}

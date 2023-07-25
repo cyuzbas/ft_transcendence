@@ -36,18 +36,20 @@
   grid-column-end: 4;
   }
 
-  .friend-component-userID{
+  .friend-component-intraName{
   margin-left: 5px;
   grid-column-start: 4;
   grid-column-end: 6;
   }
 
   .visitUserProfile{
+  text-decoration: none;
   color: rgb(75, 94, 107);
   }
 
-  .friend-component-userID:hover{
-    cursor: pointer;
+  .friend-component-intraName:hover{
+  text-decoration:underline;
+  cursor: pointer;
   }
 
   .personOnlineContainer{
@@ -57,6 +59,7 @@
   }
 
   .personAddContainer{
+  /* margin-right: 40px; */
   grid-column-start: 7;
   grid-column-end: 8;
   }

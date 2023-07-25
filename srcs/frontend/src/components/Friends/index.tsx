@@ -16,21 +16,16 @@ type User = {
   avatar: string;
   userName: string;
   intraId: string;
+  intraName: string;
   isLogged: boolean;
   userStatus: userStatus
 };
 
-
-
-
 export function Friends() {
 
-  const [users, setUsers] = useState<User[]>([]); // User[] olarak değiştirin
+  const [users, setUsers] = useState<User[]>([]);
+  const { user } = useContext(UserContext)
 
-  const { user, setUser } = useContext(UserContext)
-
-
-  //send request
   async function sendRequest(intraId: string) {
     console.log("send request " + intraId + user.intraId)
     try {
@@ -43,8 +38,6 @@ export function Friends() {
 
   }
 
-
-
   async function removeFriend(intraId: string) {
     try {
       const response = await axios.post(`http://localhost:3001/friends/delete/${user.intraId}/${intraId}`)
@@ -56,8 +49,6 @@ export function Friends() {
     }
   }
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       console.log("naber, " + user.userName);
@@ -65,7 +56,6 @@ export function Friends() {
         const response = await axios.get(`http://localhost:3001/friends/allUser/${user.intraId}`);
         const { friends, nonFriends, me, query } = response.data;
 
-        // Backend'den dönen verilere göre "userStatus" alanını belirleyerek "User" tipinde nesneler oluşturun
         const usersData = [...friends.map((friend: User) => ({ ...friend, userStatus: userStatus.friends })),
         ...nonFriends.map((nonFriend: User) => ({ ...nonFriend, userStatus: userStatus.nonFriends })),
         ...query.map((query:User) =>({...query, userStatus: userStatus.query})),
@@ -91,23 +81,22 @@ export function Friends() {
             <div className="imageClassPP">
               <img src={user.avatar} id="Avatar" alt="" />
             </div>
-
             <div className="friend-component-userName">{user.userName}</div>
-            <div className="friend-component-userID">
-              <Link to={`/profile/${user.intraId}`} className="visitUserProfile">{user.intraId}</Link>
+            <div className="friend-component-intraName">
+              <Link to={`/profile/${user.intraName}`} className="visitUserProfile">{user.intraName}</Link>
             </div>
             <div className='personOnlineContainer'>
               <i className="bi bi-circle-fill fs-5"
                 id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
             </div>
             <div className='personAddContainer'>
-
-              {(user.userStatus === 0) ? (
-                <i className="bi bi-person-dash fs-3" onClick={(e) => removeFriend(user.intraId)}></i>) :
-                (user.userStatus === 1) ?
-                  (<i className="bi bi-person-add fs-3" onClick={(e) => sendRequest(user.intraId,)} />)
-                :(user.userStatus == 2)? (<i className="bi bi-person-check fs-3"></i> ) : <></>}
-
+              { (user.userStatus === 0) ? (
+                  <i className="bi bi-person-dash fs-3" onClick={(e) => removeFriend(user.intraId)} />) :
+                (user.userStatus === 1) ? (
+                  <i className="bi bi-person-add fs-3" onClick={(e) => sendRequest(user.intraId,)} />) :
+                (user.userStatus == 2)? (
+                  <i className="bi bi-person-check fs-3"/> ) : <></>
+              }
             </div>
           </div>
         ))

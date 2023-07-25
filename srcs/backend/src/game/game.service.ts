@@ -249,6 +249,10 @@ export class GameService {
         });
     }
 
+    // ame.ball.x = Math.min(game.ball.x, 100 - game.ball.sizeX);
+    //         game.ball.x = Math.max(game.ball.x, 0);
+    //         game.ball.y = Math.min(game.ball.y, 100 - game.ball.sizeY);
+    //         game.ball.y = Math.max(game.ball.y, 0);
     padUp(pad: Pad) {
         if (pad.y - pad.reversed * pad.speed <= 0)
             pad.y = 0;

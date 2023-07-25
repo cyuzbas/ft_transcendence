@@ -305,21 +305,17 @@ export class UserService {
 	}
 
 	async changeRank(userId: number) {
-		const user = await this.userRepository.findOne({ 
-			where: { id: userId } 
-		});
-	
+		const user = await this.userRepository.findOne({ where: { id: userId } });
 		if(!user)
 			throw new Error(`User with ID ${userId} not found`);
-
-		const allUsers = await this.userRepository.find({
+		const users = await this.userRepository.find({
 			order: {
 				score: 'DESC',
 			},
 		});
-		for (let i = 0; i < allUsers.length; i++) {
-			allUsers[i].rank = i + 1;
-			await this.userRepository.save(allUsers[i]);
+		for (let i = 0; i < users.length; i++) {
+			users[i].rank = i + 1;
+			await this.userRepository.save(users[i]);
 		}
 		return user;
 	}

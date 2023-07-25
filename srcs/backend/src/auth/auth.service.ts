@@ -36,7 +36,7 @@ export class AuthService {
 		await this.userService.addAuthSecretKey(secret.base32, user)
 		const qrCode = speakeasy.otpauthURL({
 			secret: secret.ascii,
-			label: "ali",
+			label: user.intraName,
 			issuer: 'Cida-trans',
 		});
 		return { qrCode, secret: secret.base32 }

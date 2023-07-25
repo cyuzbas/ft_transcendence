@@ -21,7 +21,7 @@ function LeaderBoard() {
 		const fetchData = async () => {
 		  console.log(user.userName);
 		  try {
-			const response = await axios.get('http://localhost:3001/friends/allUsers');
+			const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
 			setUsers(response.data);
 	
 			console.log("response fetch data!");

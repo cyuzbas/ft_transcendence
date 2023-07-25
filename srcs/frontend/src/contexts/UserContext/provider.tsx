@@ -24,7 +24,6 @@ export type User = {
 export interface UserContextInterface {
   user: User;
   setUser: Dispatch<SetStateAction<User>>;
-  clearUser: () => void;
 }
 
 const defaultState = {
@@ -81,10 +80,6 @@ export function UserProvider({ children }: UserProviderProps) {
     };
   });
 
-  const clearUser = () => {
-    setUser(defaultState.user);
-    localStorage.removeItem('user');
-  };
 
 
   useEffect(() => {
@@ -116,7 +111,7 @@ export function UserProvider({ children }: UserProviderProps) {
   else {
     if(user.TwoFactorAuth && user.twoFactorCorrect === false){
       return(
-        <UserContext.Provider value={{ user, setUser, clearUser }}>
+        <UserContext.Provider value={{ user, setUser }}>
           <Routes>
           <Route path='/verify2fa' element={<Verify2fa />} />
         </Routes>
@@ -125,7 +120,7 @@ export function UserProvider({ children }: UserProviderProps) {
     }
     else{
     return (
-      <UserContext.Provider value={{ user, setUser , clearUser}}>
+      <UserContext.Provider value={{ user, setUser}}>
         {children}
       </UserContext.Provider>
     );}

@@ -24,7 +24,7 @@ const FriendsSection: React.FC<Props> = ({ id }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`);
+			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`,{withCredentials:true})
 			const { friends} = response.data;
 	
 			// Backend'den dönen verilere göre "userStatus" alanını belirleyerek "User" tipinde nesneler oluşturun

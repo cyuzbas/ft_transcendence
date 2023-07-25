@@ -22,7 +22,7 @@ export function Request() {
 
   async function answerRequest(intraId:string, answer:string) {
     try{
-          const response = await axios.post(`http://localhost:3001/friends/friend-request/${user.intraId}/${intraId}/${answer}`)
+          const response = await axios.post(`http://localhost:3001/friends/friend-request/${user.intraId}/${intraId}/${answer}`,null,{withCredentials:true})
           const updatedUsers = users.filter((user) => user.intraId !== intraId);
           setUsers(updatedUsers); // Güncellenmiş diziyi setUsers ile güncelleyin
       
@@ -39,7 +39,7 @@ export function Request() {
     const fetchData = async () => {
       console.log("naber, " + user.userName);
       try {
-        const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`);
+        const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`,{withCredentials:true})
         setUsers(response.data);
         console.log("burdayiz " + users.length)
         console.log(JSON.stringify(users))

@@ -8,7 +8,6 @@ import { UserContext } from '../../../contexts'
 function SideBar() {
 	
 	const {user} = useContext(UserContext)
-	const { clearUser } = useUser();
 
 	async function logout() {
 			console.log("cikis")

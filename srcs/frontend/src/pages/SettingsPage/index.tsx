@@ -36,7 +36,7 @@ function SettingsPage() {
 							userName: inputText,
 							avatar: user.avatar,
 							intraId: user.intraId
-						}, { withCredentials: true })
+						}, {withCredentials:true})
 						const updatedUser = { ...user, userName: inputText};
 						setUser(updatedUser)
 						localStorage.setItem('user', JSON.stringify(updatedUser));

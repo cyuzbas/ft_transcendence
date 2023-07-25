@@ -11,7 +11,10 @@ import * as fs from "fs";
 import { FriendsService } from './friends.service';
 import { UserI } from '../user.interface';
 import { get } from 'http';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthenticatedGuard } from 'src/auth/oauth/oauth.guard';
 
+@UseGuards(AuthenticatedGuard)
 @Controller('friends')
 export class FriendsController {
     constructor(private readonly userService: UserService,
@@ -31,6 +34,8 @@ export class FriendsController {
             const friendsUser = await this.friendsService.getFriends(getUser.id)
             const friendsQuery = await this.friendsService.getFriendsQuery(getUser.id)
             const friendsSend = await this.friendsService.getMyFriendQuery(getUser.id);
+            const friendsy1 = await this.friendsService.getFriends1(getUser.id)
+
             if(!friendsUser)
                 return
             const allUsers = {friends:[], query:[], nonFriends:[], me:[]}            
@@ -40,6 +45,10 @@ export class FriendsController {
                 else if (friendsUser.map(friend=>friend.id).includes(user.id)) {
                     allUsers.friends.push(user);
                 }
+                else if (friendsy1.map(friend=>friend.id).includes(user.id)) {
+                    allUsers.friends.push(user);
+                }
+                
                 else if(user.id == getUser.id){
                     allUsers.me.push(user)
                 }

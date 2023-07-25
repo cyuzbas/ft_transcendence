@@ -71,15 +71,10 @@ export class FriendsService {
         
         if (answer === "true") {
             user.friends = await this.getFriends(user.id)
-            friend.friends = await this.getFriends(friend.id)
             if(user.friends === undefined)
                 user.friends = [];
-            if(friend.friends === undefined)
-                friend.friends = [];
             user.friends.push(friend)
-            friend.friends.push(user)
             await this.userRepository.save(user)
-            await this.userRepository.save(friend)
             return true;
         }
         else {
@@ -91,11 +86,19 @@ export class FriendsService {
         const user = await this.userRepository
             .createQueryBuilder('user')
             .leftJoinAndSelect('user.friends', 'friends')
-            .where('user.id = :userId', { userId })
+            .where('user.id = :id1', { id1: userId })
             .getOne();
         return user.friends;
     }
-
+    async getFriends1(userId: number): Promise<UserEntity[]> {
+        const user = await this.userRepository
+          .createQueryBuilder('user')
+          .leftJoinAndSelect('user.friends', 'friends') 
+          .where('friends.id = :id1', { id1: userId })
+          .getMany();
+        return user;
+      }
+    
 
     
     async getMyFriendQuery(userId: number): Promise<UserEntity[]> {
@@ -111,7 +114,7 @@ export class FriendsService {
         const user = await this.userRepository
           .createQueryBuilder('user')
           .leftJoinAndSelect('user.requestedFriends', 'requested') 
-          .andWhere('user.id = :senderId', { senderId: userId })
+          .andWhere('user.id = :senderIds', { senderIds: userId })
           .getOne();
       
         return user.requestedFriends; 

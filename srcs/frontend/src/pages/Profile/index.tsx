@@ -31,7 +31,7 @@ export default function Profile() {
 
     try {
       console.log("user id progile" + id)
-      const response = await axios.get('http://localhost:3001/friends/allUsers');
+      const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
 
       
       response.data.forEach((user: any) => {

@@ -34,7 +34,7 @@ export function Friends() {
   async function sendRequest(intraId: string) {
     console.log("send request " + intraId + user.intraId)
     try {
-      const response = await axios.post(`http://localhost:3001/friends/add/${user.intraId}/${intraId}`)
+      const response = await axios.post(`http://localhost:3001/friends/add/${user.intraId}/${intraId}`,null,{withCredentials:true})
       console.log("send friend request!");
     }
     catch (error) {
@@ -47,7 +47,7 @@ export function Friends() {
 
   async function removeFriend(intraId: string) {
     try {
-      const response = await axios.post(`http://localhost:3001/friends/delete/${user.intraId}/${intraId}`)
+      const response = await axios.post(`http://localhost:3001/friends/delete/${user.intraId}/${intraId}`,null,{withCredentials:true})
       console.log(response.data)
 
     }
@@ -62,7 +62,7 @@ export function Friends() {
     const fetchData = async () => {
       console.log("naber, " + user.userName);
       try {
-        const response = await axios.get(`http://localhost:3001/friends/allUser/${user.intraId}`);
+        const response = await axios.get(`http://localhost:3001/friends/allUser/${user.intraId}`,{withCredentials:true})
         const { friends, nonFriends, me, query } = response.data;
 
         // Backend'den dönen verilere göre "userStatus" alanını belirleyerek "User" tipinde nesneler oluşturun

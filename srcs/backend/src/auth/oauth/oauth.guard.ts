@@ -9,8 +9,8 @@ export class OAuthGuard extends AuthGuard('oauth') {
 		console.log("than request");
 		const activate = (await super.canActivate(context)) as boolean;
 		console.log("oauthguard->login before")
-		// console.log(request);
 		await super.logIn(request);
+		console.log("request is : "+ JSON.stringify(request));
 		console.log("oauthguard than super.login");
 		return activate;
 	}
@@ -21,6 +21,7 @@ export class AuthenticatedGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const req = context.switchToHttp().getRequest();
 		console.log(" guard " + req.isAuthenticated())
+		
 		return req.isAuthenticated();
 	}
 }

@@ -8,6 +8,8 @@
 	transition: 0.5s;
 	padding-bottom: 120px;
 	font-size: 20px;
+	display: flex;
+	flex-direction: column;
 }
 
 .FriendsSectionComponent {
@@ -48,11 +50,16 @@
 }
 
 .FriendsSectionIntraname {
+	/* font-size: smaller; */
 	margin-left: 5px;
-	font-size: smaller;
 	grid-column-start: 4;
 	grid-column-end: 6;
 }
+
+.FriendsSectionIntraname:hover{
+	text-decoration:underline;
+	cursor: pointer;
+	}
 
 .FriendsOnlineDisplay {
 	grid-column-start: 6;

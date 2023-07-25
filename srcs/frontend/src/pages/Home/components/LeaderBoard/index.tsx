@@ -46,13 +46,12 @@ function LeaderBoard() {
 			users
 			.sort((a, b) => b.score - a.score)
 			.map((user, index) => {
-				user.rank = index + 1;
 				return(
 				<div className="UserScoreComponent" key={user.intraId}>
 					<div className='UserScoreHash'>
 						<i className="bi bi-hash fs-3"></i>
 					</div>
-					<div className="UserScoreRank">{user.rank}</div>
+					<div className="UserScoreRank">{index + 1}</div>
 					<div className="imageClassUS">
 						<img src={user.avatar} id="Avatar" alt=""/>
 					</div>

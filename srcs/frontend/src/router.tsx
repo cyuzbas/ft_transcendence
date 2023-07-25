@@ -1,15 +1,14 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { UserProvider, GameProvider, UserContext } from './contexts';
+import { UserProvider, GameProvider } from './contexts';
 import { GameMode, gameModes } from './pages/Game/logic/types'
 import { Game, Lobby, Home, Chat } from './pages'
 import { SocketProvider } from './contexts/SocketContext/provider';
-import { Friends } from './components';
 import SettingsPage from './pages/SettingsPage'
 import Create2fa from './pages/Create2fa'
 import Navbar from './components/Nav/NavBar/navBar';
 import SideBar from './components/Nav/SideBar/sideBar';
 import NotFound from './pages/NotFound';
-import React, { useContext } from 'react';
+import React from 'react';
 import './components/Nav/main.css';
 import Profile from './pages/Profile';
 

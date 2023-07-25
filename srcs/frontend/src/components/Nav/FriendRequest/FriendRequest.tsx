@@ -1,6 +1,6 @@
 import './styles.css';
 import axios from 'axios';
-import { UserContext } from '../../contexts'
+import { UserContext } from '../../../contexts'
 import React, { useContext, useState, useEffect } from 'react';
 
 type User = {
@@ -13,7 +13,7 @@ type User = {
 
 
   
-export function Friends() {
+export function Request() {
     const [users, setUsers] = useState<User[]>([]);
     const {user, setUser} = useContext(UserContext)
 
@@ -44,20 +44,16 @@ export function Friends() {
       <>
     {Array.isArray(users) ? (
       users.map((user, index) => (
-        <div className="friends-text-image-component" key={user.intraId}>
-            <div className="imageClassPP">
+        <div className="friendRequestcomponent" key={user.intraId}>
+            <div className="imageClassFR">
               <img src={user.avatar} id="Avatar" alt=""/>
             </div>
-            <div className="friend-component-userName">{user.userName}</div>
-            <div className="friend-component-userID"> ID - {user.intraId}</div>
-            <div className='personOnlineContainer'>
-              <i className="bi bi-circle-fill fs-5"
-                id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
+            <div className="friendRequestUsername">{user.userName}</div>
+            <div className='friendReject'>
+              <i className="bi bi-x-lg fs45"></i>
             </div>
-            <div className='personAddContainer'>
-              <i className="bi bi-person-add fs-3"></i>
-              {/* <i className="bi bi-person-dash fs-3"></i> */}
-              {/* <i className="bi bi-person-check fs-3"></i> */}
+            <div className='friendAccept'>
+              <i className="bi bi-check2 fs-4"></i>
             </div>
         </div>
       ))

@@ -8,7 +8,7 @@ import SettingsPage from './pages/SettingsPage'
 import Create2fa from './pages/Create2fa'
 import Verify2fa from './pages/Verify2fa'
 import Navbar from './components/Nav/navBar';
-import SideBar from './components/Nav/sideBar';
+import SideBar from './components/Nav/SideBar/sideBar';
 import React, { useContext } from 'react';
 import './components/Nav/main.css';
 import { Random, FriendGame } from './pages/Game/components/Online/index'
@@ -36,7 +36,6 @@ export function Router() {
                   <Routes>
                     <Route path='/home' element={<Home />} />
                     <Route path='/' element={<Home />} />
-                    <Route path='/friends' element={<Friends />} />
                     <Route path='/friend' element={<Friends />} />
                     <Route path='/lobby' element={<Lobby />} />
                     <Route path='/chat' element={  <Chat/>} />

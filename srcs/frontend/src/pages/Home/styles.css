@@ -1,15 +1,4 @@
 
-/* .friend {
-    margin: 30px;
-    height: 100px;
-    background: rgb(207,231,250);
-    background: -moz-linear-gradient(top, rgba(207,231,250,1) 0%, rgba(99,147,193,1) 100%);
-    background: -webkit-linear-gradient(top, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
-    background: linear-gradient(to bottom, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfe7fa', endColorstr='#6393c1',GradientType=0 );
-    
- } */
-
 .PageMain{
     display: grid; 
     height: 100vh;
@@ -34,29 +23,17 @@
  }
    
  .ProfileSection {
-    margin-left: 10px;
+    /* margin-left: 10px; */
     margin-right: 10px;
     grid-area: label0;
     display: flex;
     flex-direction: row;
-    /* justify-content: center; */
     align-items: center;
 
-    /* display: grid; 
-
-   grid-template-rows: 1fr 1fr;
-   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-   
-   grid-template-areas: 
-	'profile0 profile0 profile1 profile2 profile2 profile2'
-	'profile0 profile0 profile1 profile2 profile2 profile2';
-
-   gap: 0px;
-   height: 100%; */
  }
 
  .FriendSection {
-    margin-left: 10px;
+    /* margin-left: 10px; */
     grid-area: label1;  
 
  }
@@ -76,10 +53,9 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    color: rgb(75, 94, 107);
     padding-left: 30px;
     padding-right: 30px;
-    /* grid-area: profile0; */
-    /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); */
  }
 
  .imageClass {
@@ -99,12 +75,7 @@
   }
 
  .UserName {
-    color: rgb(75, 94, 107);
     margin-top: 15px;
- }
-
- .UserID {
-    color: rgb(75, 94, 107);
  }
 
  .ProfileRankInfo {
@@ -114,6 +85,7 @@
     justify-content: center;
     align-items: center;
     height: 220px;
+    width: 80%;
     /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); */
     /* grid-area: profile1; */
     border-right: 2px solid rgb(75, 94, 107, 0.2);
@@ -128,21 +100,18 @@
     margin: 20px;
     padding-left: 30px;
     padding-right: 40px;
+    color: rgb(75, 94, 107);
+
  }
 
- .bi-star, .bi-chevron-double-up {
+ .bi-star, .bi-chevron-double-up, .bi-circle-fill {
     color: rgb(75, 94, 107);
     /* color: rgb(88, 110, 124); */
     /* color: rgb(178,225,255); */
     margin-right: 20px;
  }
- .bi-star:hover,  .bi-chevron-double-up:hover {
-    color: rgb(75, 94, 107);
-    /* color: rgb(88, 110, 124); */
-    /* color: rgb(178,225,255); */
- }
 
- .UserScore, .UserRank {
+ .UserScore, .UserRank, .UserStatus {
     color: rgb(75, 94, 107);
     /* color: rgb(88, 110, 124); */
     /* color: rgb(178,225,255); */
@@ -176,7 +145,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* border-bottom: 2px dashed rgb(53, 67, 75); */
+    /* border-bottom: 2px dashed rgb(109, 164, 196); */
     /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); */
     
  }

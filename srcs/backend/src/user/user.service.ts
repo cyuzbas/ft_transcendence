@@ -34,6 +34,14 @@ export class UserService {
 			};
 		}
 
+
+  async disabledTwoFactor(user: UserEntity){
+	await this.userRepository.update(user.id,{
+		TwoFactorAuth: false,
+		twoFactorAuthSecret:null
+	})
+  }
+
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);
 	const createdUser: UserI = await this.userRepository.save(newUser);
@@ -102,7 +110,7 @@ export class UserService {
 	}
 
 	async updataAvatar(path: string, user: UserEntity): Promise<UserI>{
-			await this.userRepository.update(user,{
+			await this.userRepository.update(user.id,{
 				avatar: "http://localhost:3001/user/avatar/" + path
 			});
 			console.log("succes update avatar");

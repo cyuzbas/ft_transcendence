@@ -16,6 +16,7 @@ export const padWidth = 1.25;
 export const paddleLeftStartX = padWidth * 2;
 export const paddleRightStartX = 100 - (padWidth * 3);
 export const paddleblockStartX = 50 - (padWidth * 3);
+export const padStartY = 50 - padHeight / 2;
 // export const 50 - 15 / 2 = 50 - padHeight / 2;
 
 export enum PadMove {
@@ -57,7 +58,7 @@ export class Pad {
 
   constructor(startX: number, height: number) {
     this.x = startX;
-    this.y = 50 - padHeight / 2
+    this.y = padStartY;
     this.height = height;
     this.width = padWidth;
     this.speed = padSpeed;

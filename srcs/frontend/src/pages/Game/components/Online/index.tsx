@@ -98,7 +98,9 @@ export function Random() {
         <div className='game-container'>
           {gameState && (
             <>
-              <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
+              <div className='score'>
+                {`${gameState.p1Score} - ${gameState.p2Score}`}
+              </div>
               <div 
                 style={{
                   position: 'absolute',
@@ -107,8 +109,7 @@ export function Random() {
                   height: `calc(${gameState.ball.sizeY}vh`,
                   width: `calc(${gameState.ball.sizeX}vw`,
                   backgroundColor: 'var(--foreground-color)',
-                  borderRadius: '50%',
-                  transform: 'translate(-50%, -50%)'
+                  borderRadius: '50%'
                 }}
               />
               <div
@@ -117,8 +118,7 @@ export function Random() {
                   left: `calc(${gameState.paddleLeft.x}vw)`,
                   height: `calc(${gameState.paddleLeft.height}vh)`,
                   width: `calc(${gameState.paddleLeft.width}vw)`,
-                  backgroundColor: 'var(--foreground-color)',
-                  transform: 'translateY(-50%)' 
+                  backgroundColor: 'var(--foreground-color)'
                 }}
               />
               <div
@@ -127,13 +127,19 @@ export function Random() {
                 left: `calc(${gameState.paddleRight.x}vw)`,
                 height: `calc(${gameState.paddleRight.height}vh)`,
                 width: `calc(${gameState.paddleRight.width}vw)`,
-                backgroundColor: 'var(--foreground-color)',
-                transform: 'translateY(-50%)' 
+                backgroundColor: 'var(--foreground-color)'
               }}
               />
               {gameState.isCustom && (
                 // <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vh)`, left: `calc(${gameState.block.x} * 1vw`, height: `100px`, width: `10px`, backgroundColor: 'var(--foreground-color)', transform: 'translate(-50%, -50%)' }} />
-                <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vw)`, left: `calc(20 * 1vw)`, height: `calc(15 * 1vh)`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
+                <div
+                  style={{ position: 'absolute',
+                  top: `calc(${gameState.block.y}vh)`,
+                  left: `calc(${gameState.block.x}vw)`,
+                  height: `calc(${gameState.block.height}vh)`,
+                  width: `calc(${gameState.block.width}vw)`,
+                  backgroundColor: 'var(--foreground-color)',
+                }} />
               )}
             </>
           )}
@@ -222,16 +228,17 @@ export function FriendGame() {
   return (
     <>
       <div>
-        {/* friend game */}
         {timer && (
           <>
             <Timer />
           </>
         )}
-        <div className='game-container'> 
+        <div className='game-container'>
           {gameState && (
             <>
-              <div className='score'>{`${gameState.p1Score} - ${gameState.p2Score}`}</div>
+              <div className='score'>
+                {`${gameState.p1Score} - ${gameState.p2Score}`}
+              </div>
               <div 
                 style={{
                   position: 'absolute',
@@ -240,15 +247,47 @@ export function FriendGame() {
                   height: `calc(${gameState.ball.sizeY}vh`,
                   width: `calc(${gameState.ball.sizeX}vw`,
                   backgroundColor: 'var(--foreground-color)',
-                  borderRadius: '50%',
-                  transform: 'translate(-50%, -50%)'
+                  borderRadius: '50%'
                 }}
               />
-              <div style={{ position: 'absolute', top: `calc(${gameState.paddleLeft.y} * 1vw)`, left: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
-              <div style={{ position: 'absolute', top: `calc(${gameState.paddleRight.y} * 1vw)`, right: `1vh`, height: `10vh`, width: `1vh`, backgroundColor: 'var(--foreground-color)', transform: 'translateY(-50%)' }} />
+              <div
+                style={{ position: 'absolute',
+                  top: `calc(${gameState.paddleLeft.y}vh)`,
+                  left: `calc(${gameState.paddleLeft.x}vw)`,
+                  height: `calc(${gameState.paddleLeft.height}vh)`,
+                  width: `calc(${gameState.paddleLeft.width}vw)`,
+                  backgroundColor: 'var(--foreground-color)'
+                }}
+              />
+              <div
+                style={{ position: 'absolute',
+                top: `calc(${gameState.paddleRight.y}vh)`,
+                left: `calc(${gameState.paddleRight.x}vw)`,
+                height: `calc(${gameState.paddleRight.height}vh)`,
+                width: `calc(${gameState.paddleRight.width}vw)`,
+                backgroundColor: 'var(--foreground-color)'
+              }}
+              />
+              {gameState.isCustom && (
+                <div
+                  style={{ position: 'absolute',
+                  top: `calc(${gameState.block.y}vh)`,
+                  left: `calc(${gameState.block.x}vw)`,
+                  height: `calc(${gameState.block.height}vh)`,
+                  width: `calc(${gameState.block.width}vw)`,
+                  backgroundColor: 'var(--foreground-color)',
+                }} />
+              )}
             </>
           )}
         </div>
+
+
+        {/* {end && (
+          <>
+            {message}
+          </>
+        )} */}
       </div>
     </>
   );

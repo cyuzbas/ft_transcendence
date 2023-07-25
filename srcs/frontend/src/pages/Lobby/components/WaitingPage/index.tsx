@@ -116,7 +116,6 @@ export function WaitingPage3() {
     };
   }, []);
 
-
   const handleClose = () => {
     socket.emit("cancelMatching");
     console.log('idil');

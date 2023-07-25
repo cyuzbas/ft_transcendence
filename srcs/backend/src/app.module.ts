@@ -13,12 +13,14 @@ import { PassportModule } from '@nestjs/passport';
 import { MulterModule } from '@nestjs/platform-express';
 import { GatewayModule } from './gateway/gateway.module';
 import { ChatModule } from './chat/chat.module';
+import { GameModule } from './game/game.module';
 
 
 @Module({
   imports: [TypeOrmModule.forRoot(config), 
             PassportModule.register({session:true}), 
             UserModule,  AuthModule, GatewayModule, ChatModule,
+            GameModule,
 		        ConfigModule.forRoot({ isGlobal: true }),
             MulterModule.register({
               dest: './upload',

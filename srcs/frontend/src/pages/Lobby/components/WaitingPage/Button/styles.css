@@ -2,9 +2,6 @@
   cursor: pointer;
   border: none;
   background: none;
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 
 .button.with-icon {

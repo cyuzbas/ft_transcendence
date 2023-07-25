@@ -3,6 +3,8 @@ import { io, Socket } from "socket.io-client";
 import { useUser } from "../UserContext/provider";
 import { ChatRoomUser, DmRoomUser, Room, RoomType, RoomUser, UserRole } from "../ChatContext/types";
 import { UserContext } from '..';
+import { useNavigate } from 'react-router-dom'
+import './styles.css'
 
 
 export const GENERAL_CHAT = {
@@ -31,9 +33,62 @@ export function useSocket() {
 
 export function SocketProvider({ children }: {children: ReactNode}) {
 	const [isConnected, setIsConnected] = useState(socket.connected);
+	const [invitationUserName, setInvitationUserName] = useState(' ');
+	const [invitationId, setinvitationId] = useState(' ');
 	const [room, setRoom] = useState<RoomUser>(GENERAL_CHAT);
 	const { user } = useUser();
+	// //////////////////////
+	const navigate = useNavigate();
+	const [gameInvitation, setGameInvitation] = useState(false);
 
+	useEffect(() => {
+		function onGameInvite(data: any) {
+		  setGameInvitation(true);
+		//   console.log('+++++++++++++', data);
+		  setInvitationUserName(data.userName);
+		  setinvitationId(data.id);
+		  console.log("You have an invitation from: ", data.userName);
+		}
+		
+
+		socket.on('gameinvite', onGameInvite);
+		
+		return () => {
+		  socket.off('gameinvite', onGameInvite);
+		};
+	  });
+
+	  useEffect(() => {
+		function onInvitationDeleted(data: any) {
+			console.log('Invitation deleted event received', data);
+		  setGameInvitation(false);
+		}
+		
+
+		socket.on('invitationDeleted', onInvitationDeleted);
+		
+		return () => {
+		  socket.off('invitationDeleted', onInvitationDeleted);
+		};
+	  });
+
+	  useEffect(() => {
+		function onAccept(data: any) {
+		  setGameInvitation(false);
+		  console.log("Accept: ", data.message);
+		  navigate('/friendgame');
+		}
+		
+
+		socket.on('gameAccepted', onAccept);
+		
+		return () => {
+		  socket.off('gameAccepted', onAccept);
+		};
+	  }, []);
+
+	  
+// /////////////////////////////////////////////////ibulak
     // const {user} = useContext(UserContext)
 		
 		
@@ -89,8 +144,23 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 		setRoom,
 	}
 
+	const handleAccept = () => {
+		// inviteId: Daveti kabul etmek istediğimiz davetin id'si
+		const inviteId = invitationId;
+		socket.emit('AcceptInvitation', { id: inviteId });
+		console.log('accepted');
+
+	}
+
+
     return (
         <SocketContext.Provider value={value}>
+			{gameInvitation && 
+			<div className="invitation">
+				You have a game invitation from {invitationUserName}!
+				<button className="accept" onClick={handleAccept}>Accept</button>
+				<button className="reject">Reject</button>
+			</div>}
             {children}
         </SocketContext.Provider>
     );

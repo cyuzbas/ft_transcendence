@@ -3,10 +3,10 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from "src/chat/chat.service";
 import { Logger } from "@nestjs/common"; 
 import { UserService } from "src/user/user.service";
-import { RoomDto } from "src/dto/room.dto";
 import { MessageDto } from "src/dto/message.dto";
 import { UserDto } from "src/dto/user.dto";
-import { RoomUserDto } from "src/dto/roomUser.dto";
+import { NewRoomUserDto, RoomUserDto } from "src/dto/roomUser.dto";
+import { RoomDto } from "src/dto/room.dto";
 import { GatewayService, Invite } from "./gateway.service";
 import { GameService } from "../game/game.service";
 import { Injectable } from '@nestjs/common';
@@ -44,12 +44,15 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	async handleConnection(client: Socket) {
 		const userSocket = client.handshake.auth;
-		this.logger.debug(`Client connected: [${userSocket.name}] - ${client.id}`);
+		this.logger.debug(`Client connected: [${userSocket.name}][${userSocket.intraId}] - ${client.id}`);
 		this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
 
 		const user = await this.userService.findUserByUserName(userSocket.name);
-		if(!user)
+		if (!user) {
 			return
+		}
+		// client.join(userSocket.intraId);
+		client.join(user.intraId);
 		client.join(user.id.toString());
 		client.emit('userId', user.id);
 		this.mapService.userToSocketId.set(user.id, client.id);
@@ -65,48 +68,55 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		this.onUserUpdate();
 	}
 	
-	@SubscribeMessage('userUpdate') // unneccesary? to have event, only server uses it now
+	@SubscribeMessage('userUpdate')
 	async onUserUpdate() {
 		const users = await this.userService.getAllUsersStatus();
-		this.server.emit('userStatus', users);
+		this.server.emit('onUserUpdate', users);
 	}
 
-	@SubscribeMessage('memberUpdate') // also leave room?
+	@SubscribeMessage('memberUpdate')
 	async onMemberUpdate(@MessageBody() roomName: string) {
-		const members = await this.chatService.getRoomMembers(roomName);
-		this.server.to(roomName).emit('memberStatus', members);
+		this.server.to(roomName).emit('onMemberUpdate', roomName)
 	}
 
-	@SubscribeMessage('memberInvite') // also leave room?
-	async onMemberInvite(@MessageBody() selectedUsers: string[]) {
-		for (const userName of selectedUsers) {
-			const user = await this.userService.findUserByUserName(userName);
-			this.server.to(user.id.toString()).emit('onMemberInvite');
-		}
+	@SubscribeMessage('joinRoom')
+	async onJoinRoom(@MessageBody() roomName: string, @ConnectedSocket() client: Socket) {
+		client.join(roomName);
+		this.onMemberUpdate(roomName)
+	}
+
+	@SubscribeMessage('leaveRoom')
+	async onLeaveRoom(@MessageBody() roomName: string, @ConnectedSocket() client: Socket) {
+		client.leave(roomName);
+		this.onMemberUpdate(roomName)
+	}
+
+	@SubscribeMessage('roomInvite')
+	async onRoomInvite(@MessageBody() roomUser: RoomUserDto) {
+		this.server.to(roomUser.intraId).emit('onRoomInvite', roomUser);
+	}
+
+	@SubscribeMessage('roomUserUpdate')
+	async onRoomUserUpdate(@MessageBody() roomUser: RoomUserDto) {
+		this.server.to(roomUser.intraId).emit('onRoomUserUpdate', roomUser);
+	}
+
+	@SubscribeMessage('removeRoomUser')
+	async onRemoveRoomUser(@MessageBody() roomUser: RoomUserDto) {
+		console.log(roomUser)
+		this.server.to(roomUser.intraId).emit('onRemoveRoomUser', roomUser.roomName);
+	}
+
+	@SubscribeMessage('roomUpdate')
+	async onRoomUpdate(@MessageBody() roomUpdate: RoomDto) {
+		// console.log(roomUpdate)
+		this.server.to(roomUpdate.roomName).emit('onRoomUpdate', roomUpdate);
 	}
 	
-	@SubscribeMessage('joinRoom') // also leave room?
-	async onJoinRoom(@MessageBody() room: RoomDto, @ConnectedSocket() client: Socket) {
-		client.join(room.roomName);
-		this.onMemberUpdate(room.roomName)
-		// const users = await this.chatService.getRoomUsers(room.roomName);
-		// this.server.to(room.roomName).emit('memberStatus', users); //more elegant way?
-	}
-
 	@SubscribeMessage('newMessage')
 	async onNewMessage(@MessageBody() message: MessageDto) {
 		const newMessage = await this.chatService.addMessage(message);
 		this.server.to(newMessage.roomName).emit('onMessage', newMessage);
-	}
-
-	@SubscribeMessage('newDmRoom')
-	async onNewDmRoom(@MessageBody() userName: string) { //i'm gining userroom to contact? wrong RoomUser
-		const { id } = await this.userService.findUserByUserName(userName);
-		this.server.to(id.toString()).emit('onNewDmRoom');
-		// {
-		// 	...room,
-		// 	contact: room.userName,
-		// });
 	}
 
 	@SubscribeMessage('blockUser')

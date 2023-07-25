@@ -5,18 +5,18 @@ export class RoomDto {
 	roomId?: number;
 	roomName: string;
 	type: RoomType;
-	userName?: string;
-	// description?: string;
+	// userName?: string;
+	description?: string;
 	// admin?: string[];
-	member?: string[];
+	// member?: string[];
 	password?: string;
 }
 
-export class NewRoomDto {
-	userName: string;
-	member?: string[];
-	password?: string;
-}
+// export class NewRoomDto {
+// 	userName: string;
+// 	member?: string[];
+// 	password?: string;
+// }
 
 
 

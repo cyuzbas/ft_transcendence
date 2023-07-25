@@ -23,16 +23,16 @@ export class UserService {
 		private roomUserRepository: Repository<RoomUserEntity>,){}
 
 
-		async initializeAdmin() {
-			let admin = await this.userRepository.findOne({ 
-				where: { userName: ADMIN } 
-			});
+		// async initializeAdmin() {
+		// 	let admin = await this.userRepository.findOne({ 
+		// 		where: { userName: ADMIN } 
+		// 	});
 		
-			if (!admin) {
-				admin = this.userRepository.create({ userName: ADMIN });
-				await this.userRepository.save(admin);
-			};
-		}
+		// 	if (!admin) {
+		// 		admin = this.userRepository.create({ userName: ADMIN });
+		// 		await this.userRepository.save(admin);
+		// 	};
+		// }
 
 
   async disabledTwoFactor(user: UserEntity){
@@ -143,10 +143,11 @@ export class UserService {
 		});
 		if(!user)
 			return 
-		const { id, status } = user;
+		const { id, status, intraId } = user;
 		return {
 			id,
 			userName,
+			intraId,
 			status,
 		}
 	}
@@ -178,10 +179,12 @@ export class UserService {
 	async getAllUsersStatus(): Promise<UserDto[]> {
 		const users = await this.userRepository.find();
 		
-		const userData = users.map(({ id, userName, status }) => {
+		const userData = users.map(({ id, userName, intraId, avatar, status }) => {
 			return {
 				id,
 				userName,
+				intraId,
+				avatar,
 				status,
 			}
 		});

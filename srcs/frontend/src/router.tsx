@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { UserProvider, GameProvider, UserContext } from './contexts';
+import { UserProvider, GameProvider, UserContext, ChatProvider } from './contexts';
 import { GameMode, gameModes } from './pages/Game/logic/types'
 import { Game, Lobby, Home, Chat, Login } from './pages'
 import { SocketProvider } from './contexts/SocketContext/provider';
@@ -38,7 +38,14 @@ export function Router() {
                     <Route path='/' element={<Home />} />
                     <Route path='/friend' element={<Friends />} />
                     <Route path='/lobby' element={<Lobby />} />
-                    <Route path='/chat' element={  <Chat/>} />
+                    <Route 
+                      path='/chat' 
+                      element={
+                        <ChatProvider>
+                          <Chat />
+                        </ChatProvider>
+                      }
+                    />
                     <Route path='/settings' element={  <SettingsPage/>} />
                     <Route path='/create2fa' element={  <Create2fa/>} />
                     {/* <Route path='/verify2fa' element={  <Verify2fa/>} /> */}

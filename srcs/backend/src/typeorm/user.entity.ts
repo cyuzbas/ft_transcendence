@@ -68,12 +68,12 @@ export class UserEntity {
     // games: GameEntity[];
 
     @Column({
-        default: 1
+        default: 0
     })
     score: number;
 
 	@Column({
-        default: 2
+        default: 0
     })
     totalWin: number;
 

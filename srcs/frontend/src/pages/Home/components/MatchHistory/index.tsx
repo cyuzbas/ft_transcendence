@@ -24,11 +24,15 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 		const fetchData = async () => {
 		  try {
 			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`);
-			const { friends} = response.data;
+			const { friends, nonFriends, me, query } = response.data;
 	
-			const usersData = [...friends.map((friend: User) => ({ ...friend }))]
+			const usersData = [...friends.map((friend: User) => ({ ...friend })),
+			...nonFriends.map((nonFriend: User) => ({ ...nonFriend })),
+			...query.map((query:User) =>({...query })),
+			...me.map((meUser: User) => ({ ...meUser }))];
+
 			setUsers(usersData);
-			console.log("MAtch History" + JSON.stringify(users))
+			console.log("MATCH History" + JSON.stringify(users))
 		  } catch (error) {
 			console.error(error);
 			console.log("ERROR!!")
@@ -68,8 +72,7 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 						<img src={user.avatar} id="Avatar" alt=""/>
 					</div>
 				</div> */}
-			{/* <div className="DummyContent"></div>
-			<div className="DummyContent"></div> */}
+			
 		</div>
 		))):
 		(
@@ -77,6 +80,8 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 		)
 		
 	}
+		<div className="DummyContent"></div>
+		<div className="DummyContent"></div>
 	</div>
 	</>
 	);

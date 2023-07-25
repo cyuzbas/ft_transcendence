@@ -1,11 +1,10 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useUser } from "../UserContext/provider";
-import { ChatRoomUser, DmRoomUser, Room, RoomType, RoomUser, UserRole } from "../ChatContext/types";
+import { Room, RoomType, RoomUser, UserRole } from "../ChatContext/types";
 import { UserContext } from '..';
 import { useNavigate } from 'react-router-dom'
 import './styles.css'
-import { useUser } from "../UserContext/provider";
 
 type SocketContextValue = {
 	URL: string,
@@ -25,7 +24,7 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 	const [isConnected, setIsConnected] = useState(socket.connected);
 	const [invitationUserName, setInvitationUserName] = useState(' ');
 	const [invitationId, setinvitationId] = useState(' ');
-	const [room, setRoom] = useState<RoomUser>(GENERAL_CHAT);
+	// const [room, setRoom] = useState<RoomUser>(GENERAL_CHAT);
 	const { user } = useUser();
 	const navigate = useNavigate();
 	const [gameInvitation, setGameInvitation] = useState(false);

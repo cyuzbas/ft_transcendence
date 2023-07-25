@@ -64,7 +64,7 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 		function onAccept(data: any) {
 		  setGameInvitation(false);
 		  console.log("Accept: ", data.message);
-		  navigate('/friendgame');
+		  navigate('/random');
 		}
 		
 

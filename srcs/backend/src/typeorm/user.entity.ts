@@ -71,6 +71,11 @@ export class UserEntity {
     })
     totalLoose: number;
 
+	@Column({
+        default: 0
+    })
+    rank: number;
+
 	@Column({})
 	inGame: boolean = false;
 

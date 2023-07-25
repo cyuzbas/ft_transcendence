@@ -46,6 +46,7 @@ export class GameService {
                 // if game type a gore score
                 let score = game.isCustom ? 150 : 100;
                 await this.userRepository.increment({ id: winner }, 'score', score);
+                await this.userService.changeRank(winner);
 
                 await this.userRepository.update(loser, { inGame: false });
                 await this.userRepository.increment({ id: loser }, 'totalLoose', 1);

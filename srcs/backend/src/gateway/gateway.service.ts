@@ -74,6 +74,7 @@ export class GatewayService {
 
     async createGame(server: Server, p1: UserEntity, p2: UserEntity, type: GameType): Promise<Res<GameEntity[]>> {
         const gameId = [p1.id, p2.id].sort().join('vs');
+        console.log(type);
         if (this.games.has(gameId))
             return { status: true, message: "A game with the same players is already running"};
         let gameP1 = this.gameRepository.create({

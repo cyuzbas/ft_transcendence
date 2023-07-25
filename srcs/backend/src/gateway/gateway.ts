@@ -212,6 +212,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	@SubscribeMessage('Invite')
     async inviteUser( @MessageBody() data: { userName: string, type: GameType }, @ConnectedSocket() client: Socket ) {
+		if (data.type)
+			data.type = GameType.CLASSIC;
 		const userSocket = client.handshake.auth;
 		const user = await this.userService.findUserByUserName(userSocket.name);
 		if (!user) {

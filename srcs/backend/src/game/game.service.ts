@@ -104,22 +104,35 @@ export class GameService {
                 this.padDown(game.paddleRight);
 
             if(game.isCustom) {
-                this.moveBlock(game.block);
+                this.moveBlock(game.blockA);
+                this.moveBlock(game.blockB);
 
                 // if (game.ball.x + game.ball.sizeX >= game.block.x && game.ball.x <= game.block.x + game.block.width) {
                 //     this.isCollisionBlock(game.block, game.ball);
                 // }
 
-                if (game.ball.x <= game.block.x + game.block.width &&
-                    game.ball.x + game.ball.sizeX >= game.block.x &&
+                if (game.ball.x <= game.blockA.x + game.blockA.width &&
+                    game.ball.x + game.ball.sizeX >= game.blockA.x &&
                     game.ball.directionX < 0) {
-                    this.isCollisionPaddle(game.block, game.ball);
+                    this.isCollisionPaddle(game.blockA, game.ball);
                 }
     
-                else if (game.ball.x + game.ball.sizeX >= game.block.x &&
-                        game.ball.x <= game.block.x + game.block.width &&
+                else if (game.ball.x + game.ball.sizeX >= game.blockA.x &&
+                        game.ball.x <= game.blockA.x + game.blockA.width &&
                         game.ball.directionX > 0) {
-                    this.isCollisionPaddle(game.block, game.ball);
+                    this.isCollisionPaddle(game.blockA, game.ball);
+                }
+
+                if (game.ball.x <= game.blockB.x + game.blockB.width &&
+                    game.ball.x + game.ball.sizeX >= game.blockB.x &&
+                    game.ball.directionX < 0) {
+                    this.isCollisionPaddle(game.blockB, game.ball);
+                }
+    
+                else if (game.ball.x + game.ball.sizeX >= game.blockB.x &&
+                        game.ball.x <= game.blockB.x + game.blockB.width &&
+                        game.ball.directionX > 0) {
+                    this.isCollisionPaddle(game.blockB, game.ball);
                 }
                 // this.isCollisionWall(game.block);
 
@@ -238,7 +251,8 @@ export class GameService {
         game.server.to(`game${game.id}`).emit('gameData', {
             isCustom: game.isCustom,
             ball: game.ball,
-            block: game.block,
+            blockA: game.blockA,
+            blockB: game.blockB,
             paddleLeft: game.paddleLeft,
             paddleRight: game.paddleRight,
             pause: game.pause,

@@ -85,7 +85,8 @@ export class Game {
   type: GameType;
   isCustom: boolean;
   // block: Ball; 
-  block: Pad; 
+  blockA: Pad; 
+  blockB: Pad; 
 
   constructor(
     server: Server,
@@ -109,9 +110,12 @@ export class Game {
     // this.block = new Ball(-modeSpeed * Math.cos(Math.PI / 4), modeSpeed);
     this.paddleLeft = new Pad(paddleLeftStartX, customPadHeight);
     this.paddleRight = new Pad(paddleRightStartX, customPadHeight);
-    this.block = new Pad(paddleblockStartX, customPadHeight);
-    this.block.x = 20;
-    this.block.y = 20;
+    this.blockA = new Pad(paddleblockStartX, customPadHeight);
+    this.blockA.x = 20;
+    this.blockA.y = 20;
+    this.blockB = new Pad(paddleblockStartX, customPadHeight);
+    this.blockB.x = 80;
+    this.blockB.y = 20;
     // this.block.height = 50;
     this.p1 = p1;
     this.p2 = p2;

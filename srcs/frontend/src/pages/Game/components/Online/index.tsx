@@ -9,7 +9,8 @@ interface GameState {
   // block: { x: number; y: number; sizeX: number; sizeY: number; };
   paddleLeft: { x: number; y: number; width: number; height: number; };
   paddleRight: { x: number; y: number; width: number; height: number; };
-  block: { x: number; y: number; width: number; height: number; };
+  blockA: { x: number; y: number; width: number; height: number; };
+  blockB: { x: number; y: number; width: number; height: number; };
   pause: boolean;
   p1Score: number;
   p2Score: number;
@@ -131,15 +132,24 @@ export function Random() {
               }}
               />
               {gameState.isCustom && (
-                // <div style={{ position: 'absolute', top: `calc(${gameState.block.y} * 1vh)`, left: `calc(${gameState.block.x} * 1vw`, height: `100px`, width: `10px`, backgroundColor: 'var(--foreground-color)', transform: 'translate(-50%, -50%)' }} />
+                <div>
                 <div
                   style={{ position: 'absolute',
-                  top: `calc(${gameState.block.y}vh)`,
-                  left: `calc(${gameState.block.x}vw)`,
-                  height: `calc(${gameState.block.height}vh)`,
-                  width: `calc(${gameState.block.width}vw)`,
+                  top: `calc(${gameState.blockA.y}vh)`,
+                  left: `calc(${gameState.blockA.x}vw)`,
+                  height: `calc(${gameState.blockA.height}vh)`,
+                  width: `calc(${gameState.blockA.width}vw)`,
                   backgroundColor: 'var(--foreground-color)',
                 }} />
+                <div
+                  style={{ position: 'absolute',
+                  top: `calc(${gameState.blockB.y}vh)`,
+                  left: `calc(${gameState.blockB.x}vw)`,
+                  height: `calc(${gameState.blockB.height}vh)`,
+                  width: `calc(${gameState.blockB.width}vw)`,
+                  backgroundColor: 'var(--foreground-color)',
+                }} />
+                </div>
               )}
             </>
           )}
@@ -268,16 +278,24 @@ export function FriendGame() {
                 backgroundColor: 'var(--foreground-color)'
               }}
               />
-              {gameState.isCustom && (
+              {/* {gameState.isCustom && (
                 <div
                   style={{ position: 'absolute',
-                  top: `calc(${gameState.block.y}vh)`,
-                  left: `calc(${gameState.block.x}vw)`,
-                  height: `calc(${gameState.block.height}vh)`,
-                  width: `calc(${gameState.block.width}vw)`,
+                  top: `calc(${gameState.blockA.y}vh)`,
+                  left: `calc(${gameState.blockA.x}vw)`,
+                  height: `calc(${gameState.blockA.height}vh)`,
+                  width: `calc(${gameState.blockA.width}vw)`,
                   backgroundColor: 'var(--foreground-color)',
                 }} />
-              )}
+                <div
+                  style={{ position: 'absolute',
+                  top: `calc(${gameState.blockB.y}vh)`,
+                  left: `calc(${gameState.blockB.x}vw)`,
+                  height: `calc(${gameState.blockB.height}vh)`,
+                  width: `calc(${gameState.blockB.width}vw)`,
+                  backgroundColor: 'var(--foreground-color)',
+                }} />
+              )} */}
             </>
           )}
         </div>

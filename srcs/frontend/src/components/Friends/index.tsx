@@ -34,7 +34,7 @@ export function Friends() {
   async function sendRequest(intraId: string) {
     console.log("send request " + intraId + user.intraId)
     try {
-      const response = await axios.post(`http://localhost:3001/friends/add/${intraId}/${user.intraId}`)
+      const response = await axios.post(`http://localhost:3001/friends/add/${user.intraId}/${intraId}`)
       console.log("send friend request!");
     }
     catch (error) {

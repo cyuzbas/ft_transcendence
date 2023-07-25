@@ -25,16 +25,14 @@ export class FriendsController {
         @Get('allUser/:intraId')
         async getAllUser(@Param('intraId') intraId:string){
             const getUser = await this.userService.findByintraIdEntitiy(intraId)
-            console.log("get user " + getUser)
             if(!getUser)
                 return
             const users = await this.userService.findByAllUser()
             const friendsUser = await this.friendsService.getFriends(getUser.id)
             const friendsQuery = await this.friendsService.getFriendsQuery(getUser.id)
-            const friendsSend = await this.friendsService.getFriendsQuery1(getUser.id);
+            const friendsSend = await this.friendsService.getMyFriendQuery(getUser.id);
             if(!friendsUser)
                 return
-            console.log("user friens is " + JSON.stringify(friendsUser))
             const allUsers = {friends:[], query:[], nonFriends:[], me:[]}            
           
             users.forEach((user) => {
@@ -77,7 +75,7 @@ export class FriendsController {
         const user = await this.userService.findByintraIdEntitiy(intraId);
         if(!user)
             return null;
-        return await this.friendsService.getFriendsQuery(user.id);
+        return await this.friendsService.getMyFriendQuery(user.id);
     }
 
     @Post('/delete/:userIntraId/:friendIntraId')
@@ -99,7 +97,6 @@ export class FriendsController {
         @Param('friendId') friendIntraId: string,
         @Param('answer') answer: string,):Promise<Boolean>{
     
-    console.log(myIntraId + "gelen" + friendIntraId)
     const friend = await this.userService.findByintraId(friendIntraId);
     const user = await this.userService.findByintraId(myIntraId);
     if(!friend || !user || answer === undefined)

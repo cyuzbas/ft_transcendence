@@ -1,11 +1,26 @@
+import Particle from './Particle';
+import fourtytwo from '../../img/ft.png'
+import './styles.css'
+
 export function Login(){
 
+	const goToLogin= async () =>{
+		window.location.href = 'http://localhost:3001/auth/login';
+	}
+
 	return (
-	  <div className="Login">
-		<div className="LoginBox" style={{alignItems:"center", display:"flex", justifyContent:"center"}}>
-			  <a href='http://localhost:3001/auth/login' style={{textDecoration:"none", color: "black"}}> 42 Intra Login </a>
-		  </div>
+		<>
+		<Particle/>
+		<div className='LoginPageContent'>
+			<div className='LoginIntro'>
+				<h1>FT_TRANSCENDENCE</h1>
+			</div>
+			<button className='LoginWith42' onClick={goToLogin} >
+				<img src={fourtytwo} className='ftLogo'></img>
+				<text className='ftLogin-text'>LOGIN WITH 42</text>
+			</button>
 		</div>
+		</>
 	);
   };
   

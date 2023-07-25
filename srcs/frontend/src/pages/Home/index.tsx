@@ -1,91 +1,111 @@
 import './styles.css'
-import React, { useContext,useState , useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { Friends } from '../../components';
 import { UserContext } from '../../contexts'
+import FriendsToggle from './components/UserToggle';
+import Achievements from './components/Achievements';
+import Leaderboard from './components/Leaderboard';
 import swal from 'sweetalert';
+import pong from '../../img/pong.png';
 
-  
-  export function Home (){
 
-  
-    const {user} = useContext(UserContext)
-  
+export function Home() {
 
-    
-    async function showAlert(){
-      swal({
-        title: "Are you sure?",
-        text: "Are you sure that you want to save",
-        icon: "warning",
-        dangerMode: true,
-      })
-      .then(async(willDelete) => {
+
+  const { user, setUser } = useContext(UserContext)
+
+
+  useEffect(() => {
+    console.log("home")
+  })
+
+  async function showAlert() {
+    swal({
+      title: "Are you sure?",
+      text: "Are you sure that you want to save",
+      icon: "warning",
+      dangerMode: true,
+    })
+      .then(async (willDelete) => {
         if (willDelete) {
-          try{
-          const response = await axios.post("http://localhost:3001/user/update-user-profile",{
-            userName:"cicek",
-            avatar: user.avatar,
-            intraId: user.intraId
-          }, {withCredentials:true})
+          try {
+            const response = await axios.post("http://localhost:3001/user/update-user-profile", {
+              userName: "cicek",
+              avatar: user.avatar,
+              intraId: user.intraId
+            }, { withCredentials: true })
 
-          swal("Saved!", "Your imaginary file has been saved!" + user.intraId + "asdasd", "success");
-        }
-        catch(error){
-          swal("error", "something go wrong" +error, "ok")
-        }
+            swal("Saved!", "Your name has been saved!");
+          }
+          catch (error) {
+            swal("error", "something go wrong" + error, "ok")
+          }
         }
       });
-    }
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    
-
-    async function postimage() {
-
-      if(selectedFile){
-        const formData = new FormData()
-	  const imageName = user.userName+'.png'
-	  formData.append('avatar', selectedFile)
-	  const headers = { 'Content-Type': 'multipart/form-data'};
-	  await axios
-		  .post(`http://localhost:3001/user/avatar/${imageName}`, 
-		  formData, {withCredentials: true , headers })
-		  .then((res) => {user.avatar = res.data.avatar})
-		  .catch(err => {})
-    }
   }
-	  
 
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (event.target.files && event.target.files.length > 0) {
-        setSelectedFile(event.target.files[0]);
-      }
-    };
+  return (
 
-
-  
-    return (
-    <div className='PageMain'>
-        <div className="Menu container">menu</div>
-        <div className="ProfileInfo container">
-        <img src={user.avatar} alt="Avatar" style={{margin:50,width:200, height:170, borderRadius:20}} />
-        {/* <img src={user.avatar} /> */}
-
-        {/* <img src={"undefined:undefined/upload/1688581369566-219674372.png"} alt="Logo" /> */}
-
-        <h5> {user.intraId} intra</h5>
-        <h5>{user.userName}</h5>
-        <button onClick={showAlert}> Change userName</button>
-        <input type='file' onChange={handleFileChange} accept='image/*' />
-        <button  onClick={postimage} > Change photo</button>
+    <div className="PageMain">
+      <div id="item-0" className="ProfileSection item">&nbsp;
+        <div className="ProfileInfo">
+         <div className="imageClass">
+            <img src={user.avatar} id="Avatar"/>
+          </div>
+          <h4 className="UserName">{user.userName}</h4>
+          <h4 className="UserID"> ID - {user.intraId}</h4>
         </div>
-        <div className="MyRank container">MyRank</div>
-        <div className="Chat container">Chat</div>
-        <div className="AllRanks container">Allranks</div>
-        <div className="FriendSection container">
-            <Friends/>
+        <div className="ProfileRankInfo">
+          <div className="ProfileRankInfoLine">
+            <i className="bi bi-circle-fill fs-2"  id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
+            {/* {!isGaming && user.isLogged && ( */}
+              <h4 className="UserStatus">ONLINE</h4> 
+            {/* )} */}
+            {/* {isGaming && user.isLogged && (
+              <h4 className="UserStatus">IN GAME</h4> 
+            )} */}
+            {!user.isLogged && (
+              <h4 className="UserStatus">OFFLINE</h4> 
+            )}
+          </div>
+          <div className="ProfileRankInfoLine">
+            <i className="bi bi-star fs-2"></i>
+            <h4 className="UserScore">SCORE</h4> {/*Data from Scoretable*/}
+          </div>
+          <div className="ProfileRankInfoLine">
+            <i className="bi bi-chevron-double-up fs-2"></i>
+            <h4 className="UserRank">RANK </h4> {/*Data from Scoretable*/}
+          </div>
         </div>
+        <div className="ProfileMatchHistory">
+          <div id="MatchHistoryTitle">&nbsp;
+            <img src={pong} className='pongIcon'/>
+            <h4>MATCH STATS</h4>
+            <img src={pong} className='pongIcon reverse'/>
+          </div>
+          <div id="MatchHistoryWin">&nbsp;
+            <h4>WIN</h4>
+            <i className="bi bi-trophy fs-4"></i>
+            <h4>2</h4> {/*Data from Scoretable*/}
+          </div>
+          <div id="MatchHistoryLoss">&nbsp;
+            <h4>LOSS</h4>
+            <i className="bi bi-x-lg fs-4"></i>
+            <h4>1</h4>  {/*Data from Scoretable*/}
+          </div>
+        </div>
+      </div>
+      <div id="item-1" className="FriendSection item">
+        <FriendsToggle />
+      </div>
+      <div id="item-2" className="LeaderBoard item">
+        <Leaderboard/>
+      </div>
+      <div id="item-3" className="Achievement item">
+        <Achievements/>
+      </div>
     </div>
-    )
+  )
 };

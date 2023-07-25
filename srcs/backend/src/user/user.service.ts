@@ -34,6 +34,14 @@ export class UserService {
 		// 	};
 		// }
 
+
+  async disabledTwoFactor(user: UserEntity){
+	await this.userRepository.update(user.id,{
+		TwoFactorAuth: false,
+		twoFactorAuthSecret:null
+	})
+  }
+
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);
 	const createdUser: UserI = await this.userRepository.save(newUser);
@@ -45,6 +53,7 @@ export class UserService {
 		user: newUser,
 		room: generalChatRoom,
 	});
+	newUser.isLogged = true
 	await this.dataSource.manager.save(newRoomUser);
 	console.log("newuser " + newUser)
 	console.log("create user " + createdUser)
@@ -53,6 +62,27 @@ export class UserService {
 	return createdUser;
 	}
 
+
+	async updateTwoFactorStatus(id:number, isAuth:boolean){
+		await this.userRepository.update(id,{
+			TwoFactorAuth: isAuth
+		})
+	}
+	async addAuthSecretKey(key:string,user:UserI){
+
+		// if (!user || typeof user.id !== 'number') {
+		// 	throw new Error('Invalid user data');
+		//   }
+		await this.userRepository.update(user.id,{
+			twoFactorAuthSecret: key
+			});
+	}
+
+	async findByintraIdEntitiy(intraId: string): Promise<UserEntity> {
+		return await this.userRepository.findOne({
+			where: { intraId: intraId },
+		});
+	}
 	async findByintraId(intraIdToFind: string): Promise<UserI> {
 		return await this.userRepository.findOne({
 			where: { intraId: intraIdToFind },
@@ -65,9 +95,11 @@ export class UserService {
 	}
 
 	async findByID(idToFind: number): Promise<UserI> {
-		return await this.userRepository.findOne({
+		const user =
+		 await this.userRepository.findOne({
 			where: { id: idToFind },
 		});
+		return user;
 	}
 
 	async findId(intrabyId: string): Promise<number>{
@@ -78,7 +110,7 @@ export class UserService {
 	}
 
 	async updataAvatar(path: string, user: UserEntity): Promise<UserI>{
-			await this.userRepository.update(user,{
+			await this.userRepository.update(user.id,{
 				avatar: "http://localhost:3001/user/avatar/" + path
 			});
 			console.log("succes update avatar");
@@ -124,9 +156,23 @@ export class UserService {
 		const user = await this.userRepository.findOne({
 			where: { userName: userName }
 		});
+		console.log("hello status")
 		if(!user)
 			return
 		user.status = status;
+		console.log("status changed")
+		await this.userRepository.save(user);
+	}
+
+	async updateLogIn(userName: string, isLogged: boolean): Promise<void> {
+		const user = await this.userRepository.findOne({
+			where: { userName: userName }
+		});
+		console.log("hello isLogged")
+		if(!user)
+			return
+		user.isLogged = isLogged;
+		console.log("isLogged changed")
 		await this.userRepository.save(user);
 	}
 
@@ -229,5 +275,32 @@ export class UserService {
 	  
 	async deleteUser(id: number) {
 		return this.userRepository.delete(id);
+	}
+
+	// ////////////////////////////////// idil
+
+	async findUserByUserIddto(userId: number): Promise<UserDto> {
+		const user = await this.userRepository.findOne({ 
+			where: { id: userId } 
+		});
+		if(!user)
+			return 
+		const { userName, status } = user;
+		return {
+			id : userId,
+			userName,
+			status,
+		}
+	}
+
+	async findUserByUserId(userId: number): Promise<UserEntity> {
+		const user = await this.userRepository.findOne({ 
+			where: { id: userId } 
+		});
+	
+		if(!user)
+			throw new Error(`User with ID ${userId} not found`);
+	
+		return user;
 	}
 }

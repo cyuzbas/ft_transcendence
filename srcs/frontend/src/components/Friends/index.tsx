@@ -1,14 +1,13 @@
-
-// import '../index.css';
+import './styles.css';
 import axios from 'axios';
 import { UserContext } from '../../contexts'
-import React, { useContext,useState , useEffect } from 'react';
-
+import React, { useContext, useState, useEffect } from 'react';
 
 type User = {
     avatar: string;
     userName: string;
     intraId: string;
+	  isLogged: boolean;
   };
   
 
@@ -25,7 +24,7 @@ export function Friends() {
         const response = await axios.get('http://localhost:3001/user/all');
         setUsers(response.data);
 
-        console.log("response fetch datA!");
+        console.log("response fetch data!");
         console.log(response.data.user);
         Array.isArray(users) ? (
             users.map((userName, avatar) => (
@@ -34,7 +33,7 @@ export function Friends() {
      ) : (console.log("nobody!"))
       } catch (error) {
         console.error(error);
-        console.log("ERRIR!!")
+        console.log("ERROR!!")
       }
     };
 
@@ -45,11 +44,21 @@ export function Friends() {
       <>
     {Array.isArray(users) ? (
       users.map((user, index) => (
-        <div className="text-image-component" key={user.intraId}>
-             <img src={user.avatar} className="image" style={{margin:5,width:50, height:50, borderRadius:20}}/>
-            <div className="text">{user.userName}</div>
-            {/* <img src={logo}  className="image2" /> */}
-            <div>logo</div>
+        <div className="friends-text-image-component" key={user.intraId}>
+            <div className="imageClassPP">
+              <img src={user.avatar} id="Avatar" alt=""/>
+            </div>
+            <div className="friend-component-userName">{user.userName}</div>
+            <div className="friend-component-userID"> ID - {user.intraId}</div>
+            <div className='personOnlineContainer'>
+              <i className="bi bi-circle-fill fs-5"
+                id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
+            </div>
+            <div className='personAddContainer'>
+              <i className="bi bi-person-add fs-3"></i>
+              {/* <i className="bi bi-person-dash fs-3"></i> */}
+              {/* <i className="bi bi-person-check fs-3"></i> */}
+            </div>
         </div>
       ))
     ) : (

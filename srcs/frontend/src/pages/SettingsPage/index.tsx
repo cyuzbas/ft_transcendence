@@ -24,8 +24,7 @@ function SettingsPage() {
 	async function showAlert() {
 		swal({
 			title: "Are you sure?", 
-			text: "Are you sure that you want to save",
-			icon: "warning",
+			text: "Do you want to change your name?",
 			dangerMode: true,
 		})
 			.then(async (willDelete) => {
@@ -39,10 +38,15 @@ function SettingsPage() {
 						const updatedUser = { ...user, userName: inputText};
 						setUser(updatedUser)
 						localStorage.setItem('user', JSON.stringify(updatedUser));
-						swal("Saved!", "Your name has been saved! " + user.intraId);
+						swal("Saved!", "Your name has been saved! ");
 					}
 					catch (error) {
-						swal("error", "something go wrong" + error, "ok")
+						swal({
+							title: "Error", 
+							text: "Something went wrong!",
+							icon: "warning",
+							dangerMode: true
+						})
 					}
 				}
 			});

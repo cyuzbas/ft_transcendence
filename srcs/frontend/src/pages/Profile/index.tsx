@@ -89,14 +89,18 @@ export default function Profile() {
             </div>
           </div>
           <div className="ProfileRankInfo">
-            <div className="ProfileRankInfoLine">
-              <i className="bi bi-star fs-2"></i>
-              <h4 className="UserScore">SCORE  - {user!.score}</h4> 
-            </div>
-            <div className="ProfileRankInfoLine">
+          <div className="ProfileRankInfoLine">
+            <h4 className="UserScore">SCORE</h4>
+          </div>
+          <div className="ProfileRankInfoLine">
+          <i className="bi bi-star fs-2"></i>
+
+            <h4 className="UserScore">{user!.score}</h4>
+          </div>
+            {/* <div className="ProfileRankInfoLine">
               <i className="bi bi-chevron-double-up fs-2"></i>
               <h4 className="UserRank">RANK - {user!.rank}</h4> 
-            </div>
+            </div> */}
           </div>
           <div className="ProfileMatchStats">
             <div id="MatchStatsTitle">&nbsp;

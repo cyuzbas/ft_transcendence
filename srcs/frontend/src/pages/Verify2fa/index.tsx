@@ -1,4 +1,5 @@
 import Particle from '../Login/Particle';
+import swal from 'sweetalert';
 import './styles.css'
 import { useState, ChangeEvent, useContext } from 'react';
 import axios from 'axios';
@@ -11,15 +12,21 @@ function Verify2fa() {
 	const { user, setUser } = useContext(UserContext)
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-		// 👇 Store the input value to local state
 		setInputText(e.target.value);
 		console.log(e.target.value)
 	};
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (inputText.length !== 6)
+		if (inputText.length !== 6){
 			console.error("wrong 2factor key!!")
+			swal({
+				title: "Error", 
+				text: "Wrong Two Factor Key!",
+				icon: "warning",
+				dangerMode: true
+			})
+		}
 		else {
 			try {
 				console.log("value is " + inputText + "user [" + JSON.stringify(user))
@@ -41,6 +48,12 @@ function Verify2fa() {
 			}
 			catch (error) {
 				console.error(error)
+				swal({
+					title: "Error", 
+					text: "Something went wrong!",
+					icon: "warning",
+					dangerMode: true
+				})
 			}
 		}
 	}

@@ -19,7 +19,6 @@ const Styles = styled.div`
     color: rgb(178,225,255);
     &:hover { color: white; }
   }
-
   `;
 
 
@@ -74,8 +73,7 @@ return (
 		  <Nav.Item>
         <div className="friend-drop-down-container" ref={dropdownRef}>
 		  	  <i className="bi bi-people-fill fs-3 me-2 friendsRequestButton" onClick={(e) => handleDropDownFocus(open)}>
-            {friendRequest  ? (
-              
+            {friendRequest  ? ( 
             <span className="position-absolute top-0 start-90 translate-middle p-1 bg-light border border-light rounded-circle">
               <span className="visually-hidden">New alerts</span>
             </span>

@@ -1,5 +1,6 @@
 import './styles.css'
 import { useContext, ChangeEvent, useState } from 'react';
+import swal from 'sweetalert';
 import axios from 'axios';
 import QRCodeImage from './qrCodeCreate';
 import { UserContext } from '../../contexts';
@@ -17,8 +18,15 @@ function Auth2faPage() {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (inputText.length !== 6)
+		if (inputText.length !== 6){
 			console.error("wrong 2factor key!!")
+			swal({
+				title: "Error", 
+				text: "Wrong Two Factor Key!",
+				icon: "warning",
+				dangerMode: true
+			})
+		}
 		else {
 			try {
 				console.log("value is " + inputText + "user [" + JSON.stringify(user))
@@ -40,6 +48,12 @@ function Auth2faPage() {
 			}
 			catch (error) {
 				console.error(error)
+				swal({
+					title: "Error", 
+					text: "Something went wrong!",
+					icon: "warning",
+					dangerMode: true
+				})
 			}
 		}
 	}

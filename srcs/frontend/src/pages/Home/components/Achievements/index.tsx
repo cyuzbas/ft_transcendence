@@ -74,6 +74,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 						id={(userData && userData[AchievementType.FRESH_PADDLE])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">FRESH PADDLE </h4>
+					<div className="infoBadges">Created an account!</div>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
@@ -81,6 +82,8 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 						id={(userData && userData[AchievementType.FIRST_VICTORY])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">FIRST VICTORY</h4>
+					<div className="infoBadges">Won first game!</div>
+
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
@@ -88,6 +91,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 						id={(userData && userData[AchievementType.PONG_WHISPERER])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">PONG WHISPERER</h4>
+					<div className="infoBadges">Won five games!</div>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
@@ -95,6 +99,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 						id={(userData && userData[AchievementType.CHATTERBOX])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">CHATTERBOX</h4>
+					<div className="infoBadges">Sent first message!</div>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
@@ -102,6 +107,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 						id={(userData && userData[AchievementType.SOCIAL_BUTTERFLY])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">SOCIAL BUTTERFLY</h4>
+					<div className="infoBadges">Added first friend!</div>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
@@ -109,6 +115,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 						id={(userData && userData[AchievementType.CHAMELEON_PLAYER])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">CHAMELEON PLAYER</h4>
+					<div className="infoBadges">Edited your information!</div>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
@@ -116,6 +123,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 						id={(userData && userData[AchievementType.FRIENDLY_RIVALRY])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText ">FRIENDLY RIVALRY</h4>
+					<div className="infoBadges">First game invite!</div>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
@@ -123,6 +131,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 						id={(userData && userData[AchievementType.EPIC_FAIL])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">EPIC FAIL</h4>
+					<div className="infoBadges">Lost first game!</div>
 				</div>
 			</div>
 	</div>

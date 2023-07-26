@@ -2,8 +2,9 @@ import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany
 import { RoomEntity } from "./room.entity";
 import { MessageEntity } from "./message.entity";
 import { RoomUserEntity } from "./roomUser.entity";
-
+import {ACHIEVEMENTSEntity} from './achievements.entity'
 export const ADMIN = 'admin';
+
 
 @Entity()
 @Unique(['userName'])
@@ -12,7 +13,7 @@ export class UserEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
+	@Column({unique:true})
 	userName: string;
 
 	@Column({ name: 'intraId',nullable: true, unique: true })
@@ -52,6 +53,16 @@ export class UserEntity {
 
 	@OneToMany(() => RoomUserEntity, roomUser => roomUser.user)
 	roomLinks: RoomUserEntity[];
+
+	
+	@OneToMany(() => ACHIEVEMENTSEntity, (achievements) => achievements.user)
+	achievements: ACHIEVEMENTSEntity;
+
+	
+
+
+  
+
 
 	@OneToMany(() => RoomUserEntity, roomUser => roomUser.contact)
 	contactLinks: RoomUserEntity[];

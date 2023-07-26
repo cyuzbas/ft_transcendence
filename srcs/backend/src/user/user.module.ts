@@ -8,10 +8,11 @@ import {RoomUserEntity} from '../typeorm/roomUser.entity';
 import {MessageEntity} from '../typeorm/message.entity';
 import { FriendsController } from './Friend/friends.controller';
 import { FriendsService } from './Friend/friends.service';
+import { ACHIEVEMENTSEntity } from 'src/typeorm/achievements.entity';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([UserEntity, RoomEntity, RoomUserEntity, MessageEntity])],
+		TypeOrmModule.forFeature([ACHIEVEMENTSEntity,UserEntity, RoomEntity, RoomUserEntity, MessageEntity])],
 	providers: [UserService,FriendsService],
 	controllers: [UserController, FriendsController],
 	exports: [UserService],

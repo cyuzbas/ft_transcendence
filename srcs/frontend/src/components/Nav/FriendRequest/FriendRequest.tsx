@@ -18,13 +18,14 @@ export function Request() {
     const [users, setUsers] = useState<User[]>([]);
     const {user} = useContext(UserContext)
 
+    const [friendRequest, setFriendRequest] = useState<boolean | null>(null);
 
 
   async function answerRequest(intraId:string, answer:string) {
     try{
           const response = await axios.post(`http://localhost:3001/friends/friend-request/${user.intraId}/${intraId}/${answer}`)
           const updatedUsers = users.filter((user) => user.intraId !== intraId);
-          setUsers(updatedUsers); // Güncellenmiş diziyi setUsers ile güncelleyin
+          setUsers(updatedUsers);
       
       
           console.log(response.data)
@@ -41,6 +42,7 @@ export function Request() {
       try {
         const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`);
         setUsers(response.data);
+        setFriendRequest(response.data.length == 0 ? false : true)
         console.log("burdayiz " + users.length)
         console.log(JSON.stringify(users))
         console.log("response fetch data!");
@@ -61,7 +63,7 @@ export function Request() {
 
     return(
       <>
-    {Array.isArray(users) ? (
+    {friendRequest ?(
       
       users.map((user, index) => (
         <div className="friendRequestcomponent" key={user.intraId}>

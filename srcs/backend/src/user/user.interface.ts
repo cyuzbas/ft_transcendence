@@ -1,3 +1,4 @@
+import { ACHIEVEMENTSEntity } from "src/typeorm/achievements.entity";
 
 export interface UserI {
 	id?: number;

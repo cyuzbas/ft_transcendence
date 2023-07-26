@@ -8,6 +8,8 @@ import { Repository, DataSource, createQueryBuilder } from 'typeorm';
 import { UserDto } from '../dto/user.dto';
 import { RoomEntity, GENERAL_CHAT } from 'src/typeorm/room.entity';
 import { RoomUserEntity, UserRole } from 'src/typeorm/roomUser.entity';
+import { AchievementsDto } from './achievements.dto';
+import { ACHIEVEMENTSEntity } from 'src/typeorm/achievements.entity';
 
 
 
@@ -17,6 +19,8 @@ export class UserService {
 	private dataSource: DataSource,
 		@InjectRepository(UserEntity)
 		private userRepository: Repository<UserEntity>,
+		@InjectRepository(ACHIEVEMENTSEntity)
+		private achievementsRepository: Repository<ACHIEVEMENTSEntity>,
 		@InjectRepository(RoomEntity)
 		private roomRepository: Repository<RoomEntity>,
 		@InjectRepository(RoomUserEntity)
@@ -42,6 +46,17 @@ export class UserService {
 	})
   }
 
+  async getAchievements(getIntraId:string):Promise<ACHIEVEMENTSEntity>{
+
+	const user = await this.userRepository.findOne({ 
+		where: { intraId: getIntraId },
+		relations: ['achievements'], 
+	})
+	return user.achievements;
+  }
+
+
+
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);
 	const createdUser: UserI = await this.userRepository.save(newUser);
@@ -54,6 +69,19 @@ export class UserService {
 		room: generalChatRoom,
 	});
 	newUser.isLogged = true
+
+	const achievements = new ACHIEVEMENTSEntity();
+	achievements.FRESH_PADDLE = false;
+	achievements.FIRST_VICTORY = false;
+	achievements.PONG_WHISPERER = false;
+	achievements.CHATTERBOX = false;
+	achievements.SOCIAL_BUTTERFLY = false;
+	achievements.CHAMELEON_PLAYER = false;
+	achievements.FRIENDLY_RIVALRY = false;
+	achievements.EPIC_FAIL = false;
+	achievements.user = newUser
+	// createdUser.achievements = [achievements]; 
+	await this.dataSource.manager.save(achievements)
 	await this.dataSource.manager.save(newRoomUser);
 	console.log("newuser " + newUser)
 	console.log("create user " + createdUser)
@@ -70,9 +98,6 @@ export class UserService {
 	}
 	async addAuthSecretKey(key:string,user:UserI){
 
-		// if (!user || typeof user.id !== 'number') {
-		// 	throw new Error('Invalid user data');
-		//   }
 		await this.userRepository.update(user.id,{
 			twoFactorAuthSecret: key
 			});
@@ -91,7 +116,10 @@ export class UserService {
 
 	async findByAllUser(): Promise<UserI[]> {
 		const users: UserEntity[] = await this.userRepository.find();
-		return users as UserI[];
+		const filteredUsers = users.filter((user) => user.userName !== "admin");
+
+
+		return filteredUsers as UserI[];
 	}
 
 	async findByID(idToFind: number): Promise<UserI> {

@@ -10,9 +10,11 @@ import { RoomUserEntity } from "src/typeorm/roomUser.entity";
 import { GameEntity } from "src/typeorm/game.entity";
 import { GameService } from "src/game/game.service";
 import { GatewayService } from './gateway.service';
+import { ACHIEVEMENTSEntity } from "src/typeorm/achievements.entity";
+
 
 @Module({
-	imports: [TypeOrmModule.forFeature([UserEntity, RoomEntity, RoomUserEntity, MessageEntity, GameEntity])],
+	imports: [TypeOrmModule.forFeature([UserEntity, RoomEntity, RoomUserEntity, MessageEntity, GameEntity, ACHIEVEMENTSEntity])],
 	providers: [MyGateway, ChatService, UserService, GameService, GatewayService, MapService],
 	exports: [GatewayService, MapService]
 })

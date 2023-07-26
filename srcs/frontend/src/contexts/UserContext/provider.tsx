@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, Dispatch, SetStateAction, ReactNode, useContext } from "react";
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import axios from "axios";
 import { Login } from "../../pages";
 import Verify2fa from '../../pages/Verify2fa'
@@ -13,6 +13,10 @@ export type User = {
   isLogged: boolean;
   TwoFactorAuth: boolean;
   twoFactorCorrect: boolean;
+  score: number;
+  totalWin: number;
+  totalLoose: number;
+  intraName:string;
 };
 
 export interface UserContextInterface {
@@ -30,7 +34,11 @@ const defaultState = {
     userRole: '',
     isLogged: false,
     TwoFactorAuth: false,
-    twoFactorCorrect: false
+    twoFactorCorrect: false,
+    score: 1,
+    totalWin: 2,
+    totalLoose: 0,
+    intraName: ''
   },
   setUser: (user: User) => { }
 } as UserContextInterface;
@@ -59,7 +67,11 @@ export function UserProvider({ children }: UserProviderProps) {
       userRole: '',
       isLogged: false,
       TwoFactorAuth: false,
-      twoFactorCorrect: false
+      twoFactorCorrect: false,
+      score: 0,
+      totalWin: 0,
+      totalLoose: 0,
+      intraName: ''
     };
   });
 
@@ -96,7 +108,7 @@ export function UserProvider({ children }: UserProviderProps) {
   }
 
   else {
-    if(user.TwoFactorAuth && user.twoFactorCorrect == false){
+    if(user.TwoFactorAuth && user.twoFactorCorrect === false){
       return(
         <UserContext.Provider value={{ user, setUser, clearUser }}>
           <Routes>

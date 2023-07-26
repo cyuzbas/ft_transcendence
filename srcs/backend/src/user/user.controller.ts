@@ -9,10 +9,17 @@ import { UpdateUserProfileDto } from './updateUserProfil.dto';
 import { join } from 'path';
 
 import * as fs  from "fs";
+import { ACHIEVEMENTSEntity } from 'src/typeorm/achievements.entity';
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService : UserService) {}
+
+	@Get('achievements/:intraId')
+	achievements(@Param('intraId') intraId:string): Promise<ACHIEVEMENTSEntity>{
+		return this.userService.getAchievements(intraId);
+	}
+
 
     @Get('avatar/:filename')
     getImage(@Param('filename') filename: string, @Res() res) {
@@ -34,11 +41,6 @@ export class UserController {
         return this.userService.updataAvatar(imageName,req.user);
 	}
 
-    @Get('all')
-    getAllUser(){
-        console.log("\n\nget all user\n\n")
-        return this.userService.findByAllUser();
-    }
     @Get(':intraId')
     getUserByintraId(@Param('intraId') id: string){
         return this.userService.findByintraId(id)

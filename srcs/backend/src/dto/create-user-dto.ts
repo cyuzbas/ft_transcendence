@@ -3,5 +3,6 @@ export class CreateUserDTO{
     avatar: string;
     userName: string;
     avatarSmall:string;
-    isLogged:boolean
+    isLogged:boolean;
+    intraName:string;
 }

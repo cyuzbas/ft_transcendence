@@ -1,16 +1,16 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { UserProvider, GameProvider, UserContext, ChatProvider } from './contexts';
 import { GameMode, gameModes } from './pages/Game/logic/types'
-import { Game, Lobby, Home, Chat, Login } from './pages'
+import { Game, Lobby, Home, Chat } from './pages'
 import { SocketProvider } from './contexts/SocketContext/provider';
-import { Friends } from './components';
 import SettingsPage from './pages/SettingsPage'
 import Create2fa from './pages/Create2fa'
-import Verify2fa from './pages/Verify2fa'
-import Navbar from './components/Nav/navBar';
+import Navbar from './components/Nav/NavBar/navBar';
 import SideBar from './components/Nav/SideBar/sideBar';
-import React, { useContext } from 'react';
+import NotFound from './pages/NotFound';
+import React from 'react';
 import './components/Nav/main.css';
+import Profile from './pages/Profile';
 import { Random, FriendGame } from './pages/Game/components/Online/index'
 import { WaitingPage1, WaitingPage2, WaitingPage3 } from './pages/Lobby/components/WaitingPage';
 
@@ -18,22 +18,22 @@ import { WaitingPage1, WaitingPage2, WaitingPage3 } from './pages/Lobby/componen
 export function Router() {
   return (
     <React.Fragment>
-            <BrowserRouter>
-              <UserProvider>
-
-      <section>
-        <div className='NavContent'>
-          <Navbar />
-        </div>
-      </section>
-      <section>
-        <div className='FullPage'>
-          <div className='SideContent'>
-            <SideBar />
-          </div>
-          <div className='MainContent'>
+      <BrowserRouter>
+        <UserProvider>
+          <section>
+            <div className='NavContent'>
+              <Navbar />
+            </div>
+          </section>
+          <section>
+            <div className='FullPage'>
+              <div className='SideContent'>
+                <SideBar />
+              </div>
+              <div className='MainContent'>
                 <SocketProvider>
                   <Routes>
+
                     <Route path='/home' element={<Home />} />
                     <Route path='/' element={<Home />} />
                     <Route path='/friend' element={<Friends />} />
@@ -55,6 +55,7 @@ export function Router() {
                     <Route path='/findingopponentClassic' element={<WaitingPage1 />} />
                     <Route path='/findingopponentCustom' element={<WaitingPage3 />} />
                     <Route path='/waitingreply' element={<WaitingPage2 />} />
+
                     {gameModes.map((mode: GameMode) => (
                       <Route
                         key={mode}
@@ -68,11 +69,11 @@ export function Router() {
                     ))}
                   </Routes>
                 </SocketProvider>
-          </div>
-        </div>
-      </section>
-      </UserProvider>
-            </BrowserRouter>
+              </div>
+            </div>
+          </section>
+        </UserProvider>
+      </BrowserRouter>
     </React.Fragment>
   )
 

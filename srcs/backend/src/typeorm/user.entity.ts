@@ -81,12 +81,11 @@ export class UserEntity {
 
     @Column({
         default: 0
-
     })
     score: number;
 
 	@Column({
-    default: 2
+        default: 0
     })
     totalWin: number;
 

@@ -40,7 +40,6 @@ function LeaderBoard() {
 	  }, []);
 
   return (
-	<>
 	<div className="UserScoreSection">
 		{Array.isArray(users) ? (
 			users
@@ -64,7 +63,6 @@ function LeaderBoard() {
 				<p>No users found</p>
 		)}
 	</div>
-    </>
 	);
   };
   

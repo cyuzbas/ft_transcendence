@@ -57,6 +57,16 @@ export class UserService {
   }
 
 
+  async setAchievements(getIntraId:string, type:string):Promise<Boolean>{
+	const user = await this.findByintraIdEntitiy(getIntraId)
+	const updateField = {} as ACHIEVEMENTSEntity;
+	updateField[type] = true;
+	await this.achievementsRepository.update(user.id, updateField);
+	return true;
+  }
+
+
+
 
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);

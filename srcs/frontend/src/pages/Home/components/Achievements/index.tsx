@@ -10,22 +10,13 @@ import whisperer from '../../../../img/achievements/pongWhisperer.png'
 import victory from '../../../../img/achievements/firstVictory.png'
 import fail from '../../../../img/achievements/epicFail.png'
 import axios from 'axios';
+import { AchievementType } from '../../../../AchievementsEnum';
 
 function Achievements() {
 	
 	const { user , setUser} = useContext(UserContext)
 
-	enum AchievementType {
-		FRESH_PADDLE = 'FRESH_PADDLE',
-		FIRST_VICTORY = 'FIRST_VICTORY',
-		PONG_WHISPERER = 'PONG_WHISPERER',
-		CHATTERBOX = 'CHATTERBOX',
-		SOCIAL_BUTTERFLY = 'SOCIAL_BUTTERFLY',
-		CHAMELEON_PLAYER = 'CHAMELEON_PLAYER',
-		FRIENDLY_RIVALRY = 'FRIENDLY_RIVALRY',
-		EPIC_FAIL = 'EPIC_FAIL',
-	  }
-	
+
 	  
 	  interface AchievementData {
 		[AchievementType.FRESH_PADDLE]: boolean;
@@ -50,6 +41,14 @@ function Achievements() {
 		  } catch (error) {
 			localStorage.clear()
 			window.location.href= '/login'
+		  }
+
+		  try{
+			const addAchievements = await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.CHATTERBOX}`, null,{withCredentials:true})
+			console.log("add")
+		  }
+		  catch(error){
+			console.error(error)
 		  }
 		};
 		fetchData();

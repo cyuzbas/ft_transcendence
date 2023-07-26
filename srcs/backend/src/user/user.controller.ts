@@ -22,7 +22,10 @@ export class UserController {
 	achievements(@Param('intraId') intraId:string): Promise<ACHIEVEMENTSEntity>{
 		return this.userService.getAchievements(intraId);
 	}
-
+	@Post('setAchievements/:intraId/:type')
+	setAchievements(@Param('intraId') intraId:string, @Param('type') type: string): Promise<Boolean>{
+		return this.userService.setAchievements(intraId,type);
+	}
 
     @Get('avatar/:filename')
     getImage(@Param('filename') filename: string, @Res() res) {

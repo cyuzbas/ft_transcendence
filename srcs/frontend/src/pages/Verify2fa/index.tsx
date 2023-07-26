@@ -19,10 +19,9 @@ function Verify2fa() {
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (inputText.length !== 6){
-			console.error("wrong 2factor key!!")
 			swal({
 				title: "Error", 
-				text: "Wrong Two Factor Key!",
+				text: "Your key needs to be 6 digits!",
 				icon: "warning",
 				dangerMode: true
 			})
@@ -32,8 +31,6 @@ function Verify2fa() {
 				console.log("value is " + inputText + "user [" + JSON.stringify(user))
 				const response = await axios.get(`http://localhost:3001/auth/verify/${inputText}/${user.intraId}`, { withCredentials: true });
 				if (response.data === true) {
-					console.log("correct auth");
-					// user.twoFactorCorrect = true
 					const updatedUser = { ...user, twoFactorCorrect: true };
 					setUser(updatedUser);
 					localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -41,19 +38,18 @@ function Verify2fa() {
 
 
 				} else {
-					console.log("AUTH2FA ERssROR!!");
+					swal({
+						title: "Wrong key!", 
+						text: "It doesn't match with system key!",
+						icon: "warning",
+						dangerMode: true
+					})
 				}
-				console.log("helllllopoooo" + JSON.stringify(user))
 
 			}
 			catch (error) {
-				console.error(error)
-				swal({
-					title: "Error", 
-					text: "Something went wrong!",
-					icon: "warning",
-					dangerMode: true
-				})
+				localStorage.clear()
+				window.location.href = '/login'
 			}
 		}
 	}

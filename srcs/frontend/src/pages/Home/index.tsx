@@ -1,5 +1,5 @@
 import './styles.css'
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { UserContext } from '../../contexts'
 import FriendsToggle from './components/UserToggle';
 import LeaderMatchToggle from './components/LeadToggle';
@@ -7,23 +7,13 @@ import Achievements from './components/Achievements';
 import pong from '../../img/pong.png';
 import axios from 'axios';
 
-type Data = {
-	avatar: string;
-	userName: string;
-	intraId: string;
-	intraName: string;
-	isLogged: boolean;
-  score: number;
-  rank: number;
-  totalLoose: number;
-  totalWin: number;
-};
 
 export function Home() {
 
   const { user , setUser} = useContext(UserContext);
 
   useEffect(() => {
+    //TODO api yaz win icin!! ne lazim cicege sor! win lose score ingame rank
     const fetchData = async () => {
       try {
       const response = await axios.get(`http://localhost:3001/user/${user?.intraId}`)

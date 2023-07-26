@@ -3,9 +3,12 @@ import { Member, RoomType } from "../../../contexts/ChatContext/types";
 import { useUser } from "../../../contexts";
 import { useSetupDmConversation } from "./hookSetupDm";
 import { BlockButton } from "./buttonBlock";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdKeyboardReturn } from "react-icons/md"
 import { BsChatRightText } from "react-icons/bs"
+import { PiGameControllerDuotone } from "react-icons/pi"
+import { GameType } from "../../Lobby/components/WaitingPage";
+import { Link } from "react-router-dom";
 
 type Props = {
   selectedMember: Member | null,
@@ -59,10 +62,17 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 			{selectedMember 
 				&& selectedMember.userName !== user.userName 
 				&& room.type !== RoomType.DIRECTMESSAGE 
-				&& <button className="iconBtn" onClick={() => openConversation(selectedMember)}>
+				&& 
+				<>
+					<button className="iconBtn" onClick={() => openConversation(selectedMember)}>
 					<BsChatRightText size="2em"/>
 						message
 					</button>
+					<Link to={{ pathname: '/waitingreply', search: `?userName=${selectedMember}`}} className="iconBtn" >
+						<PiGameControllerDuotone size="2em" />
+						play
+					</Link>
+					</>
 			}
 		</>
 	)

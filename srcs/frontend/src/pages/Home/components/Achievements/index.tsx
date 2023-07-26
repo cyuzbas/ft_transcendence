@@ -10,6 +10,7 @@ import whisperer from '../../../../img/achievements/pongWhisperer.png'
 import victory from '../../../../img/achievements/firstVictory.png'
 import fail from '../../../../img/achievements/epicFail.png'
 import axios from 'axios';
+import { AchievementType } from '../../../../AchievementsEnum';
 
 type Props = {
 	intraid: string;
@@ -20,17 +21,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 	
 	const { user , setUser} = useContext(UserContext)
 
-	enum AchievementType {
-		FRESH_PADDLE = 'FRESH_PADDLE',
-		FIRST_VICTORY = 'FIRST_VICTORY',
-		PONG_WHISPERER = 'PONG_WHISPERER',
-		CHATTERBOX = 'CHATTERBOX',
-		SOCIAL_BUTTERFLY = 'SOCIAL_BUTTERFLY',
-		CHAMELEON_PLAYER = 'CHAMELEON_PLAYER',
-		FRIENDLY_RIVALRY = 'FRIENDLY_RIVALRY',
-		EPIC_FAIL = 'EPIC_FAIL',
-	  }
-	
+
 	  
 	  interface AchievementData {
 		[AchievementType.FRESH_PADDLE]: boolean;
@@ -50,11 +41,12 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 		  try {
-			const response =  await axios.get(`http://localhost:3001/user/achievements/${intraid}`)
+
+			const response =  await axios.get(`http://localhost:3001/user/achievements/${user.intraId}`,{withCredentials:true})
 			setUserData(response.data[0]);
 		  } catch (error) {
-			console.error(error);
-			console.log("ERROR!!")
+			localStorage.clear()
+			window.location.href= '/login'
 		  }
 		};
 		fetchData();
@@ -115,7 +107,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 						id={(userData && userData[AchievementType.CHAMELEON_PLAYER])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">CHAMELEON PLAYER</h4>
-					<div className="infoBadges">Edited your information!</div>
+					<div className="infoBadges">Uploaded new picture!</div>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">

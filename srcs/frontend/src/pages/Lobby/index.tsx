@@ -1,7 +1,6 @@
-import { useState, ChangeEvent, MouseEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, MouseEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { Settings } from './components/SettingsModal'
-import { useSocket } from "../../contexts"
 import * as Components from './containers';
 import React from "react";
 import SoloImg from './assets/single.png';

@@ -1,6 +1,5 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './sideBar.css';
-import { useUser } from '../../../contexts/UserContext';
 import axios from 'axios';
 import React, { useContext } from 'react';
 import { UserContext } from '../../../contexts'
@@ -8,18 +7,15 @@ import { UserContext } from '../../../contexts'
 function SideBar() {
 	
 	const {user} = useContext(UserContext)
-	const { clearUser } = useUser();
 
 	async function logout() {
-			console.log("cikis")
 			try{
-			const response = await axios.get('http://localhost:3001/auth/logout',{withCredentials:true})
+			await axios.get('http://localhost:3001/auth/logout',{withCredentials:true})
 			
 			localStorage.clear();
 			window.location.href="/login"
 		}
 		catch(error){
-			console.error(error)
 			localStorage.clear();
 			window.location.href="/login"
 		}

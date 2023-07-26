@@ -13,7 +13,7 @@ export class UserEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({unique:true})
+	@Column({unique:true, nullable:true})
 	userName: string;
 
 	@Column({ name: 'intraId',nullable: true, unique: true })
@@ -33,7 +33,7 @@ export class UserEntity {
 	@Column({})
 	isLogged: boolean = false;
 
-	@Column({nullable : true})
+	@Column({default:false})
 	TwoFactorAuth:boolean = false
 
 	@Column({nullable: true})

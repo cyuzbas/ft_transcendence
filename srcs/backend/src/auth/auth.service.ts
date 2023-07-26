@@ -10,25 +10,7 @@ export class AuthService {
   constructor(
     private userService: UserService,
   ) {}
-
-  async validateUser(createUserDto: CreateUserDTO): Promise<UserI> {
 	
-		const user = await this.userService.findByintraId(createUserDto.intraId);
-		if(user)
-		{
-			console.log("old user");
-			return user;
-		}
-		else{
-		console.log("new user");
-		return await this.registerUser(createUserDto);
-	}
-	}
-
-  private async registerUser(createUserDto: CreateUserDTO): Promise<UserI> {
-		
-		return await this.userService.createUser(createUserDto);
-	}
 
 	async generateTwoFactorAuthenticationSecret(user: UserEntity) {
 		const secret = speakeasy.generateSecret({ length: 20 });
@@ -36,7 +18,7 @@ export class AuthService {
 		await this.userService.addAuthSecretKey(secret.base32, user)
 		const qrCode = speakeasy.otpauthURL({
 			secret: secret.ascii,
-			label: "ali",
+			label: user.intraName,
 			issuer: 'Cida-trans',
 		});
 		return { qrCode, secret: secret.base32 }

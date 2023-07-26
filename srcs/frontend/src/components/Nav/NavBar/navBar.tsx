@@ -45,11 +45,11 @@ function NavigationBar () {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`);
+        const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`, {withCredentials:true});
         setFriendRequest(response.data.length == 0 ?  false :true)
       } catch (error) {
-        console.error(error);
-        console.log("ERROR!!")
+        localStorage.clear()
+			window.location.href= '/login'
       }
     };
 

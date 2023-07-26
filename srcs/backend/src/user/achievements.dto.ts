@@ -1,7 +1,7 @@
 export class AchievementsDto {
     id:number;
 	intraId: string;
-	FRESH_PADDLE:boolean = false
+	FRESH_PADDLE:boolean = true
 	FIRST_VICTORY:boolean = false
 	PONG_WHISPERER:boolean = false
 	CHATTERBOX:boolean = false

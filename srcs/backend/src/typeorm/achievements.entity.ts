@@ -10,8 +10,8 @@ export class ACHIEVEMENTSEntity{
 	id: number;
 
 
-    @Column({default:false})
-	FRESH_PADDLE:boolean = false
+    @Column({default:true})
+	FRESH_PADDLE:boolean = true
 
 
         @Column({default:false})

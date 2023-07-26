@@ -1,6 +1,5 @@
 import './style.css'
-import React, { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../contexts'
+import {useEffect, useState } from 'react';
 import pong from '../../img/pong.png';
 import Achievements from '../Home/components/Achievements';
 import MatchHistory from '../Home/components/MatchHistory/index';
@@ -28,42 +27,39 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User>();
 
-  const fetchData = async () => {
-
-    try {
-      // console.log("user id profile" + id)
-      const response = await axios.get('http://localhost:3001/friends/allUsers');
-
-      
-      response.data.forEach((user: any) => {
-        if(user.intraName === id) {
-          let profileUser: User = {
-            avatar: user.avatar,
-            userName: user.userName,
-            intraId: user.intraId,
-            intraName: user.intraName,
-            isLogged: user.isLogged,
-            score: user.score,
-            rank: user.rank,
-            totalLoose: user.totalLoose,
-            totalWin: user.totalWin,
-          }
-          console.log("setting user:")
-          console.log(profileUser)
-          setUser(profileUser)
-          setLoading(false);
-        }
-      })
-
-    } catch (error) {
-      console.error(error);
-      console.log("ERROR!!")
-    }
-  };
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
+        
+        response.data.forEach((user: any) => {
+          if(user.intraName === id) {
+            let profileUser: User = {
+              avatar: user.avatar,
+              userName: user.userName,
+              intraId: user.intraId,
+              intraName: user.intraName,
+              isLogged: user.isLogged,
+              score: user.score,
+              rank: user.rank,
+              totalLoose: user.totalLoose,
+              totalWin: user.totalWin,
+            }
+            setUser(profileUser)
+            setLoading(false);
+          }
+        })
+  
+      } catch (error) {
+        localStorage.clear()
+        window.location.href= '/login'
+      }
+    };
+
     fetchData();
-  }, []);
+  }, [user?.intraId]);
+
 
   return (
     <div>
@@ -72,7 +68,7 @@ export default function Profile() {
         <div id="item-0" className="ProfileSection item">&nbsp;
           <div className="ProfileInfo">
           <div className="imageClass">
-              <img src={user!.avatar} id="Avatar" alt="User Avatar"/>
+              <img src={user?.avatar} id="Avatar" alt="User Avatar"/>
             </div>
             <h4 className="UserName">{user!.userName}</h4>
             <div className="ProfileStatusInfo">

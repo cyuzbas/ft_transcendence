@@ -5,12 +5,16 @@ import { UserEntity } from 'src/typeorm/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { use } from 'passport';
+import { ACHIEVEMENTSEntity } from 'src/typeorm/achievements.entity';
+import { AchievementsDto } from '../achievements.dto';
+import { UserService } from '../user.service';
 
 @Injectable()
 export class FriendsService {
     constructor(
         @InjectRepository(UserEntity)
         private userRepository: Repository<UserEntity>,
+        private readonly userService: UserService
     ) { }
 
     async requestFriend(user: UserI, friend: UserI) {
@@ -57,10 +61,8 @@ export class FriendsService {
     }
 
     async friendRequestAnswer(user: UserI, friend: UserI, answer: string): Promise<Boolean> {
-        //answer == true(accept)
         friend.requestedFriends = await this.getFriendsQuery(friend.id)
         const index = friend.requestedFriends.findIndex((getUser) => getUser.id === user.id);
-        //delete requestarray
         if (index !== -1) {
             friend.requestedFriends.splice(index, 1);
             await this.userRepository.save(friend);
@@ -71,15 +73,23 @@ export class FriendsService {
         
         if (answer === "true") {
             user.friends = await this.getFriends(user.id)
-            friend.friends = await this.getFriends(friend.id)
-            if(user.friends === undefined)
+            if(user.friends === undefined){
                 user.friends = [];
-            if(friend.friends === undefined)
-                friend.friends = [];
+                console.log("user frind undefined!")
+                this.userService.setAchievements(user.intraId,"SOCIAL_BUTTERFLY")
+            }
+            if(user.friends.length == 0)
+                this.userService.setAchievements(user.intraId,"SOCIAL_BUTTERFLY")
+
+            friend.friends = await this.getFriends(friend.id)
+
+            console.log(user.friends)
+            console.log(friend.friends)
+            if(friend.friends.length == 0)
+                this.userService.setAchievements(friend.intraId,"SOCIAL_BUTTERFLY")
             user.friends.push(friend)
-            friend.friends.push(user)
             await this.userRepository.save(user)
-            await this.userRepository.save(friend)
+
             return true;
         }
         else {
@@ -91,11 +101,19 @@ export class FriendsService {
         const user = await this.userRepository
             .createQueryBuilder('user')
             .leftJoinAndSelect('user.friends', 'friends')
-            .where('user.id = :userId', { userId })
+            .where('user.id = :id1', { id1: userId })
             .getOne();
         return user.friends;
     }
-
+    async getFriends1(userId: number): Promise<UserEntity[]> {
+        const user = await this.userRepository
+          .createQueryBuilder('user')
+          .leftJoinAndSelect('user.friends', 'friends') 
+          .where('friends.id = :id1', { id1: userId })
+          .getMany();
+        return user;
+      }
+    
 
     
     async getMyFriendQuery(userId: number): Promise<UserEntity[]> {
@@ -111,7 +129,7 @@ export class FriendsService {
         const user = await this.userRepository
           .createQueryBuilder('user')
           .leftJoinAndSelect('user.requestedFriends', 'requested') 
-          .andWhere('user.id = :senderId', { senderId: userId })
+          .andWhere('user.id = :senderIds', { senderIds: userId })
           .getOne();
       
         return user.requestedFriends; 

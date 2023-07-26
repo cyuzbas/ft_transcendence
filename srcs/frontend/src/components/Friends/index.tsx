@@ -27,14 +27,13 @@ export function Friends() {
   const { user } = useContext(UserContext)
 
   async function sendRequest(intraId: string) {
-    console.log("send request " + intraId + user.intraId)
     try {
       const response = await axios.post(`http://localhost:3001/friends/add/${user.intraId}/${intraId}`,null,{withCredentials:true})
-      console.log("send friend request!");
       getData()
     }
     catch (error) {
-      console.error(error);
+      localStorage.clear()
+			window.location.href= '/login'
     }
 
   }
@@ -42,17 +41,17 @@ export function Friends() {
   async function removeFriend(intraId: string) {
     try {
       const response = await axios.post(`http://localhost:3001/friends/delete/${user.intraId}/${intraId}`,null,{withCredentials:true})
-      console.log(response.data)
       getData()
     }
     catch (error) {
-      console.error(error);
+      localStorage.clear()
+			window.location.href= '/login'
     }
   }
 
   async function getData() {
     try {
-      const response = await axios.get(`http://localhost:3001/friends/allUser/${user.intraId}`);
+      const response = await axios.get(`http://localhost:3001/friends/allUser/${user.intraId}` , {withCredentials:true});
       const { friends, nonFriends, me, query } = response.data;
 
       const usersData = [...friends.map((friend: User) => ({ ...friend, userStatus: userStatus.friends })),
@@ -61,16 +60,15 @@ export function Friends() {
       ...me.map((meUser: User) => ({ ...meUser, userStatus: userStatus.me }))];
 
       setUsers(usersData);
-      console.log(JSON.stringify(users))
     } catch (error) {
-      console.error(error);
-      console.log("ERROR!!")
+      localStorage.clear()
+			window.location.href= '/login'
     }
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("naber, " + user.userName);
+      
       getData()    
     };
 

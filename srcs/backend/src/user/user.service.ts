@@ -39,11 +39,12 @@ export class UserService {
 		// }
 
 
-  async disabledTwoFactor(user: UserEntity){
-	await this.userRepository.update(user.id,{
+  async disabledTwoFactor(user: UserEntity):Promise<Boolean>{
+		 await this.userRepository.update(user.id,{
 		TwoFactorAuth: false,
-		twoFactorAuthSecret:null
+		twoFactorAuthSecret: "",
 	})
+	return true;
   }
 
   async getAchievements(getIntraId:string):Promise<ACHIEVEMENTSEntity>{
@@ -81,8 +82,10 @@ export class UserService {
 	achievements.EPIC_FAIL = false;
 	achievements.user = newUser
 	// createdUser.achievements = [achievements]; 
+	this.changeRank(createdUser.id)
 	await this.dataSource.manager.save(achievements)
 	await this.dataSource.manager.save(newRoomUser);
+
 	console.log("newuser " + newUser)
 	console.log("create user " + createdUser)
 
@@ -145,7 +148,7 @@ export class UserService {
 			return user;
 	}
 
-	async updateUserProfile(updateUserInfo: UpdateUserProfileDto): Promise<UserI | undefined> {
+	async updateUserProfile(updateUserInfo: UpdateUserProfileDto): Promise<Boolean> {
 		try {
 		  const id = await this.findId(updateUserInfo.intraId); // findId fonksiyonunun tamamlanmasını bekleyin
 		  console.log(id + " da " + updateUserInfo.avatar);
@@ -155,10 +158,10 @@ export class UserService {
 		  });
 		  
 		  console.log("kaydetme başarılı");
-		  return await this.findByID(updateUserInfo.id);
+		  return true
 		} catch (error) {
 		  console.log("hata: " + error);
-		  return undefined;
+		  return false;
 		}
 	  }
 

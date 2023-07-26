@@ -50,7 +50,7 @@ export class UserController {
     }
 
     @Post('update-user-profile')
-    async updateUserProfile(@Body() userDTO: UpdateUserProfileDto){
+    async updateUserProfile(@Body() userDTO: UpdateUserProfileDto):Promise<Boolean>{
         return await this.userService.updateUserProfile(userDTO );
     }
 

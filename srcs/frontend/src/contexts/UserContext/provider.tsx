@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import axios from "axios";
 import { Login } from "../../pages";
 import Verify2fa from '../../pages/Verify2fa'
+import SettingsPage from "../../pages/SettingsPage";
 
 export type User = {
   userName: string;
@@ -56,7 +57,7 @@ export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User>(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      return JSON.parse(storedUser);
+        return JSON.parse(storedUser);
     }
     return {
       userName: '',
@@ -81,17 +82,19 @@ export function UserProvider({ children }: UserProviderProps) {
       return;
     }
     const fetchData = async () => {
+      if (!window.location.pathname.match('/login') ) {
       try {
         const response = await axios.get('http://localhost:3001/auth/status', { withCredentials: true });
         const updatedUser = { ...response.data, twoFactorCorrect: false };
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
+        console.log("user name" + user.userName)
+     
       } catch (error) {
-        if (!window.location.pathname.match('/login')) {
           window.location.href = '/login';
-        }
+          localStorage.clear();
       }
-    };
+    }};
     fetchData();
   }, []);
   if(!user.isLogged){
@@ -103,11 +106,23 @@ export function UserProvider({ children }: UserProviderProps) {
   }
 
   else {
-    if(user.TwoFactorAuth && user.twoFactorCorrect === false){
+
+    if(user.userName === ""){
+      return(
+        <UserContext.Provider value={{ user, setUser }}>
+          <Routes>
+          <Route path='/settings' element={<SettingsPage />} />
+          <Route path='*' element={<SettingsPage/>} />
+        </Routes>
+        </UserContext.Provider>
+      )
+    }
+     else if(user.TwoFactorAuth && user.twoFactorCorrect === false){
       return(
         <UserContext.Provider value={{ user, setUser }}>
           <Routes>
           <Route path='/verify2fa' element={<Verify2fa />} />
+          <Route path='*' element={<Verify2fa/>} />
         </Routes>
         </UserContext.Provider>
       )

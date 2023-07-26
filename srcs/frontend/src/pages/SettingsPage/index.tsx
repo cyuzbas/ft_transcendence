@@ -11,20 +11,33 @@ function SettingsPage() {
 	const [inputText, setInputText] = useState("");
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-		// 👇 Store the input value to local state
 		setInputText(e.target.value);
-		console.log(e.target.value)
 	};
 
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
-	useEffect(() => {
-		console.log("settings")
-	})
-
 	async function showAlert() {
+		if (inputText === user.userName) {
+			swal({
+				title: "Unsucces!",
+				text: "Error: Same name!",
+				icon: "warning",
+				dangerMode: true,
+			}).then()
+			return;
+		}
+		if (inputText.length===0) {
+			swal({
+				title: "Unsucces!",
+				text: "Error: Input empty!",
+				icon: "warning",
+				dangerMode: true,
+			}).then()
+
+			return;
+		}
 		swal({
-			title: "Are you sure?", 
+			title: "Are you sure?",
 			text: "Are you sure that you want to save",
 			icon: "warning",
 			dangerMode: true,
@@ -36,14 +49,26 @@ function SettingsPage() {
 							userName: inputText,
 							avatar: user.avatar,
 							intraId: user.intraId
-						}, {withCredentials:true})
-						const updatedUser = { ...user, userName: inputText};
-						setUser(updatedUser)
-						localStorage.setItem('user', JSON.stringify(updatedUser));
-						swal("Saved!", "Your name has been saved! " + user.intraId);
+						}, { withCredentials: true })
+						if (response.data===true) {
+							const updatedUser = { ...user, userName: inputText };
+							setUser(updatedUser)
+							localStorage.setItem('user', JSON.stringify(updatedUser));
+							swal("Saved!", "Your name has been saved! ");
+
+						}
+						else {
+							swal({
+								title: "Error!",
+								text: "Error: Dublicated",
+								icon: "warning",
+								dangerMode: true,
+							}).then()
+						}
 					}
 					catch (error) {
-						swal("error", "something go wrong" + error, "ok")
+						localStorage.clear()
+						window.location.href = '/login'
 					}
 				}
 			});
@@ -67,10 +92,11 @@ function SettingsPage() {
 				localStorage.setItem('user', JSON.stringify(updatedUser));
 				if (inputRef.current) {
 					inputRef.current.value = '';
-				  }
+				}
 			}
 			catch (error) {
-				console.error(error)
+				localStorage.clear()
+				window.location.href = '/login'
 			}
 		}
 	}
@@ -84,18 +110,33 @@ function SettingsPage() {
 	};
 
 
-	const handleClick2FA = async () => {
+	async function handleClick2FA () {
+		console.log("handler start")
 		if (user.TwoFactorAuth) {
-			const response = await axios.get('http://localhost:3001/auth/disabled2fa', { withCredentials: true })
-			console.log("auth !")
-			const updatedUser = { ...user, TwoFactorAuth: false, twoFactorCorrect: false };
-			setUser(updatedUser)
-			localStorage.setItem('user', JSON.stringify(updatedUser));
+			console.log("handler if")
+
+			try {
+				
+				const updatedUser = { ...user, TwoFactorAuth: false, twoFactorCorrect: false };
+				setUser(updatedUser)
+				localStorage.setItem('user', JSON.stringify(updatedUser));
+				
+				const response = await axios.post(`http://localhost:3001/auth/disabled2fa`,
+						null , { withCredentials: true})
+			}
+			catch (error) {
+				localStorage.clear()
+				window.location.href = '/login'
+			}
 
 		} else {
+			console.log("goto")
+
 			window.location.href = 'http://localhost:3000/create2fa';
 
 		}
+		console.log("handler finish")
+
 	};
 
 	return (
@@ -104,10 +145,10 @@ function SettingsPage() {
 			<div className="SettingsPageContainer">
 				<div className="ChangePP">
 					<div className="imageContainer">
-						<img src={user.avatar} className='profilePicture' alt='Avatar'/>
+						<img src={user.avatar} className='profilePicture' alt='Avatar' />
 					</div>
 					<div>
-						<input className='UploadPP' type='file' onChange={handleFileChange} accept='image/*' ref={inputRef}/>
+						<input className='UploadPP' type='file' onChange={handleFileChange} accept='image/*' ref={inputRef} />
 					</div>
 					<div className="ChangePPLine">
 						<button type="submit" className="SubmitButton" onClick={postimage}>
@@ -125,8 +166,8 @@ function SettingsPage() {
 				</div>
 				<div className="ChangeOthers">
 					<div className="EditName">
-						<form className="EnterName" 
-								onSubmit={showAlert}>
+						<form className="EnterName"
+							onSubmit={showAlert}>
 							<input
 								onChange={handleChange}
 								className="NameInput"

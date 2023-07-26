@@ -10,8 +10,6 @@ export class OAuthGuard extends AuthGuard('oauth') {
 		const activate = (await super.canActivate(context)) as boolean;
 		console.log("oauthguard->login before")
 		await super.logIn(request);
-		console.log("request is : "+ JSON.stringify(request));
-		console.log("oauthguard than super.login");
 		return activate;
 	}
 }

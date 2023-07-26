@@ -26,35 +26,23 @@ export function Request() {
           const response = await axios.post(`http://localhost:3001/friends/friend-request/${user.intraId}/${intraId}/${answer}`,null,{withCredentials:true})
           const updatedUsers = users.filter((user) => user.intraId !== intraId);
           setUsers(updatedUsers);
-      
-      
-          console.log(response.data)
     }
     catch(error){
-      console.error(error);
+      localStorage.clear()
+			window.location.href= '/login'
     }
     
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("naber, " + user.userName);
       try {
         const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`,{withCredentials:true})
         setUsers(response.data);
         setFriendRequest(response.data.length == 0 ? false : true)
-        console.log("burdayiz " + users.length)
-        console.log(JSON.stringify(users))
-        console.log("response fetch data!");
-        // console.log(response.data.user);
-        Array.isArray(users) ? (
-            users.map((userName, avatar) => (
-                console.log(userName + " and " + avatar)
-            ))
-     ) : (console.log("nobody!"))
       } catch (error) {
-        console.error(error);
-        console.log("ERROR!!")
+        localStorage.clear()
+			window.location.href= '/login'
       }
     };
 

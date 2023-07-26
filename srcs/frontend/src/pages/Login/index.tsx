@@ -1,12 +1,20 @@
 import Particle from './Particle';
 import fourtytwo from '../../img/ft.png'
 import './styles.css'
+import { useEffect } from 'react';
 
 export function Login(){
 
 	const goToLogin= async () =>{
 		window.location.href = 'http://localhost:3001/auth/login';
 	}
+
+	useEffect(() => {
+		const storedUser = localStorage.getItem('user');
+		if(storedUser){
+			window.location.href ='http://localhost:3000/home'
+		}
+	  }, );
 
 	return (
 		<>

@@ -10,7 +10,6 @@ function SideBar() {
 	const {user} = useContext(UserContext)
 
 	async function logout() {
-			console.log("cikis")
 			try{
 			const response = await axios.get('http://localhost:3001/auth/logout',{withCredentials:true})
 			
@@ -18,7 +17,6 @@ function SideBar() {
 			window.location.href="/login"
 		}
 		catch(error){
-			console.error(error)
 			localStorage.clear();
 			window.location.href="/login"
 		}

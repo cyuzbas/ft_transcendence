@@ -33,7 +33,7 @@ function LeaderBoard() {
 
   return (
 	<div className="UserScoreSection">
-		{Array.isArray(users) ? (
+		{( users.length ) ? (
 			users
 			.sort((a, b) => b.score - a.score)
 			.map((user, index) => {

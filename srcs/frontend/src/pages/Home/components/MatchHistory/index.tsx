@@ -41,7 +41,7 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
   return (
 	<>
 		<div className="MatchHistorySection">
-	{Array.isArray(users) ? (
+	{( users.length ) ? (
 		users.map((user, index) => (
 	// There will be array of oponents match
 			<div className={isWon ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'}>
@@ -70,7 +70,7 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 		</div>
 		))):
 		(
-			<div>No users found</div>
+			<p  className="NoUsersFound">You haven't played a match before!</p>
 		)
 		
 	}

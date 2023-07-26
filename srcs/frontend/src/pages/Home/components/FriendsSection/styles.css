@@ -65,3 +65,10 @@
 	grid-column-start: 6;
 	grid-column-end: 7;
 }
+
+.NoUsersFound{
+	font-size: 20px;
+	margin: 20px 40px 20px 0px;
+	text-align: center;
+	color: rgb(75, 94, 107);
+}

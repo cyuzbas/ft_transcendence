@@ -301,5 +301,13 @@ export class GameService {
         }
     }
 
-
+    async getGamesByPlayerId(playerId: number): Promise<GameEntity[]> {
+        return this.gameRepository.find({
+          where: {
+            player: {
+                id: playerId
+            }
+          }
+        });
+    }
 }

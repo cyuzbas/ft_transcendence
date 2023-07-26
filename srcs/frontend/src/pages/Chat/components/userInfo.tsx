@@ -3,10 +3,12 @@ import { Member, RoomType } from "../../../contexts/ChatContext/types";
 import { useUser } from "../../../contexts";
 import { useSetupDmConversation } from "./hookSetupDm";
 import { BlockButton } from "./buttonBlock";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdKeyboardReturn } from "react-icons/md"
 import { BsChatRightText } from "react-icons/bs"
 import { PiGameControllerDuotone } from "react-icons/pi"
+import { GameType } from "../../Lobby/components/WaitingPage";
+import { Link } from "react-router-dom";
 
 type Props = {
   selectedMember: Member | null,
@@ -16,7 +18,6 @@ type Props = {
 export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
   const { user } = useUser();
 	const { myRooms, room, setRoom, members } = useChat();
-	// const [gameType, setGameType] = useState<GameType
 	const setupDmConversation = useSetupDmConversation();
 
 	const openConversation = async(member: Member) => {
@@ -67,10 +68,11 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 					<BsChatRightText size="2em"/>
 						message
 					</button>
-					<button className="iconBtn" onClick={() => }>
-					<PiGameControllerDuotone size="2em" />
-					</button>
-				</>
+					<Link to={{ pathname: '/waitingreply', search: `?userName=${selectedMember}`}} className="iconBtn" >
+						<PiGameControllerDuotone size="2em" />
+						play
+					</Link>
+					</>
 			}
 		</>
 	)

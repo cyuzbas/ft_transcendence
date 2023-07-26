@@ -13,6 +13,7 @@ import './components/Nav/main.css';
 import Profile from './pages/Profile';
 import { Random, FriendGame } from './pages/Game/components/Online/index'
 import { WaitingPage1, WaitingPage2, WaitingPage3 } from './pages/Lobby/components/WaitingPage';
+import { Friends } from './components';
 
 
 export function Router() {

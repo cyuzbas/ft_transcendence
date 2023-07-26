@@ -56,6 +56,8 @@ export function Router() {
                     <Route path='/findingopponentClassic' element={<WaitingPage1 />} />
                     <Route path='/findingopponentCustom' element={<WaitingPage3 />} />
                     <Route path='/waitingreply' element={<WaitingPage2 />} />
+                    <Route path='/profile/:id' element={ <Profile/>} />
+                    <Route path='/profile' element={ <Profile/>} />
 
                     {gameModes.map((mode: GameMode) => (
                       <Route

@@ -1,75 +1,69 @@
-import { useSocket } from "../../../contexts/SocketContext/provider";
-import { ClickableList } from "./clickableList";
 import { useChat } from "../../../contexts/ChatContext/provider";
-import { BlockButton } from "./buttonBlock";
-import { UnBlockButton } from "./buttonUnBlock";
-import { AddAdminButton } from "./buttonAddAdmin";
-import { useState } from "react";
-import { FormAddMember } from "./formAddMember";
-import { DmRoomUser, Member, RoomType, RoomUser, UserRole } from "../../../contexts/ChatContext/types";
+import { Member, RoomType } from "../../../contexts/ChatContext/types";
 import { useUser } from "../../../contexts";
+import { useSetupDmConversation } from "./hookSetupDm";
+import { BlockButton } from "./buttonBlock";
+import { useEffect } from "react";
+import { MdKeyboardReturn } from "react-icons/md"
+import { BsChatRightText } from "react-icons/bs"
 
 type Props = {
-    selectedMember: Member | null,
+  selectedMember: Member | null,
 	setSelectedMember: React.Dispatch<React.SetStateAction<Member | null>>
 }
 
 export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
-    const { socket } = useSocket();
-    const { user } = useUser();
-	const { dmRooms, setDmRooms, createDmRoom, members } = useChat();
-    const { room: RoomUser, setRoom } = useSocket();
-    const room = RoomUser as DmRoomUser;
+  const { user } = useUser();
+	const { myRooms, room, setRoom, members } = useChat();
+	const setupDmConversation = useSetupDmConversation();
 
-	const openConversation = async(userName: string) => { // clicking on your onw name??
-		const dmRoom = dmRooms.find(dmRoom => dmRoom.contact === userName);
-		if (dmRoom) {
-			setRoom(dmRoom);
+	const openConversation = async(member: Member) => {
+		const existingRoom = myRooms.find(room => room.contactName === member.userName);
+		if (existingRoom) {
+			setRoom(existingRoom);
 		} else {
-			const newDmRoom = await createDmRoom(userName);
-			setRoom(newDmRoom);
-		};
+			await setupDmConversation(member);
+		}
 	}
-// console.log(room)
+
+	useEffect(() => {
+		if (room.type === RoomType.DIRECTMESSAGE) {
+			const contact = members.find(member => member.userName !== user.userName);
+			if (contact) {
+				setSelectedMember(contact);
+				// console.log('yes')
+			} else {
+				setSelectedMember(null);
+				// console.log('no')
+			}
+		}
+	}, [members])
+
 	return (
 		<>
-			User Information
-            {selectedMember &&
-                <button onClick={() => setSelectedMember(null)}>back</button>
-            }
-            <div>
-                {selectedMember?.userName}
-                {room.contact}
-            </div>
-            {selectedMember && selectedMember.userName !== user.userName &&
-                <button onClick={() => openConversation(selectedMember.userName)}>open conversation</button>
-            }
-			
+			{room.type !== RoomType.DIRECTMESSAGE &&
+        <button className="iconBtn" onClick={() => setSelectedMember(null)}>
+					<MdKeyboardReturn size="2em"/>
+				</button>
+			}
+			<div />
+			{selectedMember &&
+			<img src={selectedMember.avatar} style={{margin:10,width:190, height:150, borderRadius:10}}/>
+			}
+			<div />
+			{selectedMember && 
+				selectedMember.userName !== user.userName &&
+				<BlockButton member={selectedMember}/>
+			}
+			{selectedMember?.userName}
+			{selectedMember 
+				&& selectedMember.userName !== user.userName 
+				&& room.type !== RoomType.DIRECTMESSAGE 
+				&& <button className="iconBtn" onClick={() => openConversation(selectedMember)}>
+					<BsChatRightText size="2em"/>
+						message
+					</button>
+			}
 		</>
 	)
 }
-
-
-
-
-
-
-
-
-// useEffect(() => {
-// 	function onMemberStatus(members: Member[]) {
-// 		members.sort((a, b) => a.userName.localeCompare(b.userName))
-// 		setMembers(members);
-// 	};
-	
-// 	function onUserStatus() { // have to change this
-// 		socket.emit('getMemberStatus', room)
-// 	};
-
-// 	socket.on('memberStatus', onMemberStatus);
-// 	socket.on('userStatus', onUserStatus);		
-// 	return () => {
-// 		socket.off('memberStatus');
-// 		socket.off('userStatus');
-// 	}
-// }, [room, socket])

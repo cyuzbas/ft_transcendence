@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-// import { useUser } from "../../../contexts/UserProvider";
-import { useSocket } from "../../../contexts/SocketContext/provider";
 import { ClickableList } from "./clickableList";
 import { useChat } from "../../../contexts/ChatContext/provider";
-import { User, useUser } from "../../../contexts";
-// import { User } from "../chat.types";
+import { RoomType, User, UserRole, useUser } from "../../../contexts";
+import { useSetupDmConversation } from "./hookSetupDm";
+import { useSocket } from "../../../contexts/SocketContext";
+import { AiOutlineClose, AiOutlineUserAdd, AiOutlineCheck } from "react-icons/ai"
 
 type addContactProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -12,37 +12,44 @@ type addContactProps = {
 
 export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 	const [unknowContacts, setUnknownContacts] = useState<User[]>([]);
-	const { allUsers, dmRooms, createDmRoom } = useChat();
-	const { socket, setRoom } = useSocket();
+	const setupDmConversation = useSetupDmConversation();
+	const { allUsers, myRooms, createNewRoom, addRoomUser, setRoom, setMyRooms } = useChat();
 	const { user } = useUser();
+	const { socket } = useSocket();
 	
 	useEffect(() => {
 		const filteredUsers = allUsers
-		.filter(contact => !dmRooms.some(room => room.contact === contact.userName))
+		.filter(contact => !myRooms.some(room => room.contactName === contact.userName))
 		.filter(contact => contact.userName !== user.userName)
 		
 		setUnknownContacts(filteredUsers);
 	},[allUsers])
 
 	const handleClick = async(newContact: User) => { // prevent e.default()?
-		const newDmRoom =  await createDmRoom(newContact.userName);
-		setRoom(newDmRoom);
+		await setupDmConversation(newContact);
 		setPopupVisibility(false);
 	}
 
 	return (
 		<>
-			Add Contact
-			<button 
-				type="button" 
-				onClick={() => setPopupVisibility(false)}>
-				X
+			<h4 className="formTitle">
+				Add Contact
+			</h4>
+			<button className="iconBtn formCloseBtn"
+					type="button" 
+					onClick={() => setPopupVisibility(false)}>
+					<AiOutlineClose size="2em"/>
 			</button>
 			<ClickableList
 				items={unknowContacts}
 				renderItem={(newContact) => (
-					<p className={`roomListBtn ${newContact.status === 'online' ? 'online' : 'offline'}`}>
-						{newContact.userName} : {newContact.status}
+					<p className="user-row avatar-status-wrapper">
+						<img src={newContact.avatar} style={{margin:0,width:50, height:50, borderRadius:50}}/>
+						{newContact.status === 'online' ?
+						<span className="online-dot-big"></span> :
+						<span className="offline-dot-big"></span>
+						}
+						{newContact.userName}
 					</p>
 				)}
 				onClickItem={(newContact) => handleClick(newContact)}
@@ -50,4 +57,3 @@ export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 		</>
 	)
 }
-

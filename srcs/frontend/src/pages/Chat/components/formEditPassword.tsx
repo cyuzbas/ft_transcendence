@@ -1,74 +1,145 @@
 import { useState } from "react";
-import { useSocket } from "../../../contexts/SocketContext/provider"
 import { useChat } from "../../../contexts/ChatContext/provider";
-import { Room, RoomType } from "../../../contexts/ChatContext/types";
+import { RoomType } from "../../../contexts/ChatContext/types";
+import { AiFillLock, AiFillUnlock, AiOutlineLock } from "react-icons/ai"
 
 export const FormEditPassword = () => {
-  const [visibility, setVisibility] = useState<Boolean>(false);
+  // const [visibility, setVisibility] = useState<boolean>(false);
+  const [add, setAdd] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
-  const [repeatPassword, setRepeatPassword] = useState<string>('');
-  const { room } = useSocket();
-  const { updateRoom } = useChat();
+  const { room, updateRoom } = useChat();
 
-  const handleRemovePassword = () => {
-    updateRoom({
+  const showSuccessMessage = (message: string) => {
+    setSuccessMessage(message);
+    setSuccess(true);
+    setTimeout(() => {
+      setSuccess(false);
+    }, 1500)
+  }
+
+  const handleRemovePassword = async() => {
+    await updateRoom({
       roomId: room.roomId,
       roomName: room.roomName,
       type: RoomType.PUBLIC,
     });
-  }
 
-  const onSubmit = (e: React.FormEvent) => {
+    showSuccessMessage('Password removed succesfully');
+  
+    // setConfirmationText('Password removed succesfully')
+    // setConfirmation(!confirmation);
+  }
+  
+  const onSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword === repeatPassword) {
-      updateRoom({
-        roomId: room.roomId,
-        roomName: room.roomName,
-        type: RoomType.PROTECTED,
-        password: newPassword, // HASH
-      })
-      setVisibility(false);
-    } else {
-      alert('password does not match, please try again');
-      setNewPassword('');
-      setRepeatPassword('');
-    }
+    
+    await updateRoom({
+      roomId: room.roomId,
+      roomName: room.roomName,
+      type: RoomType.PROTECTED,
+      password: newPassword, // HASH
+    });
+    
+    setAdd(false);
+    setEdit(false);
+    setNewPassword('');
+    showSuccessMessage(`Password ${add ? 'added' : 'updated'} succesfully`);
+
+    // setConfirmationText('Password added succesfully')
+    // setConfirmation(!confirmation);
+    // setVisibility(false);
   }
 
   return (
     <>
-      <form onSubmit={(e) => onSubmit(e)}>
+      <form className="" onSubmit={(e) => onSubmit(e)}>
         {room.type === RoomType.PROTECTED ? (
           <>
-            <button type="button" onClick={() => setVisibility(!visibility)}>Edit Password</button> 
-            <button onClick={handleRemovePassword}>Remove Password</button>
+            <div className="editPassword">
+              <button className="iconBtn" type="button" onClick={() => setEdit(!edit)}>
+                <AiOutlineLock size="2em" color={edit ? "grey" : ''}/>
+                edit
+              </button>
+              {edit && !success &&
+                <>
+                  <input
+                  required
+                  placeholder="Enter New Password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                  <button className="formPasswordBtn" type="submit">
+                    SUBMIT
+                  </button>
+                </>
+              }
+              {success &&
+                <div className="successMessage active"> {successMessage} </div>
+              }
+            </div>
+            <button className="iconBtn" type="button" onClick={handleRemovePassword}>
+                <AiFillUnlock size="2em"/>
+                remove
+            </button>
           </>
         ) : (
-          <button onClick={() => setVisibility(true)}>Add Password</button>
+          <div className="editPassword">
+            <button className="iconBtn" type="button" onClick={() => {setAdd(!add)}}>
+              <AiFillLock size="2em" color={add ? "grey" : ''}/>
+              add
+            </button>
+            {add && !success &&
+              <>
+                <input
+                required
+                placeholder="Enter Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <button className="formPasswordBtn" type="submit">
+                  SUBMIT
+                </button>
+              </>
+            }
+            {success && !add &&
+            <div className="successMessage active"> {successMessage} </div>
+            }
+          </div>  
         )
-        }
-        {room.type} 
-        {visibility &&
-        <div className="chat-popup">
-          <div>
-            <input
-              placeholder="type in new password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              />
-          </div>
-          <div>
-            <input
-              placeholder="repeat password"
-              value={repeatPassword}
-              onChange={(e) => setRepeatPassword(e.target.value)}
-            />
-          </div>
-          <button type="submit">submit</button>
-        </div>
-        }
+      }
+      {/* {success &&
+        <div> {successMessage} </div>
+      } */}
       </form>
-     
     </>
   )
 }
+
+
+
+
+{/* {visibility &&
+<div className="chat-popup">
+  <div>
+    <input
+      placeholder="type in new password"
+      value={newPassword}
+      onChange={(e) => setNewPassword(e.target.value)}
+      />
+  </div>
+  <button type="submit">submit</button>
+</div>
+}
+{confirmation &&
+<div className="chat-popup">
+  {confirmationText}
+  <div>
+    <button onClick={() => setConfirmation(!confirmation)}>
+      Ok
+    </button>
+  </div>
+</div>
+} */}

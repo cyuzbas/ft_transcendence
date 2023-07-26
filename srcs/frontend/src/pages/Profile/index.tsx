@@ -13,6 +13,7 @@ type User = {
   avatar: string;
   userName: string;
   intraId: string;
+  intraName: string;
   isLogged: boolean;
   score: number;
   rank: number;
@@ -32,14 +33,14 @@ export default function Profile() {
     try {
       console.log("user id progile" + id)
       const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
-
       
       response.data.forEach((user: any) => {
-        if(user.intraId === id) {
+        if(user.intraName === id) {
           let profileUser: User = {
             avatar: user.avatar,
             userName: user.userName,
             intraId: user.intraId,
+            intraName: user.intraName,
             isLogged: user.isLogged,
             score: user.score,
             rank: user.rank,
@@ -127,7 +128,7 @@ export default function Profile() {
               <div className="title-box">
                 <div className="ProfileComponentTitle">MATCH HISTORY</div>
               </div>
-              <MatchHistory/>
+              <MatchHistory id={user!.intraId}/>
             </div>
           </div>
         <div id="item-3" className="Achievement item">

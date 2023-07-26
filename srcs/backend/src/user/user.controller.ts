@@ -10,11 +10,19 @@ import { join } from 'path';
 
 import * as fs  from "fs";
 import { AuthenticatedGuard } from 'src/auth/oauth/oauth.guard';
+import { ACHIEVEMENTSEntity } from 'src/typeorm/achievements.entity';
+
 
 @UseGuards(AuthenticatedGuard)
 @Controller('user')
 export class UserController {
     constructor(private readonly userService : UserService) {}
+
+	@Get('achievements/:intraId')
+	achievements(@Param('intraId') intraId:string): Promise<ACHIEVEMENTSEntity>{
+		return this.userService.getAchievements(intraId);
+	}
+
 
     @Get('avatar/:filename')
     getImage(@Param('filename') filename: string, @Res() res) {

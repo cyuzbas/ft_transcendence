@@ -1,5 +1,5 @@
 import './styles.css'
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../../../contexts'
 import social from '../../../../img/achievements/social.png'
 import fresPaddle from '../../../../img/achievements/freshPaddle.png'
@@ -9,10 +9,53 @@ import rivalry from '../../../../img/achievements/rivalry.png'
 import whisperer from '../../../../img/achievements/pongWhisperer.png'
 import victory from '../../../../img/achievements/firstVictory.png'
 import fail from '../../../../img/achievements/epicFail.png'
+import axios from 'axios';
 
 function Achievements() {
+	
+	const { user , setUser} = useContext(UserContext)
 
-	const { user } = useContext(UserContext)
+	enum AchievementType {
+		FRESH_PADDLE = 'FRESH_PADDLE',
+		FIRST_VICTORY = 'FIRST_VICTORY',
+		PONG_WHISPERER = 'PONG_WHISPERER',
+		CHATTERBOX = 'CHATTERBOX',
+		SOCIAL_BUTTERFLY = 'SOCIAL_BUTTERFLY',
+		CHAMELEON_PLAYER = 'CHAMELEON_PLAYER',
+		FRIENDLY_RIVALRY = 'FRIENDLY_RIVALRY',
+		EPIC_FAIL = 'EPIC_FAIL',
+	  }
+	
+	  
+	  interface AchievementData {
+		[AchievementType.FRESH_PADDLE]: boolean;
+		[AchievementType.FIRST_VICTORY]: boolean;
+		[AchievementType.PONG_WHISPERER]: boolean;
+		[AchievementType.CHATTERBOX]: boolean;
+		[AchievementType.SOCIAL_BUTTERFLY]: boolean;
+		[AchievementType.CHAMELEON_PLAYER]: boolean;
+		[AchievementType.FRIENDLY_RIVALRY]: boolean;
+		[AchievementType.EPIC_FAIL]: boolean;
+		id: number;
+	  }
+
+	  const [userData, setUserData] = useState<AchievementData| null>(null);
+
+
+	useEffect(() => {
+		const fetchData = async () => {
+		  try {
+			const response =  await axios.get(`http://localhost:3001/user/achievements/${user.intraId}`)
+			setUserData(response.data[0]);
+		  } catch (error) {
+			console.error(error);
+			console.log("ERROR!!")
+		  }
+		};
+		fetchData();
+	  }, []);
+
+	
 
   return (
 	<div className="AchievementsSection">
@@ -24,7 +67,9 @@ function Achievements() {
 					<div className="badgeClass">
 						<img src={fresPaddle} className="badgeimage" id={user.userName?"earned":"unearned"} alt='Fresh Paddle'/>
 					</div>
-					<h4 className="badgeText">FRESH PADDLE</h4>
+					{userData && (<> {userData[AchievementType.FRESH_PADDLE] && (
+					<h4 className="badgeText">FRESH PADDLE </h4>
+					)}</>)}
 				</div>
 				<div className="badges">
 					<div className="badgeClass">

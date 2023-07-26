@@ -8,6 +8,8 @@ import { Repository, DataSource, createQueryBuilder } from 'typeorm';
 import { UserDto } from '../dto/user.dto';
 import { RoomEntity, GENERAL_CHAT } from 'src/typeorm/room.entity';
 import { RoomUserEntity, UserRole } from 'src/typeorm/roomUser.entity';
+import { AchievementsDto } from './achievements.dto';
+import { ACHIEVEMENTSEntity } from 'src/typeorm/achievements.entity';
 
 
 
@@ -17,22 +19,24 @@ export class UserService {
 	private dataSource: DataSource,
 		@InjectRepository(UserEntity)
 		private userRepository: Repository<UserEntity>,
+		@InjectRepository(ACHIEVEMENTSEntity)
+		private achievementsRepository: Repository<ACHIEVEMENTSEntity>,
 		@InjectRepository(RoomEntity)
 		private roomRepository: Repository<RoomEntity>,
 		@InjectRepository(RoomUserEntity)
 		private roomUserRepository: Repository<RoomUserEntity>,){}
 
 
-		async initializeAdmin() {
-			let admin = await this.userRepository.findOne({ 
-				where: { userName: ADMIN } 
-			});
+		// async initializeAdmin() {
+		// 	let admin = await this.userRepository.findOne({ 
+		// 		where: { userName: ADMIN } 
+		// 	});
 		
-			if (!admin) {
-				admin = this.userRepository.create({ userName: ADMIN });
-				await this.userRepository.save(admin);
-			};
-		}
+		// 	if (!admin) {
+		// 		admin = this.userRepository.create({ userName: ADMIN });
+		// 		await this.userRepository.save(admin);
+		// 	};
+		// }
 
 
   async disabledTwoFactor(user: UserEntity){
@@ -41,6 +45,17 @@ export class UserService {
 		twoFactorAuthSecret:null
 	})
   }
+
+  async getAchievements(getIntraId:string):Promise<ACHIEVEMENTSEntity>{
+
+	const user = await this.userRepository.findOne({ 
+		where: { intraId: getIntraId },
+		relations: ['achievements'], 
+	})
+	return user.achievements;
+  }
+
+
 
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);
@@ -54,6 +69,19 @@ export class UserService {
 		room: generalChatRoom,
 	});
 	newUser.isLogged = true
+
+	const achievements = new ACHIEVEMENTSEntity();
+	achievements.FRESH_PADDLE = false;
+	achievements.FIRST_VICTORY = false;
+	achievements.PONG_WHISPERER = false;
+	achievements.CHATTERBOX = false;
+	achievements.SOCIAL_BUTTERFLY = false;
+	achievements.CHAMELEON_PLAYER = false;
+	achievements.FRIENDLY_RIVALRY = false;
+	achievements.EPIC_FAIL = false;
+	achievements.user = newUser
+	// createdUser.achievements = [achievements]; 
+	await this.dataSource.manager.save(achievements)
 	await this.dataSource.manager.save(newRoomUser);
 	console.log("newuser " + newUser)
 	console.log("create user " + createdUser)
@@ -70,9 +98,6 @@ export class UserService {
 	}
 	async addAuthSecretKey(key:string,user:UserI){
 
-		// if (!user || typeof user.id !== 'number') {
-		// 	throw new Error('Invalid user data');
-		//   }
 		await this.userRepository.update(user.id,{
 			twoFactorAuthSecret: key
 			});
@@ -146,10 +171,11 @@ export class UserService {
 		});
 		if(!user)
 			return 
-		const { id, status } = user;
+		const { id, status, intraId } = user;
 		return {
 			id,
 			userName,
+			intraId,
 			status,
 		}
 	}
@@ -181,10 +207,12 @@ export class UserService {
 	async getAllUsersStatus(): Promise<UserDto[]> {
 		const users = await this.userRepository.find();
 		
-		const userData = users.map(({ id, userName, status }) => {
+		const userData = users.map(({ id, userName, intraId, avatar, status }) => {
 			return {
 				id,
 				userName,
+				intraId,
+				avatar,
 				status,
 			}
 		});
@@ -275,5 +303,48 @@ export class UserService {
 	  
 	async deleteUser(id: number) {
 		return this.userRepository.delete(id);
+	}
+
+	// ////////////////////////////////// idil
+
+	async findUserByUserIddto(userId: number): Promise<UserDto> {
+		const user = await this.userRepository.findOne({ 
+			where: { id: userId } 
+		});
+		if(!user)
+			return 
+		const { userName, status } = user;
+		return {
+			id : userId,
+			userName,
+			status,
+		}
+	}
+
+	async findUserByUserId(userId: number): Promise<UserEntity> {
+		const user = await this.userRepository.findOne({ 
+			where: { id: userId } 
+		});
+	
+		if(!user)
+			throw new Error(`User with ID ${userId} not found`);
+	
+		return user;
+	}
+
+	async changeRank(userId: number) {
+		const user = await this.userRepository.findOne({ where: { id: userId } });
+		if(!user)
+			throw new Error(`User with ID ${userId} not found`);
+		const users = await this.userRepository.find({
+			order: {
+				score: 'DESC',
+			},
+		});
+		for (let i = 0; i < users.length; i++) {
+			users[i].rank = i + 1;
+			await this.userRepository.save(users[i]);
+		}
+		return user;
 	}
 }

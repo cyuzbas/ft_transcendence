@@ -56,11 +56,11 @@
  }
 
  .userWonMatch {
-	background-color: rgba(84, 241, 84, 0.2);
+	background-color: rgba(9, 175, 9, 0.4);
  }
 
  .userLostMatch {
-	background-color: rgb(255, 0, 0, 0.2);
+	background-color: rgb(255, 0, 0, 0.4);
  }
 
  .imageUserMatch {

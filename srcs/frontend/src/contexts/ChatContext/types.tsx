@@ -13,51 +13,76 @@ export enum UserRole {
     MEMBER = 'member'
 }
 
+export const GENERAL_CHAT = {
+	roomId: 1,
+	roomName: 'Transcendence',
+	unreadMessages: 0,
+	type: RoomType.PUBLIC,
+	userRole: UserRole.MEMBER,
+	unreadmessages: 0,
+	isBanned: false,
+	isKicked: false,
+	isMuted: false,
+	muteEndTime: new Date,
+}
 export type Message = {
 	id: number,
 	userName: string,
 	content: string,
 	roomName: string,
-}
+};
 
-export type Room = { //newRoom?
+export type Room = {
 	roomId?: number;
 	roomName: string;
 	type: RoomType;
-	userName?: string;
 	description?: string;
-	member?: string[];
 	password?: string;
-}
-	
-// Base RoomUser type
-export type RoomUser = {
-	roomId: number;
-	roomName: string;
-	type: RoomType;
-	unreadMessages: number;
 };
 
-// Base User type
-// export type User = {
-// 	id: number;
-// 	userName: string;
-// 	status: string;
-// 	avatar: string;
-// 	intraId: string;
-// };
-
-// UserRoles type
-export type RoomUserDetails = {
+export type UserDetails = {
+	unreadMessages: number;
 	userRole: UserRole;
 	isMuted: boolean;
 	isKicked: boolean;
 	isBanned: boolean;
+	muteEndTime: Date; // run into problems without ? <---
+	contactName?: string;
 };
 
+export type NewRoomUser = {
+	roomName: string,
+	userName: string,
+	userRole: UserRole,
+	intraId?: string,
+	contactName?: string | null,
+};
+
+export type RoomUser = Room & UserDetails;
+export type Member = User & UserDetails;
+
+// export type NewRoomDetails = {
+// 	userName?: string;
+// 	member?: string[];
+// };
+
+
 // Specific RoomUser types
-export type ChatRoomUser = RoomUser & RoomUserDetails;
-export type DmRoomUser = RoomUser & { contact: string, userName: string};
+// export type NewRoom = Room & NewRoomDetails;
+// export type DmRoomUser = RoomUser & RoomUserDetails;//{ contact: string}//, userName: string}; what is this for????
 
 // Member type
-export type Member = User & RoomUserDetails;
+// export type Member = User & RoomUserDetails;
+// roomId?: number;
+// roomName: string;
+// type: RoomType;
+// Base User type
+// export type User = {
+	// 	id: number;
+	// 	userName: string;
+	// 	status: string;
+	// 	avatar: string;
+	// 	intraId: string;
+	// };
+	
+	// UserRoles type

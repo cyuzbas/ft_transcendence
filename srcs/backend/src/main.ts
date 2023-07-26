@@ -41,9 +41,9 @@ async function bootstrap() {
 
 
   await app.listen(3000);
-  const userService = app.get(UserService);
+  // const userService = app.get(UserService);
   const chatService = app.get(ChatService);
-  await userService.initializeAdmin();
+  // await userService.initializeAdmin();
   await chatService.initializeGeneralChatRoom();
 
   }

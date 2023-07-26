@@ -26,13 +26,6 @@ export function SettingsForm() {
     }))
   }
 
-  function handleBarrierSize(value: string) {
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      barrierSize: parseFloat(value),
-    }))
-  }
-
   return (
     <div className='settings-form'>
       <Wrapper>
@@ -88,20 +81,6 @@ export function SettingsForm() {
               }
             />
 
-          </div>
-        </section>
-
-        <section>
-          <h2>Obstacles:</h2>
-
-          <div>
-            <Range
-              min={1}
-              max={70}
-              name='paddleSize'
-              defaultValue={String(settings.barrierSize)}
-              handleChange={handleBarrierSize}
-            />
           </div>
         </section>
 

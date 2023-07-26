@@ -27,7 +27,6 @@ export class AuthController {
 	@UseGuards(AuthenticatedGuard)
 	async logout(@Req() req, @Res() res) {
 		this.userService.updateLogIn(req.user.userName, false)
-		console.log("logout calisti")
 		req.logout(() => {
 			res.redirect('http://localhost:3000/login');
 		  });

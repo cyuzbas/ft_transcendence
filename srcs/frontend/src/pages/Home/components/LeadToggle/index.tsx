@@ -1,10 +1,12 @@
 import './styles.css'
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import MatchHistory from '../MatchHistory';
 import LeaderBoard from '../LeaderBoard';
+import { UserContext } from '../../../../contexts';
 
 function LeaderMatchToggle() {
 
+	const {user} = useContext(UserContext);
 	const [isLeaderBoardVisible, setIsLeaderBoardVisible] = useState(true);
 	const [isMatchHistoryVisible, setIsMatchHistoryVisible] = useState(false);
 	const [toggleButton, setToggleButton] = useState(true);
@@ -37,7 +39,7 @@ function LeaderMatchToggle() {
 				</button>
 	 		</div>
 		{isLeaderBoardVisible && ( <LeaderBoard/> )}
-		{isMatchHistoryVisible && ( <MatchHistory/> )}
+		{isMatchHistoryVisible && ( <MatchHistory  id={user.intraId}/> )}
 	</div>
 	);
   };

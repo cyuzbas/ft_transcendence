@@ -1,9 +1,8 @@
-import axios from "axios";
-import { GENERAL_CHAT, useSocket } from "../../../contexts/SocketContext/provider"
-import { DmRoomUser, RoomType, RoomUser } from "../../../contexts/ChatContext/types";
-// import { useUser } from "../../../contexts/UserProvider";
+import { RoomUser, GENERAL_CHAT, RoomType } from "../../../contexts/ChatContext/types";
 import { useChat } from "../../../contexts/ChatContext/provider";
 import { useUser } from "../../../contexts";
+import { RiSettings3Line } from "react-icons/ri";
+
 
 type Props = {
 	expanded: boolean,
@@ -11,41 +10,20 @@ type Props = {
 }
 
 export const ChatHeader = ({ expanded, setExpanded }: Props) => {
-  const { URL, socket, room, setRoom } = useSocket();
 	const { user } = useUser();
-	const { setDmRooms, setChatRooms } = useChat();
+	const { room, removeRoomUser } = useChat();
 
-	const handleLeaveRoom = async() => {
-		const response = await axios.put(`${URL}/chat/remove/${room.roomName}/${user.userName}/${room.type}`);
-		if (room.type === RoomType.DIRECTMESSAGE) {
-			setDmRooms(response.data);
-		} else {
-			setChatRooms(response.data)
-		};
-	
-		// also emit event leave room??
-		socket.emit('newMessage', {
-			userName: user.userName,
-			content: `left the chat...`,
-			roomName: room.roomName,
-		});
-
-		socket.emit('memberUpdate', room.roomName);
-		// socket.emit('leaveRoom')!!!!!!!!!!!
-		setRoom(GENERAL_CHAT);
-	}
-
-	function isDmRoomUser(room: RoomUser): room is DmRoomUser {
+	function isDmRoomUser(room: RoomUser) {
 		return room.type === RoomType.DIRECTMESSAGE;
-	}
+	};
 	
 	return (
 		<div id="chat-header">
 			<a className="roomBtn" onClick={() => setExpanded(!expanded)}>
-				{isDmRoomUser(room) ? room.contact : `${room.roomName}`}
+				{isDmRoomUser(room) ? room.contactName : `${room.roomName}`}
 			</a>
 			{room.roomName !== GENERAL_CHAT.roomName &&
-				<button className="leaveChat-btn" onClick={handleLeaveRoom}>
+				<button className="leaveChat-btn" onClick={() => removeRoomUser(room.roomName, user.userName, user.intraId)}>
 					{room.type !== RoomType.DIRECTMESSAGE ? "LEAVE CHANNEL" : "LEAVE CONVERSATION"}
 				</button>
 			}

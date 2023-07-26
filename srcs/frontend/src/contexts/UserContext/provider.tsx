@@ -16,8 +16,6 @@ export type User = {
   score: number;
   totalWin: number;
   totalLoose: number;
-  rank: number;
-  achievementChameleon: boolean;
   intraName:string;
 };
 
@@ -39,8 +37,6 @@ const defaultState = {
     score: 1,
     totalWin: 2,
     totalLoose: 0,
-    rank: 1,
-    achievementChameleon: false,
     intraName: ''
   },
   setUser: (user: User) => { }
@@ -74,9 +70,7 @@ export function UserProvider({ children }: UserProviderProps) {
       score: 0,
       totalWin: 0,
       totalLoose: 0,
-      rank: 1,
-      achievementChameleon: false,
-      intraName:''
+      intraName: ''
     };
   });
 

@@ -1,10 +1,11 @@
-import React, { useContext, useState, useRef }  from 'react';
+import React, { useContext, useState, useRef, useEffect }  from 'react';
 import { Nav, Navbar, Form, FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import Intra from '../../../img/ft.png';
 import { UserContext } from '../../../contexts'
 import { Request } from '../FriendRequest/FriendRequest';
 import './styles.css'
+import axios from 'axios';
 
 
 const Styles = styled.div`
@@ -27,6 +28,7 @@ function NavigationBar () {
   const { user } = useContext(UserContext);
   const[open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
   const handleDropDownFocus = (state: boolean) => {
     setOpen(!state);
   };
@@ -38,7 +40,25 @@ function NavigationBar () {
   }
   window.addEventListener("click",handleClickOutsideDropdown)
 
+  const [friendRequest, setFriendRequest] = useState<boolean | null>(null);
   
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`);
+        setFriendRequest(response.data.length == 0 ?  false :true)
+      } catch (error) {
+        console.error(error);
+        console.log("ERROR!!")
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+
 
 return (
   <Styles>
@@ -54,11 +74,12 @@ return (
 		  <Nav.Item>
         <div className="friend-drop-down-container" ref={dropdownRef}>
 		  	  <i className="bi bi-people-fill fs-3 me-2 friendsRequestButton" onClick={(e) => handleDropDownFocus(open)}>
-            {/* {friendRequest && ( */}
-            <span className="position-absolute top-0 start-90 translate-middle p-1 bg-ligh border border-light rounded-circle">
+            {friendRequest  ? (
+              
+            <span className="position-absolute top-0 start-90 translate-middle p-1 bg-light border border-light rounded-circle">
               <span className="visually-hidden">New alerts</span>
             </span>
-            {/* )} */}
+            ): (<></>)} 
           </i>
           {open && (
             <ul>

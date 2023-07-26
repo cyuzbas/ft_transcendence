@@ -1,48 +1,47 @@
 import { useState } from "react";
 import { FormAddContact } from "./formAddContact";
-import { useSocket } from "../../../contexts/SocketContext/provider";
 import { ClickableList } from "./clickableList";
 import { useChat } from "../../../contexts/ChatContext/provider";
+import { RoomType } from "../../../contexts";
 
 export const DirectMessages = () => {
 	const [popupVisibility, setPopupVisibility] = useState<boolean>(false);
-    const { setRoom } = useSocket();
-    const { dmRooms } = useChat();
-    
+    const { setRoom, myRooms } = useChat();
+
     return (
         <>
 			<h3>
                 Direct Messages
-                <button onClick={() => setPopupVisibility(true)}>
+                <button className="plusBtn" onClick={() => setPopupVisibility(true)}>
                     + 
                 </button>
             </h3>
             <ClickableList
-                items={dmRooms}
-                renderItem={room => <p className="roomListBtn">{room.contact}</p>}
+                items={myRooms}
+                renderItem={room => room.type === RoomType.DIRECTMESSAGE
+                    ? (
+                        <p className="roomList">
+                            {room.contactName}
+							{room.unreadMessages > 0 &&
+								<span className="unread">
+									{room.unreadMessages < 10
+									? ` ${room.unreadMessages}`
+									: ` 9+`
+									}
+								</span>
+							}
+                        </p>
+                    ): <></>
+                }
                 onClickItem={room => setRoom(room)}
                 />
             {popupVisibility && (
-                <div className="chat-popup">
-                    <FormAddContact setPopupVisibility={setPopupVisibility} />
+                <div className="formBackdrop" onClick={() => setPopupVisibility(false)}>
+                    <div className="user-popup" onClick={(e) => e.stopPropagation()}>
+                        <FormAddContact setPopupVisibility={setPopupVisibility} />
+                    </div>
                 </div>
 			)}
         </>
     )
 }
-
-
-
-
-
-// useEffect(() => {
-//     function onNewDMessage(newDmRoom: DmRoomUser) { //should i join them to room in server for unread messages?
-//         if (!dmRooms.find(roomUser => roomUser.contact === newDmRoom.userName))
-//             setDmRooms(prev => [...prev, newDmRoom]);
-//     };
-
-//     socket.on('newDMessage', onNewDMessage);
-//     return () => {
-//         socket.off('newDMessage');
-//     }
-// },[socket, user]);

@@ -133,7 +133,7 @@ export default function Profile() {
             </div>
           </div>
         <div id="item-3" className="Achievement item">
-          <Achievements/>
+          <Achievements intraid={user!.intraId}/>
         </div>
       </div>
       )

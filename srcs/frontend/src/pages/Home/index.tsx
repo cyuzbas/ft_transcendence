@@ -79,7 +79,7 @@ export function Home() {
         <LeaderMatchToggle/>
       </div>
       <div id="item-3" className="Achievement item">
-        <Achievements/>
+        <Achievements intraid={user!.intraId}/>
       </div>
     </div>
   )

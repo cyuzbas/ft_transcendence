@@ -44,7 +44,7 @@ function SideBar() {
 			</a>
 		  </li>
 		  <li className="nav-item">
-			<a href={`/profile/${user.intraId}`} className="nav-link mb-5">
+			<a href={`/profile/${user.intraName}`} className="nav-link mb-5">
 			  <i className="bi bi-person fs-2"></i>
 			</a>
 		  </li>

@@ -11,7 +11,12 @@ import victory from '../../../../img/achievements/firstVictory.png'
 import fail from '../../../../img/achievements/epicFail.png'
 import axios from 'axios';
 
-function Achievements() {
+type Props = {
+	intraid: string;
+};
+
+
+const Achievements: React.FC<Props> = ({ intraid }) => {
 	
 	const { user , setUser} = useContext(UserContext)
 
@@ -45,7 +50,7 @@ function Achievements() {
 	useEffect(() => {
 		const fetchData = async () => {
 		  try {
-			const response =  await axios.get(`http://localhost:3001/user/achievements/${user.intraId}`)
+			const response =  await axios.get(`http://localhost:3001/user/achievements/${intraid}`)
 			setUserData(response.data[0]);
 		  } catch (error) {
 			console.error(error);
@@ -65,52 +70,57 @@ function Achievements() {
 			<div className="BadgesSection">
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={fresPaddle} className="badgeimage" id={user.userName?"earned":"unearned"} alt='Fresh Paddle'/>
+						<img src={fresPaddle} className="badgeimage" alt="Fresh Paddle"
+						id={(userData && userData[AchievementType.FRESH_PADDLE])?"earned":"unearned"}/>
 					</div>
-					{userData && (<> {userData[AchievementType.FRESH_PADDLE] && (
 					<h4 className="badgeText">FRESH PADDLE </h4>
-					)}</>)}
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={victory} className="badgeimage" id={user.totalWin?"earned":"unearned"} alt='First Victory'/>
+						<img src={victory} className="badgeimage" alt="First Victory" 
+						id={(userData && userData[AchievementType.FIRST_VICTORY])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">FIRST VICTORY</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={whisperer} className="badgeimage" id={user.totalWin>4?"earned":"unearned"} alt='Pong Whisperer'/>
+						<img src={whisperer} className="badgeimage" alt="Pong Whisperer" 
+						id={(userData && userData[AchievementType.PONG_WHISPERER])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">PONG WHISPERER</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={chatterBox} className="badgeimage" /*id={room.roomName?"earned":"unearned"}*/ alt='Chatterbox'/>
+						<img src={chatterBox} className="badgeimage" alt="Chatterbox" 
+						id={(userData && userData[AchievementType.CHATTERBOX])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">CHATTERBOX</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={social} className="badgeimage" /*id={user.friends?"earned":"unearned"}*/ alt='Social Butterfly'/>
+						<img src={social} className="badgeimage" alt="Social Butterfly" 
+						id={(userData && userData[AchievementType.SOCIAL_BUTTERFLY])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">SOCIAL BUTTERFLY</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={chameleon} className="badgeimage" /*id={user.chameleon?"earned":"unearned"}*/ alt='Chameleon Player'/>
+						<img src={chameleon} className="badgeimage" alt="Chameleon Player" 
+						id={(userData && userData[AchievementType.CHAMELEON_PLAYER])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">CHAMELEON PLAYER</h4>
 				</div>
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={rivalry} className="badgeimage" /*id={user.winAgainstFriend?"earned":"unearned"}*/ alt='Friendly Rivalry'/>
+						<img src={rivalry} className="badgeimage" alt="Friendly Rivalry" 
+						id={(userData && userData[AchievementType.FRIENDLY_RIVALRY])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText ">FRIENDLY RIVALRY</h4>
 				</div>
-				
 				<div className="badges">
 					<div className="badgeClass">
-						<img src={fail} className="badgeimage" id={user.totalLoose?"earned":"unearned"} alt='Epic Fail'/>
+						<img src={fail} className="badgeimage" alt="Epic Fail" 
+						id={(userData && userData[AchievementType.EPIC_FAIL])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText">EPIC FAIL</h4>
 				</div>

@@ -38,6 +38,8 @@ export function Router() {
                     <Route path='/home' element={<Home />} />
                     <Route path='/' element={<Home />} />
                     <Route path='/friend' element={<Friends />} />
+                    <Route path='/profile/:id' element={ <Profile/>} />
+                    <Route path='/profile' element={ <Profile/>} />
                     <Route path='/lobby' element={<Lobby />} />
                     <Route 
                       path='/chat' 

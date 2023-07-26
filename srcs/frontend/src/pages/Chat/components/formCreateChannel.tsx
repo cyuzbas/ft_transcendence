@@ -73,7 +73,7 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 						required
 						placeholder="Enter Name" 
 						value={roomName}
-						onChange={(e) => setRoomName(e.target.value)}/> 
+						onChange={(e) => setRoomName(e.target.value.trim())}/> 
 				</div>
 				<div>
 					<p>
@@ -91,7 +91,7 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 							required
 							placeholder="Enter Password"
 							value={password}
-							onChange={(e) => setPassword(e.target.value)}/>
+							onChange={(e) => setPassword(e.target.value.trim())}/>
 					</div>
 				)}
 				<button className="formBtn" type="submit">

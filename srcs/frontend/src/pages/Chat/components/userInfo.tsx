@@ -6,6 +6,7 @@ import { BlockButton } from "./buttonBlock";
 import { useEffect } from "react";
 import { MdKeyboardReturn } from "react-icons/md"
 import { BsChatRightText } from "react-icons/bs"
+import { PiGameControllerDuotone } from "react-icons/pi"
 
 type Props = {
   selectedMember: Member | null,
@@ -15,6 +16,7 @@ type Props = {
 export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
   const { user } = useUser();
 	const { myRooms, room, setRoom, members } = useChat();
+	// const [gameType, setGameType] = useState<GameType
 	const setupDmConversation = useSetupDmConversation();
 
 	const openConversation = async(member: Member) => {
@@ -59,10 +61,16 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 			{selectedMember 
 				&& selectedMember.userName !== user.userName 
 				&& room.type !== RoomType.DIRECTMESSAGE 
-				&& <button className="iconBtn" onClick={() => openConversation(selectedMember)}>
+				&& 
+				<>
+					<button className="iconBtn" onClick={() => openConversation(selectedMember)}>
 					<BsChatRightText size="2em"/>
 						message
 					</button>
+					<button className="iconBtn" onClick={() => }>
+					<PiGameControllerDuotone size="2em" />
+					</button>
+				</>
 			}
 		</>
 	)

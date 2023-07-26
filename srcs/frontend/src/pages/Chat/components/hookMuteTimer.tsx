@@ -7,7 +7,7 @@ export function useMuteTimer(member: Member, roomName: string) {
   const { room, updateRoomUser } = useChat();
   const { socket } = useSocket();
   
-  console.log(member)
+  // console.log(member)
 
   const unmuteUser = async() => {
     await updateRoomUser({

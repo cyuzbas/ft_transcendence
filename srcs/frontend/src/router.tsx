@@ -96,4 +96,5 @@ export function Router() {
       </BrowserRouter>
     </React.Fragment>
   )
+
 }

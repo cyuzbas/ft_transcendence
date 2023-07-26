@@ -48,13 +48,13 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             return
         } 
 
-        function onRoomInvite(newRoomUser: RoomUser) {
+        function onRoomInvite(newRoomUser: RoomUser) { // THIS OLD MYROOMS???
             setMyRooms(prev => [...prev, newRoomUser]);
             socket.emit('joinRoom', newRoomUser.roomName);
         };
       
         socket.on('onRoomInvite', onRoomInvite);
-        socket.emit('userUpdate');
+        socket.emit('userUpdate'); //MOVE DOWN?
 
         fetchMyRooms();
         fetchBlocked();
@@ -78,21 +78,23 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             }
         };
     
+        function clearUnreadMessages() {
+            if (room.unreadMessages > 0) {
+                updateRoomUser({
+                    ...user,
+                    ...room,
+                    unreadMessages: 0,
+                }, room.roomName)
+                // clearUnreadMessages();
+            }
+        };
+
         socket.on('onUserUpdate', onUserUpdate);
         socket.on('onMemberUpdate', onMemberUpdate);
-        
-        console.log(room)
-        if (room.unreadMessages > 0) {
-            updateRoomUser({
-                ...user,
-                ...room,
-                unreadMessages: 0,
-            }, room.roomName)
-            // clearUnreadMessages();
-        }
-        
+        clearUnreadMessages();
         fetchMembers();
         fetchMessages();
+
         return () => {
             socket.off('onUserUpdate');
             socket.off('onMemberUpdate');

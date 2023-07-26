@@ -1,5 +1,6 @@
 import './styles.css'
 import { useContext, ChangeEvent, useState } from 'react';
+import swal from 'sweetalert';
 import axios from 'axios';
 import QRCodeImage from './qrCodeCreate';
 import { UserContext } from '../../contexts';
@@ -16,8 +17,14 @@ function Auth2faPage() {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (inputText.length !== 6)
-			console.error("wrong 2factor key!!")
+		if (inputText.length !== 6){
+			swal({
+				title: "Error", 
+				text: "Your key needs to be 6 digits!",
+				icon: "warning",
+				dangerMode: true
+			})
+		}
 		else {
 			try {
 				const response = await axios.get(`http://localhost:3001/auth/verify/${inputText}/${user.intraId}`, { withCredentials: true });
@@ -28,7 +35,12 @@ function Auth2faPage() {
 					window.location.href = 'http://localhost:3000/settings'
 
 				} else {
-					console.error("AUTH 2FA ERROR!!");
+					swal({
+						title: "Wrong key!", 
+						text: "It doesn't match with system key!",
+						icon: "warning",
+						dangerMode: true
+					})
 				}
 
 

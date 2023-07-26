@@ -1,5 +1,5 @@
 import './styles.css'
-import React, { ChangeEvent, useContext, useState, useEffect, useRef } from 'react';
+import React, { ChangeEvent, useContext, useState, useRef } from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
 import { UserContext } from '../../contexts'
@@ -26,7 +26,7 @@ function SettingsPage() {
 			}).then()
 			return;
 		}
-		if (inputText.length===0) {
+		if (inputText.length === 0) {
 			swal({
 				title: "Unsucces!",
 				text: "Error: Input empty!",
@@ -36,42 +36,38 @@ function SettingsPage() {
 
 			return;
 		}
-		swal({
-			title: "Are you sure?",
-			text: "Are you sure that you want to save",
-			icon: "warning",
-			dangerMode: true,
-		})
-			.then(async (willDelete) => {
-				if (willDelete) {
-					try {
-						const response = await axios.post("http://localhost:3001/user/update-user-profile", {
-							userName: inputText,
-							avatar: user.avatar,
-							intraId: user.intraId
-						}, { withCredentials: true })
-						if (response.data===true) {
-							const updatedUser = { ...user, userName: inputText };
-							setUser(updatedUser)
-							localStorage.setItem('user', JSON.stringify(updatedUser));
-							swal("Saved!", "Your name has been saved! ");
 
-						}
-						else {
-							swal({
-								title: "Error!",
-								text: "Error: Dublicated",
-								icon: "warning",
-								dangerMode: true,
-							}).then()
-						}
-					}
-					catch (error) {
-						localStorage.clear()
-						window.location.href = '/login'
-					}
-				}
-			});
+
+
+		try {
+			const response = await axios.post("http://localhost:3001/user/update-user-profile", {
+				userName: inputText,
+				avatar: user.avatar,
+				intraId: user.intraId
+			}, { withCredentials: true })
+			if (response.data === true) {
+				const updatedUser = { ...user, userName: inputText };
+				setUser(updatedUser)
+				localStorage.setItem('user', JSON.stringify(updatedUser));
+				swal({
+					title: "Succes!",
+					text: "Your name has been saved! "
+				})
+			}
+			else {
+				swal({
+					title: "Error!",
+					text: "Error: Duplicated",
+					icon: "warning",
+					dangerMode: true,
+				}).then()
+			}
+		}
+		catch (error) {
+			localStorage.clear()
+			window.location.href = '/login'
+		}
+
 	}
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -83,7 +79,7 @@ function SettingsPage() {
 			formData.append('avatar', selectedFile)
 			const headers = { 'Content-Type': 'multipart/form-data' };
 			try {
-				const response = await axios
+				 await axios
 					.post(`http://localhost:3001/user/avatar/${selectedFile.name}`,
 						formData, { withCredentials: true, headers })
 
@@ -110,19 +106,18 @@ function SettingsPage() {
 	};
 
 
-	async function handleClick2FA () {
+	async function handleClick2FA() {
 		console.log("handler start")
 		if (user.TwoFactorAuth) {
 			console.log("handler if")
 
 			try {
-				
+
 				const updatedUser = { ...user, TwoFactorAuth: false, twoFactorCorrect: false };
 				setUser(updatedUser)
 				localStorage.setItem('user', JSON.stringify(updatedUser));
-				
-				const response = await axios.post(`http://localhost:3001/auth/disabled2fa`,
-						null , { withCredentials: true})
+				await axios.post(`http://localhost:3001/auth/disabled2fa`,
+					null, { withCredentials: true })
 			}
 			catch (error) {
 				localStorage.clear()

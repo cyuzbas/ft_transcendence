@@ -38,7 +38,7 @@ export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
     }
     else {
       const intraId = data.data.id;
-      const userName = "";
+      const userName = null;
       const avatar = data.data.image.link;
       const avatarSmall = data.data.image.versions.micro
       const isLogged = true;

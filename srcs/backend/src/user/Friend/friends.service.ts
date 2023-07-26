@@ -5,12 +5,16 @@ import { UserEntity } from 'src/typeorm/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { use } from 'passport';
+import { ACHIEVEMENTSEntity } from 'src/typeorm/achievements.entity';
+import { AchievementsDto } from '../achievements.dto';
+import { UserService } from '../user.service';
 
 @Injectable()
 export class FriendsService {
     constructor(
         @InjectRepository(UserEntity)
         private userRepository: Repository<UserEntity>,
+        private readonly userService: UserService
     ) { }
 
     async requestFriend(user: UserI, friend: UserI) {
@@ -57,10 +61,8 @@ export class FriendsService {
     }
 
     async friendRequestAnswer(user: UserI, friend: UserI, answer: string): Promise<Boolean> {
-        //answer == true(accept)
         friend.requestedFriends = await this.getFriendsQuery(friend.id)
         const index = friend.requestedFriends.findIndex((getUser) => getUser.id === user.id);
-        //delete requestarray
         if (index !== -1) {
             friend.requestedFriends.splice(index, 1);
             await this.userRepository.save(friend);
@@ -71,10 +73,23 @@ export class FriendsService {
         
         if (answer === "true") {
             user.friends = await this.getFriends(user.id)
-            if(user.friends === undefined)
+            if(user.friends === undefined){
                 user.friends = [];
+                console.log("user frind undefined!")
+                this.userService.setAchievements(user.intraId,"SOCIAL_BUTTERFLY")
+            }
+            if(user.friends.length == 0)
+                this.userService.setAchievements(user.intraId,"SOCIAL_BUTTERFLY")
+
+            friend.friends = await this.getFriends(friend.id)
+
+            console.log(user.friends)
+            console.log(friend.friends)
+            if(friend.friends.length == 0)
+                this.userService.setAchievements(friend.intraId,"SOCIAL_BUTTERFLY")
             user.friends.push(friend)
             await this.userRepository.save(user)
+
             return true;
         }
         else {

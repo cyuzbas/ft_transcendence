@@ -5,18 +5,27 @@ import FriendsToggle from './components/UserToggle';
 import LeaderMatchToggle from './components/LeadToggle';
 import Achievements from './components/Achievements';
 import pong from '../../img/pong.png';
+import axios from 'axios';
 
 
 export function Home() {
 
-
-  const { user } = useContext(UserContext);
-
+  const { user , setUser} = useContext(UserContext);
 
   useEffect(() => {
-    console.log("home")
-  })
+    //TODO api yaz win icin!! ne lazim cicege sor! win lose score ingame rank
+    const fetchData = async () => {
+      try {
+      const response = await axios.get(`http://localhost:3001/user/${user?.intraId}`)
+      setUser(response.data);
+      localStorage.setItem('user', JSON.stringify(response.data));
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
+    fetchData();
+  }, []);
 
   return (
 
@@ -79,7 +88,7 @@ export function Home() {
         <LeaderMatchToggle/>
       </div>
       <div id="item-3" className="Achievement item">
-        <Achievements/>
+        <Achievements intraid={user.intraId}/>
       </div>
     </div>
   )

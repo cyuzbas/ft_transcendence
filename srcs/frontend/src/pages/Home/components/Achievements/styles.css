@@ -15,7 +15,6 @@
 	border-radius: 30px;
 }
 
-
 .AchievementsTitle {
 	padding: 10px 30px;
 	background: transparent;
@@ -34,7 +33,7 @@
 	position: absolute;
 	width: 100%;
 	transition: 0.5s;
-	padding-bottom: 120px;
+	padding-bottom: 150px;
 }
 
 .badges{
@@ -45,6 +44,27 @@
     display: flex;
 	flex-direction: row;
 	align-items: center;
+
+	position: relative;
+	cursor: default;
+ }
+
+ .infoBadges{
+	position: absolute;
+	width: 60%;
+	margin-left: 20px;
+	text-align: center;
+	top: -25px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: rgb(137, 154, 170);
+	color: lightblue;
+	border-radius: 4px;
+	display: none;
+ }
+
+ .badges:hover .infoBadges {
+	display: block;
  }
 
  .badgeText{

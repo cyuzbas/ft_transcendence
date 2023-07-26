@@ -13,7 +13,7 @@ export class UserEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({unique:true})
+	@Column({unique:true, nullable:true})
 	userName: string;
 
 	@Column({ name: 'intraId',nullable: true, unique: true })
@@ -81,12 +81,11 @@ export class UserEntity {
 
     @Column({
         default: 0
-
     })
     score: number;
 
 	@Column({
-    default: 2
+        default: 0
     })
     totalWin: number;
 

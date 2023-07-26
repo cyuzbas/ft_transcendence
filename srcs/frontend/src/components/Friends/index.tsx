@@ -97,7 +97,7 @@ export function Friends() {
                   <i className="bi bi-person-dash fs-3" onClick={(e) => removeFriend(user.intraId)} />) :
                 (user.userStatus === 1) ? (
                   <i className="bi bi-person-add fs-3" onClick={(e) => sendRequest(user.intraId,)} />) :
-                (user.userStatus == 2)? (
+                (user.userStatus === 2)? (
                   <i className="bi bi-person-check fs-3"/> ) : <></>
               }
             </div>

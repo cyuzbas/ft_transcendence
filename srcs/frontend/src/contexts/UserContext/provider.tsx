@@ -107,7 +107,7 @@ export function UserProvider({ children }: UserProviderProps) {
 
   else {
 
-    if(user.userName === ""){
+    if(user.userName === null){
       return(
         <UserContext.Provider value={{ user, setUser }}>
           <Routes>

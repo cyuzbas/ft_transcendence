@@ -29,8 +29,8 @@ export class UserController {
 
     @Get('avatar/:filename')
     getImage(@Param('filename') filename: string, @Res() res) {
-      const imageFilePath = join(__dirname, '../../upload', filename);
-      console.log("filename is  " + filename + " " + imageFilePath)
+		const imageFilePath = join(__dirname, '../../upload', filename);
+		console.log("filename is  " + filename + " " + imageFilePath)
       return res.sendfile(imageFilePath);
     }
     
@@ -43,8 +43,19 @@ export class UserController {
 	)
     {
         fs.writeFileSync(process.cwd() + "/upload/" + imageName, avatar.buffer);
-
-        return this.userService.updataAvatar(imageName,req.user);
+		const old = req.user.avatar
+		
+        const user = await this.userService.updataAvatar(imageName,req.user);
+		const filename = old.substring(old.lastIndexOf('/') + 1);
+		if (filename) {
+			try {
+			const imageFilePath = join(__dirname, '../../upload', filename);
+			  fs.unlinkSync(imageFilePath);
+			} catch (err) {
+			  
+			}
+		  }
+		  return user
 	}
 
     @Get(':intraId')

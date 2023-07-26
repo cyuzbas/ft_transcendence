@@ -1,6 +1,5 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './sideBar.css';
-import { useUser } from '../../../contexts/UserContext';
 import axios from 'axios';
 import React, { useContext } from 'react';
 import { UserContext } from '../../../contexts'
@@ -11,7 +10,7 @@ function SideBar() {
 
 	async function logout() {
 			try{
-			const response = await axios.get('http://localhost:3001/auth/logout',{withCredentials:true})
+			await axios.get('http://localhost:3001/auth/logout',{withCredentials:true})
 			
 			localStorage.clear();
 			window.location.href="/login"
@@ -41,7 +40,7 @@ function SideBar() {
 			</a>
 		  </li>
 		  <li className="nav-item">
-			<a href={`/profile/${user.intraId}`} className="nav-link mb-5">
+			<a href={`/profile/${user.intraName}`} className="nav-link mb-5">
 			  <i className="bi bi-person fs-2"></i>
 			</a>
 		  </li>

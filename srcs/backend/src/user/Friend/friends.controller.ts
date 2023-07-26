@@ -21,7 +21,7 @@ export class FriendsController {
         private readonly friendsService: FriendsService) { }
 
         @Get('allUsers')
-        getAllUsers(){
+        getAllUsers(): Promise<UserI[]>{
             return this.userService.findByAllUser();
         }
     

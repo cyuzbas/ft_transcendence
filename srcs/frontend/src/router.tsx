@@ -13,7 +13,6 @@ import './components/Nav/main.css';
 import Profile from './pages/Profile';
 import { Random, FriendGame } from './pages/Game/components/Online/index';
 import { WaitingPage1, WaitingPage2, WaitingPage3 } from './pages/Lobby/components/WaitingPage';
-import { Friends } from './components';
 
 
 export function Router() {
@@ -67,7 +66,6 @@ export function Router() {
                     <Route path='/settings' element={<SettingsPage />} />
                     <Route path='/create2fa' element={<Create2fa />} />
                     <Route path='/profile/:id' element={<Profile />} />
-                    <Route path='/profile' element={<Profile />} />
                     <Route path='/random' element={<Random />} />
                     <Route path='/friendgame' element={<FriendGame />} />
                     <Route path='/findingopponentClassic' element={<WaitingPage1 />} />

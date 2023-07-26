@@ -50,6 +50,7 @@
 
 #AllUsers{
 	padding-top: 15px;
+	padding-bottom: 160px;
 	height: 100%;
 	overflow-x: scroll;
 	top: 110px;

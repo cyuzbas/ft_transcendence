@@ -1,6 +1,5 @@
 import './style.css'
-import React, { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../contexts'
+import {useEffect, useState } from 'react';
 import pong from '../../img/pong.png';
 import Achievements from '../Home/components/Achievements';
 import MatchHistory from '../Home/components/MatchHistory/index';
@@ -28,38 +27,39 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User>();
 
-  const fetchData = async () => {
-
-    try {
-      const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
-      
-      response.data.forEach((user: any) => {
-        if(user.intraName === id) {
-          let profileUser: User = {
-            avatar: user.avatar,
-            userName: user.userName,
-            intraId: user.intraId,
-            intraName: user.intraName,
-            isLogged: user.isLogged,
-            score: user.score,
-            rank: user.rank,
-            totalLoose: user.totalLoose,
-            totalWin: user.totalWin,
-          }
-          setUser(profileUser)
-          setLoading(false);
-        }
-      })
-
-    } catch (error) {
-      localStorage.clear()
-			window.location.href= '/login'
-    }
-  };
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
+        
+        response.data.forEach((user: any) => {
+          if(user.intraName === id) {
+            let profileUser: User = {
+              avatar: user.avatar,
+              userName: user.userName,
+              intraId: user.intraId,
+              intraName: user.intraName,
+              isLogged: user.isLogged,
+              score: user.score,
+              rank: user.rank,
+              totalLoose: user.totalLoose,
+              totalWin: user.totalWin,
+            }
+            setUser(profileUser)
+            setLoading(false);
+          }
+        })
+  
+      } catch (error) {
+        localStorage.clear()
+        window.location.href= '/login'
+      }
+    };
+
     fetchData();
-  }, []);
+  }, [user?.intraId]);
+
 
   return (
     <div>
@@ -68,7 +68,7 @@ export default function Profile() {
         <div id="item-0" className="ProfileSection item">&nbsp;
           <div className="ProfileInfo">
           <div className="imageClass">
-              <img src={user!.avatar} id="Avatar" alt="User Avatar"/>
+              <img src={user?.avatar} id="Avatar" alt="User Avatar"/>
             </div>
             <h4 className="UserName">{user!.userName}</h4>
             <div className="ProfileStatusInfo">
@@ -85,14 +85,18 @@ export default function Profile() {
             </div>
           </div>
           <div className="ProfileRankInfo">
-            <div className="ProfileRankInfoLine">
-              <i className="bi bi-star fs-2"></i>
-              <h4 className="UserScore">SCORE  - {user!.score}</h4> 
-            </div>
-            <div className="ProfileRankInfoLine">
+          <div className="ProfileRankInfoLine">
+            <h4 className="UserScore">SCORE</h4>
+          </div>
+          <div className="ProfileRankInfoLine">
+          <i className="bi bi-star fs-2"></i>
+
+            <h4 className="UserScore">{user!.score}</h4>
+          </div>
+            {/* <div className="ProfileRankInfoLine">
               <i className="bi bi-chevron-double-up fs-2"></i>
               <h4 className="UserRank">RANK - {user!.rank}</h4> 
-            </div>
+            </div> */}
           </div>
           <div className="ProfileMatchStats">
             <div id="MatchStatsTitle">&nbsp;
@@ -129,7 +133,7 @@ export default function Profile() {
             </div>
           </div>
         <div id="item-3" className="Achievement item">
-          <Achievements/>
+          <Achievements intraid={user!.intraId}/>
         </div>
       </div>
       )

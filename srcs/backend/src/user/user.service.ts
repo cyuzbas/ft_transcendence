@@ -27,18 +27,6 @@ export class UserService {
 		private roomUserRepository: Repository<RoomUserEntity>,){}
 
 
-		// async initializeAdmin() {
-		// 	let admin = await this.userRepository.findOne({ 
-		// 		where: { userName: ADMIN } 
-		// 	});
-		
-		// 	if (!admin) {
-		// 		admin = this.userRepository.create({ userName: ADMIN });
-		// 		await this.userRepository.save(admin);
-		// 	};
-		// }
-
-
   async disabledTwoFactor(user: UserEntity):Promise<Boolean>{
 		 await this.userRepository.update(user.id,{
 		TwoFactorAuth: false,
@@ -58,10 +46,12 @@ export class UserService {
 
 
   async setAchievements(getIntraId:string, type:string):Promise<Boolean>{
+	console.log("set achievement work")
 	const user = await this.findByintraIdEntitiy(getIntraId)
 	const updateField = {} as ACHIEVEMENTSEntity;
 	updateField[type] = true;
 	await this.achievementsRepository.update(user.id, updateField);
+	console.log("set achievement finish")
 	return true;
   }
 
@@ -82,7 +72,7 @@ export class UserService {
 	newUser.isLogged = true
 
 	const achievements = new ACHIEVEMENTSEntity();
-	achievements.FRESH_PADDLE = false;
+	achievements.FRESH_PADDLE = true;
 	achievements.FIRST_VICTORY = false;
 	achievements.PONG_WHISPERER = false;
 	achievements.CHATTERBOX = false;
@@ -151,26 +141,22 @@ export class UserService {
 	}
 
 	async updataAvatar(path: string, user: UserEntity): Promise<UserI>{
+		await this.setAchievements(user.intraId, "CHAMELEON_PLAYER")
 			await this.userRepository.update(user.id,{
 				avatar: "http://localhost:3001/user/avatar/" + path
 			});
-			console.log("succes update avatar");
+		
 			return user;
 	}
 
 	async updateUserProfile(updateUserInfo: UpdateUserProfileDto): Promise<Boolean> {
 		try {
-		  const id = await this.findId(updateUserInfo.intraId); // findId fonksiyonunun tamamlanmasını bekleyin
-		  console.log(id + " da " + updateUserInfo.avatar);
-	  
+		  const id = await this.findId(updateUserInfo.intraId); 
 		  await this.userRepository.update(id, {
 			userName: updateUserInfo.userName,
 		  });
-		  
-		  console.log("kaydetme başarılı");
 		  return true
 		} catch (error) {
-		  console.log("hata: " + error);
 		  return false;
 		}
 	  }

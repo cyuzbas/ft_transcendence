@@ -12,7 +12,6 @@ function Auth2faPage() {
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		// 👇 Store the input value to local state
 		setInputText(e.target.value);
-		console.log(e.target.value)
 	};
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -21,25 +20,22 @@ function Auth2faPage() {
 			console.error("wrong 2factor key!!")
 		else {
 			try {
-				console.log("value is " + inputText + "user [" + JSON.stringify(user))
-				const response = await axios.get(`http://localhost:3001/auth/verify/${inputText}/${user.intraId}`,{withCredentials:true});
+				const response = await axios.get(`http://localhost:3001/auth/verify/${inputText}/${user.intraId}`, { withCredentials: true });
 				if (response.data === true) {
-					console.log("correct auth");
-					// user.twoFactorCorrect = true
-
-					const updatedUser = { ...user, twoFactorCorrect: true, TwoFactorAuth:true };
+					const updatedUser = { ...user, twoFactorCorrect: true, TwoFactorAuth: true };
 					setUser(updatedUser);
 					localStorage.setItem('user', JSON.stringify(updatedUser));
-					window.location.href ='http://localhost:3000/settings'
+					window.location.href = 'http://localhost:3000/settings'
 
 				} else {
-					console.log("AUTH2FA ERROR!!");
+					console.error("AUTH 2FA ERROR!!");
 				}
-				console.log("helllllopoooo" + JSON.stringify(user))
+
 
 			}
 			catch (error) {
-				console.error(error)
+				localStorage.clear()
+				window.location.href = '/login'
 			}
 		}
 	}

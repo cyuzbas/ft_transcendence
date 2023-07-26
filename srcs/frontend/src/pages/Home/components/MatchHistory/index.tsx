@@ -18,26 +18,23 @@ type User = {
 const MatchHistory: React.FC<Props> = ({ id }) => {
 
 	const [users, setUsers] = useState<User[]>([]);
-	// const { user } = useContext(UserContext);
 
 	useEffect(() => {
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`);
+			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`,{withCredentials:true});
 			const { friends} = response.data;
-	
 			const usersData = [...friends.map((friend: User) => ({ ...friend }))]
 			setUsers(usersData);
-			console.log("MAtch History" + JSON.stringify(users))
+			
 		  } catch (error) {
-			console.error(error);
-			console.log("ERROR!!")
+			localStorage.clear()
+			window.location.href= '/login'
 		  }
 		};
 		fetchData();
 	  }, []);
 	
-	//FROM DATABASE OPONENT GAMES, REAL DATA WILL COME
 	const isWon = true;
 	const isLost = true;
 

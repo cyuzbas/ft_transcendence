@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Req, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Res, Req, Param, UseGuards, Post } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from '../user/user.service';
 import { AuthenticatedGuard, OAuthGuard } from './oauth/oauth.guard';
@@ -64,10 +64,10 @@ export class AuthController {
 	}
 
 
-	@Get('disabled2fa')
+	@Post('disabled2fa')
 	@UseGuards(AuthenticatedGuard)
-	async disabled2fa(@Req()req, @Res() res){
-		await this.userService.disabledTwoFactor(req.user);
+	async disabled2fa(@Req()req, @Res() res):Promise<Boolean | any>{
+		 return await this.userService.disabledTwoFactor(req.user);;
 	}
 
 

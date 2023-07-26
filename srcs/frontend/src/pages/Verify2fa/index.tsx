@@ -25,8 +25,6 @@ function Verify2fa() {
 				console.log("value is " + inputText + "user [" + JSON.stringify(user))
 				const response = await axios.get(`http://localhost:3001/auth/verify/${inputText}/${user.intraId}`, { withCredentials: true });
 				if (response.data === true) {
-					console.log("correct auth");
-					// user.twoFactorCorrect = true
 					const updatedUser = { ...user, twoFactorCorrect: true };
 					setUser(updatedUser);
 					localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -34,13 +32,13 @@ function Verify2fa() {
 
 
 				} else {
-					console.log("AUTH2FA ERssROR!!");
+					console.log("AUTH 2FA ERROR!!");
 				}
-				console.log("helllllopoooo" + JSON.stringify(user))
 
 			}
 			catch (error) {
-				console.error(error)
+				localStorage.clear()
+				window.location.href = '/login'
 			}
 		}
 	}

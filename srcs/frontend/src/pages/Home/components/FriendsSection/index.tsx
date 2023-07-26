@@ -21,15 +21,13 @@ const FriendsSection: React.FC<Props> = ({ id }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`);
+			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`,{withCredentials:true})
 			const { friends} = response.data;
-	
 			const usersData = [...friends.map((friend: User) => ({ ...friend }))]
 			setUsers(usersData);
-			console.log(JSON.stringify(users))
 		  } catch (error) {
-			console.error(error);
-			console.log("ERROR!!")
+			localStorage.clear()
+			window.location.href= '/login'
 		  }
 		};
 		fetchData();

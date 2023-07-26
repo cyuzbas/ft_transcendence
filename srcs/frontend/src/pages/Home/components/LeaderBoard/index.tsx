@@ -21,19 +21,11 @@ function LeaderBoard() {
 		const fetchData = async () => {
 		  console.log(user.userName);
 		  try {
-			const response = await axios.get('http://localhost:3001/friends/allUsers');
+			const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
 			setUsers(response.data);
-	
-			console.log("response fetch data!");
-			console.log(response.data.user);
-			Array.isArray(users) ? (
-				users.map((userName, avatar) => (
-					console.log(userName + " and " + avatar)
-				))
-		 ) : (console.log("nobody!"))
 		  } catch (error) {
-			console.error(error);
-			console.log("ERROR!!")
+			localStorage.clear()
+			window.location.href= '/login'
 		  }
 		};
 		fetchData();

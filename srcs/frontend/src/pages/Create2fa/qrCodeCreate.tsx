@@ -18,15 +18,14 @@ const QRCodeImage = () => {
 
         setQRCode(imageUrl);
       } catch (error) {
-        console.error('QR code fetch error:', error);
-        // Hata durumunda gerekli işlemleri yapabilirsiniz
+        localStorage.clear()
+        window.location.href= '/login'
       }
     };
 
     fetchQRCode();
   }, []);
 
-  //TODO backend fix!!!!
   return <img src={qrCode || ''} alt="QR Code" className='QRimage' />;
 };
 

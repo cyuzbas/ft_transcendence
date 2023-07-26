@@ -33,7 +33,7 @@ export class UserEntity {
 	@Column({})
 	isLogged: boolean = false;
 
-	@Column({nullable : true})
+	@Column({default:false})
 	TwoFactorAuth:boolean = false
 
 	@Column({nullable: true})

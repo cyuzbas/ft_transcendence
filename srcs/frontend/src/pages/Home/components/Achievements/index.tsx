@@ -45,11 +45,11 @@ function Achievements() {
 	useEffect(() => {
 		const fetchData = async () => {
 		  try {
-			const response =  await axios.get(`http://localhost:3001/user/achievements/${user.intraId}`)
+			const response =  await axios.get(`http://localhost:3001/user/achievements/${user.intraId}`,{withCredentials:true})
 			setUserData(response.data[0]);
 		  } catch (error) {
-			console.error(error);
-			console.log("ERROR!!")
+			localStorage.clear()
+			window.location.href= '/login'
 		  }
 		};
 		fetchData();

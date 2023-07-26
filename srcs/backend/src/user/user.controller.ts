@@ -9,8 +9,11 @@ import { UpdateUserProfileDto } from './updateUserProfil.dto';
 import { join } from 'path';
 
 import * as fs  from "fs";
+import { AuthenticatedGuard } from 'src/auth/oauth/oauth.guard';
 import { ACHIEVEMENTSEntity } from 'src/typeorm/achievements.entity';
 
+
+@UseGuards(AuthenticatedGuard)
 @Controller('user')
 export class UserController {
     constructor(private readonly userService : UserService) {}
@@ -47,7 +50,7 @@ export class UserController {
     }
 
     @Post('update-user-profile')
-    async updateUserProfile(@Body() userDTO: UpdateUserProfileDto){
+    async updateUserProfile(@Body() userDTO: UpdateUserProfileDto):Promise<Boolean>{
         return await this.userService.updateUserProfile(userDTO );
     }
 

@@ -31,9 +31,7 @@ export default function Profile() {
   const fetchData = async () => {
 
     try {
-      // console.log("user id profile" + id)
-      const response = await axios.get('http://localhost:3001/friends/allUsers');
-
+      const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
       
       response.data.forEach((user: any) => {
         if(user.intraName === id) {
@@ -48,16 +46,14 @@ export default function Profile() {
             totalLoose: user.totalLoose,
             totalWin: user.totalWin,
           }
-          console.log("setting user:")
-          console.log(profileUser)
           setUser(profileUser)
           setLoading(false);
         }
       })
 
     } catch (error) {
-      console.error(error);
-      console.log("ERROR!!")
+      localStorage.clear()
+			window.location.href= '/login'
     }
   };
 

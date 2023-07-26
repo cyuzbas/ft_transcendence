@@ -8,6 +8,8 @@ import { Repository, DataSource, createQueryBuilder } from 'typeorm';
 import { UserDto } from '../dto/user.dto';
 import { RoomEntity, GENERAL_CHAT } from 'src/typeorm/room.entity';
 import { RoomUserEntity, UserRole } from 'src/typeorm/roomUser.entity';
+import { AchievementsDto } from './achievements.dto';
+import { ACHIEVEMENTSEntity } from 'src/typeorm/achievements.entity';
 
 
 
@@ -17,6 +19,8 @@ export class UserService {
 	private dataSource: DataSource,
 		@InjectRepository(UserEntity)
 		private userRepository: Repository<UserEntity>,
+		@InjectRepository(ACHIEVEMENTSEntity)
+		private achievementsRepository: Repository<ACHIEVEMENTSEntity>,
 		@InjectRepository(RoomEntity)
 		private roomRepository: Repository<RoomEntity>,
 		@InjectRepository(RoomUserEntity)
@@ -34,6 +38,25 @@ export class UserService {
 		// 	};
 		// }
 
+
+  async disabledTwoFactor(user: UserEntity){
+	await this.userRepository.update(user.id,{
+		TwoFactorAuth: false,
+		twoFactorAuthSecret:null
+	})
+  }
+
+  async getAchievements(getIntraId:string):Promise<ACHIEVEMENTSEntity>{
+
+	const user = await this.userRepository.findOne({ 
+		where: { intraId: getIntraId },
+		relations: ['achievements'], 
+	})
+	return user.achievements;
+  }
+
+
+
   async createUser(userData: CreateUserDTO): Promise<UserI> {
 	const newUser = this.userRepository.create(userData);
 	const createdUser: UserI = await this.userRepository.save(newUser);
@@ -45,6 +68,20 @@ export class UserService {
 		user: newUser,
 		room: generalChatRoom,
 	});
+	newUser.isLogged = true
+
+	const achievements = new ACHIEVEMENTSEntity();
+	achievements.FRESH_PADDLE = false;
+	achievements.FIRST_VICTORY = false;
+	achievements.PONG_WHISPERER = false;
+	achievements.CHATTERBOX = false;
+	achievements.SOCIAL_BUTTERFLY = false;
+	achievements.CHAMELEON_PLAYER = false;
+	achievements.FRIENDLY_RIVALRY = false;
+	achievements.EPIC_FAIL = false;
+	achievements.user = newUser
+	// createdUser.achievements = [achievements]; 
+	await this.dataSource.manager.save(achievements)
 	await this.dataSource.manager.save(newRoomUser);
 	console.log("newuser " + newUser)
 	console.log("create user " + createdUser)
@@ -53,6 +90,24 @@ export class UserService {
 	return createdUser;
 	}
 
+
+	async updateTwoFactorStatus(id:number, isAuth:boolean){
+		await this.userRepository.update(id,{
+			TwoFactorAuth: isAuth
+		})
+	}
+	async addAuthSecretKey(key:string,user:UserI){
+
+		await this.userRepository.update(user.id,{
+			twoFactorAuthSecret: key
+			});
+	}
+
+	async findByintraIdEntitiy(intraId: string): Promise<UserEntity> {
+		return await this.userRepository.findOne({
+			where: { intraId: intraId },
+		});
+	}
 	async findByintraId(intraIdToFind: string): Promise<UserI> {
 		return await this.userRepository.findOne({
 			where: { intraId: intraIdToFind },
@@ -61,13 +116,18 @@ export class UserService {
 
 	async findByAllUser(): Promise<UserI[]> {
 		const users: UserEntity[] = await this.userRepository.find();
-		return users as UserI[];
+		const filteredUsers = users.filter((user) => user.userName !== "admin");
+
+
+		return filteredUsers as UserI[];
 	}
 
 	async findByID(idToFind: number): Promise<UserI> {
-		return await this.userRepository.findOne({
+		const user =
+		 await this.userRepository.findOne({
 			where: { id: idToFind },
 		});
+		return user;
 	}
 
 	async findId(intrabyId: string): Promise<number>{
@@ -78,7 +138,7 @@ export class UserService {
 	}
 
 	async updataAvatar(path: string, user: UserEntity): Promise<UserI>{
-			await this.userRepository.update(user,{
+			await this.userRepository.update(user.id,{
 				avatar: "http://localhost:3001/user/avatar/" + path
 			});
 			console.log("succes update avatar");
@@ -124,9 +184,23 @@ export class UserService {
 		const user = await this.userRepository.findOne({
 			where: { userName: userName }
 		});
+		console.log("hello status")
 		if(!user)
 			return
 		user.status = status;
+		console.log("status changed")
+		await this.userRepository.save(user);
+	}
+
+	async updateLogIn(userName: string, isLogged: boolean): Promise<void> {
+		const user = await this.userRepository.findOne({
+			where: { userName: userName }
+		});
+		console.log("hello isLogged")
+		if(!user)
+			return
+		user.isLogged = isLogged;
+		console.log("isLogged changed")
 		await this.userRepository.save(user);
 	}
 
@@ -229,5 +303,48 @@ export class UserService {
 	  
 	async deleteUser(id: number) {
 		return this.userRepository.delete(id);
+	}
+
+	// ////////////////////////////////// idil
+
+	async findUserByUserIddto(userId: number): Promise<UserDto> {
+		const user = await this.userRepository.findOne({ 
+			where: { id: userId } 
+		});
+		if(!user)
+			return 
+		const { userName, status } = user;
+		return {
+			id : userId,
+			userName,
+			status,
+		}
+	}
+
+	async findUserByUserId(userId: number): Promise<UserEntity> {
+		const user = await this.userRepository.findOne({ 
+			where: { id: userId } 
+		});
+	
+		if(!user)
+			throw new Error(`User with ID ${userId} not found`);
+	
+		return user;
+	}
+
+	async changeRank(userId: number) {
+		const user = await this.userRepository.findOne({ where: { id: userId } });
+		if(!user)
+			throw new Error(`User with ID ${userId} not found`);
+		const users = await this.userRepository.find({
+			order: {
+				score: 'DESC',
+			},
+		});
+		for (let i = 0; i < users.length; i++) {
+			users[i].rank = i + 1;
+			await this.userRepository.save(users[i]);
+		}
+		return user;
 	}
 }

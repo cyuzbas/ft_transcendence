@@ -17,8 +17,9 @@ export function Modal({ children, isOpen, setIsOpen }: ModalProps) {
     >
       <div onClick={(e) => e.stopPropagation()} className='modal-content'>
         <Button
-          icon={<CloseIcon />}
+          icon={<CloseIcon style={{ position: 'absolute', top: -180, right: -180 }} />}
           className='close-button'
+          style={{ position: 'relative' }}
           onClick={() => setIsOpen(false)}
         />
 

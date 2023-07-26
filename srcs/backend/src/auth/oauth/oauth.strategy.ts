@@ -35,7 +35,10 @@ export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
     const userName = data.data.first_name;
     const avatar = data.data.image.link;
     const avatarSmall = data.data.image.versions.micro
-		const validateUserDto = { intraId, userName, avatar, avatarSmall };
+    const isLogged = true;
+    const intraName = data.data.login;
+		const validateUserDto = { intraId, userName, avatar, avatarSmall, isLogged, intraName};
+  
     console.log(validateUserDto)
     return await this.authService.validateUser(validateUserDto);
   }

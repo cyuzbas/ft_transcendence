@@ -23,12 +23,13 @@ export const Chat = () => {
 		setSelectedMember(null);
 	}, [room])
 
-	if (!isConnected)
-		return <div>not connected</div>	
+	// if (!isConnected)
+	// 	return <div>not connected</div>	
 
 	return (
 		<>
-			<div>connected: {socket.id}</div>
+			{/* <div /> */}
+			{/* <div>connected: {socket.id}</div> */}
 			<div id={expanded ? "chat-grid-expanded" : "chat-grid-non-expanded"}>
 				<div id="chat-left-sidebar">
 					<Channels />

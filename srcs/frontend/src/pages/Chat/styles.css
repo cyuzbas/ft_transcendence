@@ -116,7 +116,9 @@ html {
 }
 
 #chat-header {
-  background: rgba(128, 128, 128, 0.266);
+  background: rgba(248, 248, 252, 0.648);
+
+  /* background: rgba(128, 128, 128, 0.266); */
 }
 
 #chat-window {
@@ -264,6 +266,11 @@ html {
   padding: 2px;
   background-color: transparent;
 }
+
+/* .testicon {
+  color: #04fc04 !important;
+  
+} */
 
 .blockBtn {
   color: black;

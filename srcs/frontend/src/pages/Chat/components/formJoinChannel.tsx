@@ -5,7 +5,6 @@ import { ClickableList } from "./clickableList"
 import { useChat } from "../../../contexts/ChatContext/provider"
 import { useUser } from "../../../contexts"
 import { useSocket } from "../../../contexts/SocketContext"
-// import { Prompt } from "./prompt"
 import { AiOutlineLock, AiOutlineExclamationCircle, AiOutlineClose } from "react-icons/ai"
 
 type Props = {
@@ -17,10 +16,9 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
     const [selectedRoom, setSelectedRoom] = useState<Room>();
     const [isProtected, setIsProtected] = useState<boolean>(false);
     const [isBanned, setIsBanned] = useState<boolean>(false);
-    // const [prompt, setPrompt] = useState<boolean>(false);
-    const [promptText, setPromptText] = useState<string>('');
+    // const [promptText, setPromptText] = useState<string>('');
     const [value, setValue] = useState<string>('')
-    const { setRoom, myRooms, setMyRooms, fetchPublicRooms, publicRooms, addRoomUser, updateRoomUser } = useChat();
+    const { setRoom, myRooms, setMyRooms, fetchPublicRooms, publicRooms, addRoomUser } = useChat();
     const { user } = useUser();
     const { socket, URL } = useSocket();
         
@@ -28,14 +26,14 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         fetchPublicRooms();
     }, [])
 
-    useEffect(() => { // do with gateway?
+    useEffect(() => {
         const getJoinableRooms = () => {
             const filteredRooms = publicRooms.filter(publicRoom => {
                 const myRoom = myRooms.find(myRoom => myRoom.roomName === publicRoom.roomName);
                 if (!myRoom) {
                     return true;
                 } else {
-                    return myRoom.isBanned// || myRoom.isKicked;
+                    return myRoom.isBanned;
                 }
             });
             setJoinableRooms(filteredRooms);
@@ -53,7 +51,7 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         
         if (newRoomUser) {
             if (newRoomUser.isBanned) {
-                setPromptText('You are banned from this channel');
+                // setPromptText('You are banned from this channel');
                 setIsBanned(true);
                 return
             } 
@@ -80,7 +78,7 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
                 roomName: selectedRoom.roomName,
                 type: RoomType.PROTECTED,
                 password: value
-            })
+            }, {withCredentials:true})
             if (response.data === false) {
                 alert('incorrect password, try again');
                 setValue('');

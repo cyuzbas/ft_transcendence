@@ -59,16 +59,18 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 				<BlockButton member={selectedMember}/>
 			}
 			{selectedMember?.userName}
+			<div />
 			{selectedMember 
 				&& selectedMember.userName !== user.userName 
 				&& room.type !== RoomType.DIRECTMESSAGE 
 				&& 
 				<>
 					<button className="iconBtn" onClick={() => openConversation(selectedMember)}>
-					<BsChatRightText size="2em"/>
-						message
+					<BsChatRightText size="1.8em"/>
+						chat
 					</button>
-					<Link to={{ pathname: '/waitingreply', search: `?userName=${selectedMember}`}} className="iconBtn" >
+					<div />
+					<Link to={{ pathname: '/waitingreply', search: `?username=${selectedMember.userName}`}} className="iconBtn" >
 						<PiGameControllerDuotone size="2em" />
 						play
 					</Link>

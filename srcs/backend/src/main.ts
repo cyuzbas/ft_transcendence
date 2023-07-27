@@ -9,6 +9,7 @@ import { UserService } from './user/user.service';
 import { ConfigService } from '@nestjs/config';
 
 import { Express } from 'express';
+import { ValidationPipe } from '@nestjs/common';
 
 
 async function bootstrap() {
@@ -38,12 +39,12 @@ async function bootstrap() {
   const passport = require('passport');
   app.use(passport.initialize());
   app.use(passport.session());
-
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+  })); 
 
   await app.listen(3000);
-  // const userService = app.get(UserService);
   const chatService = app.get(ChatService);
-  // await userService.initializeAdmin();
   await chatService.initializeGeneralChatRoom();
 
   }

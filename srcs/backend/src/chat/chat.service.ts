@@ -4,17 +4,18 @@ import { RoomDto } from 'src/dto/room.dto';
 import { MessageDto } from 'src/dto/message.dto';
 import { RoomEntity, GENERAL_CHAT, RoomType } from 'src/typeorm/room.entity';
 import { MessageEntity } from 'src/typeorm/message.entity';
-import { ADMIN, UserEntity } from 'src/typeorm/user.entity';
+import { UserEntity } from 'src/typeorm/user.entity';
 import { DataSource, Repository } from 'typeorm';
-import { RoomUserEntity, UserRole } from 'src/typeorm/roomUser.entity';
+import { RoomUserEntity } from 'src/typeorm/roomUser.entity';
 import { NewRoomUserDto, RoomUserDto } from 'src/dto/roomUser.dto';
 import { UserDto } from 'src/dto/user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ChatService {
 	
 	constructor(
-		private dataSource: DataSource, //take it out?
+		private dataSource: DataSource,
 		@InjectRepository(RoomEntity)
 		private roomRepository: Repository<RoomEntity>,
 		@InjectRepository(MessageEntity)
@@ -26,10 +27,6 @@ export class ChatService {
 	) {}
 
 	async initializeGeneralChatRoom() {
-		// let [admin, generalChatRoom] = await Promise.all([
-		// 	this.userRepository.findOne({ where: { userName: ADMIN } }),
-		// 	this.roomRepository.findOne({ where: { roomName: GENERAL_CHAT } }),
-		// ]);
 		let generalChatRoom = await this.roomRepository.findOne({ where: { roomName: GENERAL_CHAT } });
 
 		if (!generalChatRoom) {
@@ -39,43 +36,34 @@ export class ChatService {
 			});
 
 		await this.dataSource.manager.save(generalChatRoom);
-
-		// 	const newRoomUser = this.roomUserRepository.create({
-		// 		userRole: UserRole.OWNER,
-		// 		user: admin,
-		// 		room: generalChatRoom,
-		// 	});
-		// 	await this.dataSource.manager.save(newRoomUser);	
 		}	
 	}
 
-	async createNewRoom(room: RoomDto): Promise<RoomDto> {	
+	async createNewRoom(room: RoomDto): Promise<RoomDto> {
 		const existingRoom = await this.roomRepository.findOne({ where: { roomName: room.roomName } });
-	
-		if (existingRoom && room.type === RoomType.DIRECTMESSAGE) {
-			// console.log(existingRoom)
+		if (existingRoom && room.type !== RoomType.DIRECTMESSAGE) {
+			throw new HttpException('Channel Name Already Exists', HttpStatus.CONFLICT);
+		} else if (existingRoom && room.type === RoomType.DIRECTMESSAGE) {
 			return existingRoom;
 		} else {
-			try {
-				const newRoom = this.roomRepository.create({
-					roomName: room.roomName,
-					type: room.type,
-					description: room.description,
-					password: room.password, //HASH
-				});
-				return await this.roomRepository.save(newRoom) as RoomDto;
-				
-			} catch (error) {
-				throw new HttpException("Couldn't create room", HttpStatus.CONFLICT);
-			}
+			const newRoom = this.roomRepository.create({
+				roomName: room.roomName,
+				type: room.type,
+				description: room.description,
+				password: await bcrypt.hash(room.password, 10),
+			});
+			return await this.roomRepository.save(newRoom) as RoomDto;
 		}
 	}
 
-	async addMessage(message: MessageDto): Promise<MessageDto> { //handled by gateway
+	async addMessage(message: MessageDto): Promise<MessageDto> {
 		const [user, room] = await Promise.all([
 			this.userRepository.findOne({ where: { userName: message.userName } }),
 			this.roomRepository.findOne({ where: { roomName: message.roomName } }),
 		]);
+
+		if (!user || !room)
+			throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
 	
 		const newMessage = this.messageRepository.create({
 			content: message.content,
@@ -100,7 +88,6 @@ export class ChatService {
 		.where('room.roomName = :roomName', { roomName })
 		.andWhere('user.userName = :userName', { userName })
 		.getOne();
-
 		return roomUser;
 	}
 
@@ -117,15 +104,13 @@ export class ChatService {
 			if(newRoomUser.contactName) {
 				user2 = await this.userRepository.findOne({ where: {userName: newRoomUser.contactName} });
 			}
-			
+
 			roomUser = this.roomUserRepository.create({
 				userRole: newRoomUser.userRole,
 				user: user1,
 				room: room,
 				contact: user2,
 			});
-			// console.log(newRoomUser.contactName, user2, roomUser)
-
 			await this.roomUserRepository.save(roomUser);
 		}
 
@@ -144,90 +129,29 @@ export class ChatService {
 			contactName: contact?.userName,
 		} as RoomUserDto;
 	}
-
-	// async addRoomUser(roomUser: NewRoomUserDto) {
-	// 	const existingRoomUser = await this.findRoomUser(roomUser.roomName, roomUser.userName);
-	// 	if (existingRoomUser) {
-	// 		if (existingRoomUser.isBanned) {
-	// 			const { roomId, roomName, type } = existingRoomUser.room;
-	// 			const { userRole, unreadMessages, isMuted, isKicked, isBanned } = existingRoomUser;
-	// 			return {
-	// 				roomId,
-	// 				roomName,
-	// 				type,
-	// 				unreadMessages,
-	// 				userRole,
-	// 				isMuted,
-	// 				isKicked,
-	// 				isBanned,
-	// 			} as RoomUserDto;
-	// 		} else {
-	// 			return;
-	// 		}
-	// 	}
-
-	// 	const [room, user1, user2] = await Promise.all([
-	// 		this.roomRepository.findOne({ where: {roomName: roomUser.roomName} }),
-	// 		this.userRepository.findOne({ where: {userName: roomUser.userName} }),
-	// 		this.userRepository.findOne({ where: {userName: roomUser.contactName} }),
-	// 	]);
-
-	// 	const newRoomUser = this.roomUserRepository.create({
-	// 		userRole: roomUser.userRole,
-	// 		user: user1,
-	// 		room: room,
-	// 		contact: user2,
-	// 	});
-
-	// 	await this.roomUserRepository.save(newRoomUser);
-
-	// 	const { roomId, roomName, type } = room;
-	// 	const { userRole, unreadMessages, isMuted, isKicked, isBanned } = newRoomUser;
-
-	// 	return {
-	// 		roomId,
-	// 		roomName,
-	// 		type,
-	// 		unreadMessages,
-	// 		userRole,
-	// 		isMuted,
-	// 		isKicked,
-	// 		isBanned,
-	// 		contactName: user2?.userName,
-	// 	} as RoomUserDto;
-	// }
 	
 	async removeRoomUser(roomName: string, userName: string): Promise<void> {
 		const roomUser = await this.findRoomUser(roomName, userName);
-		if (roomUser) {
-			try {
-				await this.roomUserRepository.delete(roomUser.id);
-			} catch (error) {
-				console.log(error);
-			}
-		} else {
-			console.log("RoomUser Not Found");
+		if (!roomUser) {
+			throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
 		}
+		await this.roomUserRepository.delete(roomUser.id);
 	}
 
 	async updateRoomUser(updatedRoomUser: RoomUserDto): Promise<RoomUserDto> {
 		const roomUser = await this.findRoomUser(updatedRoomUser.roomName, updatedRoomUser.userName);
-
+		if (!roomUser) {
+			throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+		}
 		roomUser.unreadMessages = updatedRoomUser.unreadMessages;
 		roomUser.userRole = updatedRoomUser.userRole;
 		roomUser.isBanned = updatedRoomUser.isBanned;
 		roomUser.isKicked = updatedRoomUser.isKicked;
 		roomUser.isMuted = updatedRoomUser.isMuted;
 		roomUser.muteEndTime = updatedRoomUser.muteEndTime;
-
 		await this.roomUserRepository.save(roomUser);
-		// const { roomId, roomName, type } = roomUser.room;
 		const { unreadMessages, userRole, isBanned, isKicked, isMuted, muteEndTime } = roomUser;
-
 		return {
-			// roomId,
-			// roomName,
-			// type,
 			...updatedRoomUser,
 			unreadMessages,
 			userRole,
@@ -242,13 +166,13 @@ export class ChatService {
 		const room = await this.roomRepository.findOne({
 			where: { roomId: roomUpdate.roomId }
 		});
-
+		if (!room) {
+			throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+		}
 		room.password = roomUpdate.password;
 		room.type = roomUpdate.type;
 		room.description = roomUpdate.description;
-
 		await this.roomRepository.save(room);
-
 		const { password, ...roomData } = room;
 		return roomData as RoomDto
 	}
@@ -271,10 +195,11 @@ export class ChatService {
 				where: { userName: blockedUserName },
 			}),
 		]);
-
+		if (!blocker || !blocked) {
+			throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+		}
 		blocker.blocking.push(blocked);
 		await this.userRepository.save(blocker);
-
 		const userData = blocker.blocking.map(({ id, userName, status }) => {
 			return {
 				id,
@@ -282,7 +207,6 @@ export class ChatService {
 				status
 			}
 		});
-
 		return userData as UserDto[];
 	}
 
@@ -296,14 +220,14 @@ export class ChatService {
 				where: { userName: blockedUserName },
 			}),
 		]);
-
+		if (!blocker || !blocked) {
+			throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+		}
 		const index = blocker.blocking.findIndex(user => user.id === blocked.id);
-
 		if (index !== -1) {
 			blocker.blocking.splice(index, 1);
 			await this.userRepository.save(blocker);
 		};
-
 		const userData = blocker.blocking.map(({ id, userName, status }) => {
 			return {
 				id,
@@ -320,7 +244,9 @@ export class ChatService {
 			where: { userName: userName },
 			relations: ['blocking']
 		});
-
+		if (!user) {
+			throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+		}
 		const userData = user.blocking.map(({ id, userName, status }) => {
 			return {
 				id,
@@ -328,7 +254,6 @@ export class ChatService {
 				status,
 			}
 		});
-
 		return userData as UserDto[];
 	}
 
@@ -338,13 +263,16 @@ export class ChatService {
 		.where('room.type != :private', { private: RoomType.PRIVATE })
 		.andWhere('room.type != :directMessage', { directMessage: RoomType.DIRECTMESSAGE })
 		.getMany();
-		
+
+		if (!rooms) {
+			throw new HttpException('Rooms Not Found', HttpStatus.NOT_FOUND)
+		}
+
 		const roomData = rooms.map(({ roomId, roomName, type }) => ({
 			roomId,
 			roomName,
 			type,
 		}));
-
 		return roomData as RoomDto[];
 	}
 
@@ -356,9 +284,9 @@ export class ChatService {
 		.leftJoinAndSelect('roomLinks.contact', 'contact')
 		.where('user.userName = :userName', {userName})
 		.getOne();
-		
+			
 		if (!user) {
-			return [] //throw new HttpException("Couldn't create room", HttpStatus.CONFLICT);
+			throw new HttpException("User Not Found", HttpStatus.NOT_FOUND);
 		}
 
 		const roomUserData = user.roomLinks
@@ -377,7 +305,6 @@ export class ChatService {
 					contactName: contact?.userName,
 				}
 			});
-
 		return roomUserData as RoomUserDto[]
 	}
 		
@@ -389,18 +316,21 @@ export class ChatService {
 		.where('room.roomName = :roomName', {roomName})
 		.getOne()
 		
+		if (!room) {
+			throw new HttpException('Room Not Found', HttpStatus.NOT_FOUND);
+		}
+
 		const messageData = room.messages.map(({ user, room, ...message }) => {
 			const { userName } = user;
 			return {
-				userName, // check (sender !== null)??
+				userName,
 				...message,
 			}
 		});
-
 		return messageData as MessageDto[];
 	}
 		
-	async getRoomMembers(roomName: string): Promise<RoomUserDto[]> { //handled by gatway //maybe name get members
+	async getRoomMembers(roomName: string): Promise<RoomUserDto[]> {
 		const room = await this.roomRepository
 		.createQueryBuilder('room')
 		.leftJoinAndSelect('room.userLinks', 'userLinks')
@@ -408,6 +338,10 @@ export class ChatService {
 		.where('room.roomName = :roomName', {roomName})
 		.getOne();
 		
+		if(!room) {
+			throw new HttpException('Room Not Found', HttpStatus.NOT_FOUND);
+		}
+
 		const userData = room.userLinks.map(({ user, userRole, isBanned, isKicked, isMuted, muteEndTime }) => {
 			const { userName, intraId, avatar, status } = user;
 			return {
@@ -423,9 +357,5 @@ export class ChatService {
 			} as RoomUserDto; // as member?
 		});
 		return userData as RoomUserDto[];
-	}
-	
-	async deleteRoom(id: number) {
-		this.roomRepository.delete(id);
-	}
+	}	
 }

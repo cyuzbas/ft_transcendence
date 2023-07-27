@@ -42,6 +42,7 @@ export const MessageInput = () => {
             placeholder="Write message"
             className="message-input"
             value={message}
+            maxLength={100}
             onChange={(e) => setMessage(e.target.value)}>
           </input>
           <button className="sendBtn">SEND</button>

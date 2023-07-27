@@ -46,7 +46,7 @@ export type UserDetails = {
 	isMuted: boolean;
 	isKicked: boolean;
 	isBanned: boolean;
-	muteEndTime: Date; // run into problems without ? <---
+	muteEndTime: Date;
 	contactName?: string;
 };
 
@@ -54,35 +54,8 @@ export type NewRoomUser = {
 	roomName: string,
 	userName: string,
 	userRole: UserRole,
-	intraId?: string,
 	contactName?: string | null,
 };
 
 export type RoomUser = Room & UserDetails;
 export type Member = User & UserDetails;
-
-// export type NewRoomDetails = {
-// 	userName?: string;
-// 	member?: string[];
-// };
-
-
-// Specific RoomUser types
-// export type NewRoom = Room & NewRoomDetails;
-// export type DmRoomUser = RoomUser & RoomUserDetails;//{ contact: string}//, userName: string}; what is this for????
-
-// Member type
-// export type Member = User & RoomUserDetails;
-// roomId?: number;
-// roomName: string;
-// type: RoomType;
-// Base User type
-// export type User = {
-	// 	id: number;
-	// 	userName: string;
-	// 	status: string;
-	// 	avatar: string;
-	// 	intraId: string;
-	// };
-	
-	// UserRoles type

@@ -1,45 +1,24 @@
+import { IsEnum, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 import { RoomType } from "src/typeorm/room.entity";
-import { UserRole } from "src/typeorm/roomUser.entity";
 
 export class RoomDto {
+	@IsOptional()
+	@IsNumber()
 	roomId?: number;
+
+	@IsString()
+	@MaxLength(25)
 	roomName: string;
+
+	@IsEnum(RoomType)
 	type: RoomType;
-	// userName?: string;
+
+	@IsOptional()
+	@IsString()
+	@MaxLength(100)
 	description?: string;
-	// admin?: string[];
-	// member?: string[];
+
+	@IsOptional()
+	@MaxLength(25)
 	password?: string;
 }
-
-// export class NewRoomDto {
-// 	userName: string;
-// 	member?: string[];
-// 	password?: string;
-// }
-
-
-
-
-
-// contact?: string;
-// id: number;
-// userRole?: UserRole;
-
-// memberNames?: string[];
-// password?: string;
-// dmContact?: string;
-
-// export class newChannelDto extends ChannelDto {
-// 	ownerName: string;
-// 	adminNames?: string[];
-// }
-
-// export class userChannelsDto extends ChannelDto {
-// 	userRole: string;
-// }
-
-// export class dmChannelDto extends ChannelDto {
-// 	memberNames: string[];
-// 	contact: string;
-// }

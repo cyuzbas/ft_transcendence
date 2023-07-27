@@ -4,7 +4,7 @@ import { useChat } from "../../../contexts/ChatContext/provider";
 import { User, UserRole, useUser } from "../../../contexts";
 import { AiOutlineClose } from "react-icons/ai"
 import { ClickableList } from "./clickableList";
-import { AiOutlineUserAdd, AiOutlineCheck } from "react-icons/ai"
+import { AiOutlineCheck } from "react-icons/ai"
 
 type addContactProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,

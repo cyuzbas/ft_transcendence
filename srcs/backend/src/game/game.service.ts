@@ -308,7 +308,11 @@ export class GameService {
 
    
 
-    async getGamesByPlayerId(playerId: number): Promise<GameEntity[]> {
+    async getGamesByPlayerId(intraId: string): Promise<GameEntity[]> {
+        const user = await this.userService.findByintraIdEntitiy(intraId)
+        if(!user)
+            return
+        const playerId = user.id
         return this.gameRepository.find({
           where: {
             player: {

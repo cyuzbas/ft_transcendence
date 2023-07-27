@@ -30,34 +30,76 @@ export class FriendsService {
     }
 
 
-    async     deleteFriends(user: UserI, friend: UserI): Promise<Boolean> {
+    async deleteFriends(user: UserI, friend: UserI): Promise<Boolean> {
         user.friends = await this.getFriends(user.id)
-        if(user.friends === undefined)
+        if (user.friends === undefined) {
+            console.log("undefined")
             return false;
-            const index = user.friends.findIndex((getFriend) => getFriend.id === friend.id);
+        }
+        console.log("user=>friend " + user.friends)
+        const index = user.friends.findIndex((getFriend) => getFriend.id === friend.id);
+        //delete requestarray
+        if (index !== -1) {
+            user.friends.splice(index, 1);
+            await this.userRepository.save(user);
+        }
+        else {
+            user.friends = await this.getFriends1(user.id)
+
+
+            if (user.friends === undefined) {
+                console.log("undefined1")
+                return false;
+            }
+            console.log("user=>friend " + user.friends)
+            const index11 = user.friends.findIndex((getFriend) => getFriend.id === friend.id);
             //delete requestarray
-            if (index !== -1) {
+            if (index11 !== -1) {
                 user.friends.splice(index, 1);
                 await this.userRepository.save(user);
             }
-            else{
+            else {
+                console.log("index problem")
                 return false;
             }
+        }
 
 
-            friend.friends = await this.getFriends(friend.id)
-            if(friend.friends === undefined)
+        friend.friends = await this.getFriends(friend.id)
+        console.log("friend=>user " + friend.friends)
+
+        if (friend.friends === undefined) {
+            console.log("friends undefined")
+            return false;
+        }
+        const index1 = friend.friends.findIndex((getFriend) => getFriend.id === user.id);
+        //delete requestarray
+        if (index1 !== -1) {
+            friend.friends.splice(index, 1);
+            await this.userRepository.save(friend);
+        }
+        else {
+            
+
+            friend.friends = await this.getFriends1(friend.id)
+            console.log("friend=>user1 " + friend.friends)
+    
+            if (friend.friends === undefined) {
+                console.log("friends undefined1")
                 return false;
-                const index1 = friend.friends.findIndex((getFriend) => getFriend.id === user.id);
-                //delete requestarray
-                if (index1 !== -1) {
-                    friend.friends.splice(index, 1);
-                    await this.userRepository.save(friend);
-                }
-                else{
-                    return false;
-                }
-            return true;
+            }
+            const index112 = friend.friends.findIndex((getFriend) => getFriend.id === user.id);
+            //delete requestarray
+            if (index112 !== -1) {
+                friend.friends.splice(index, 1);
+                await this.userRepository.save(friend);
+            }
+            else {
+                console.log("friend index")
+                return false;
+            }
+        }
+        return true;
     }
 
     async friendRequestAnswer(user: UserI, friend: UserI, answer: string): Promise<Boolean> {
@@ -67,26 +109,26 @@ export class FriendsService {
             friend.requestedFriends.splice(index, 1);
             await this.userRepository.save(friend);
         }
-        else{
+        else {
             return false;
         }
-        
+
         if (answer === "true") {
             user.friends = await this.getFriends(user.id)
-            if(user.friends === undefined){
+            if (user.friends === undefined) {
                 user.friends = [];
                 console.log("user frind undefined!")
-                this.userService.setAchievements(user.intraId,"SOCIAL_BUTTERFLY")
+                this.userService.setAchievements(user.intraId, "SOCIAL_BUTTERFLY")
             }
-            if(user.friends.length == 0)
-                this.userService.setAchievements(user.intraId,"SOCIAL_BUTTERFLY")
+            if (user.friends.length == 0)
+                this.userService.setAchievements(user.intraId, "SOCIAL_BUTTERFLY")
 
             friend.friends = await this.getFriends(friend.id)
 
             console.log(user.friends)
             console.log(friend.friends)
-            if(friend.friends.length == 0)
-                this.userService.setAchievements(friend.intraId,"SOCIAL_BUTTERFLY")
+            if (friend.friends.length == 0)
+                this.userService.setAchievements(friend.intraId, "SOCIAL_BUTTERFLY")
             user.friends.push(friend)
             await this.userRepository.save(user)
 
@@ -107,34 +149,34 @@ export class FriendsService {
     }
     async getFriends1(userId: number): Promise<UserEntity[]> {
         const user = await this.userRepository
-          .createQueryBuilder('user')
-          .leftJoinAndSelect('user.friends', 'friends') 
-          .where('friends.id = :id1', { id1: userId })
-          .getMany();
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.friends', 'friends')
+            .where('friends.id = :id1', { id1: userId })
+            .getMany();
         return user;
-      }
-    
+    }
 
-    
+
+
     async getMyFriendQuery(userId: number): Promise<UserEntity[]> {
         const user = await this.userRepository
-          .createQueryBuilder('user')
-          .leftJoinAndSelect('user.requestedFriends', 'requested') 
-          .where('requested.id = :userId_1', { userId_1: userId })
-          .getMany();
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.requestedFriends', 'requested')
+            .where('requested.id = :userId_1', { userId_1: userId })
+            .getMany();
         return user;
-      }
+    }
 
     async getFriendsQuery(userId: number): Promise<UserI[]> {
         const user = await this.userRepository
-          .createQueryBuilder('user')
-          .leftJoinAndSelect('user.requestedFriends', 'requested') 
-          .andWhere('user.id = :senderIds', { senderIds: userId })
-          .getOne();
-      
-        return user.requestedFriends; 
-      }
-      
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.requestedFriends', 'requested')
+            .andWhere('user.id = :senderIds', { senderIds: userId })
+            .getOne();
+
+        return user.requestedFriends;
+    }
+
 
 
 

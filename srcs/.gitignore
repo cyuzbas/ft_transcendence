@@ -2,6 +2,4 @@
 /backend/dist
 /frontend/node_modules
 /backend/.env
-/backend/upload/*
-../backend
-../frontend
+

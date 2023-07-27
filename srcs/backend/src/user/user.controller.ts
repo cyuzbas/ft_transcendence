@@ -28,7 +28,7 @@ export class UserController {
 	}
 
     @Get('avatar/:filename')
-    getImage(@Param('filename') filename: string, @Res() res) {
+    getImage(@Param('filename') filename: string, @Res() res, @Req() req) {
 		const imageFilePath = join(__dirname, '../../upload', filename);
 		console.log("filename is  " + filename + " " + imageFilePath)
       return res.sendfile(imageFilePath);
@@ -49,7 +49,7 @@ export class UserController {
 		const filename = old.substring(old.lastIndexOf('/') + 1);
 		if (filename) {
 			try {
-			const imageFilePath = join(__dirname, '../../upload', filename);
+			const imageFilePath = join(__dirname, '../../upload', filename, req.user.userName);
 			  fs.unlinkSync(imageFilePath);
 			} catch (err) {
 			  

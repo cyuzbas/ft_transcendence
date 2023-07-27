@@ -15,18 +15,65 @@ type User = {
 	isLogged: boolean;
 };
 
+class GameDto {
+    id?: number;
+    playerScore?: number;
+    opponentScore?: number;
+    type?: string;
+    playerId?: number;
+    opponentId?: number;
+}
+
 const MatchHistory: React.FC<Props> = ({ id }) => {
 
 	const [users, setUsers] = useState<User[]>([]);
+	const [matches, setMatches] = useState<GameDto[]>([]);
 
+
+	
 	useEffect(() => {
 		const fetchData = async () => {
-		  try {
-			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`,{withCredentials:true});
-			const { friends} = response.data;
-			const usersData = [...friends.map((friend: User) => ({ ...friend }))]
-			setUsers(usersData);
+			try {
+				// const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`,{withCredentials:true});
+				// const { friends, nonFriends, me, query } = response.data;
 			
+				// const usersData = [...friends.map((friend: User) => ({ ...friend })),
+				// ...nonFriends.map((nonFriend: User) => ({ ...nonFriend})),
+				// ...query.map((query:User) =>({...query })),
+				// ...me.map((meUser: User) => ({ ...meUser }))];
+				// setUsers(response.data);
+			// 
+			//{"id":2,"playerScore":3,"opponentScore":2,"type":"CLASSIC","playerId":1,"opponentId":2},
+			// const response = await axios.get(`http://localhost:3001/game/${id}`,{withCredentials:true});
+			// console.log("BURASI MATCH  " + JSON.stringify(response.data))
+			// setMatches(response.data)
+			// console.log(response.data[0].playerId)
+			// console.log(JSON.stringify(matches))
+			//  console.log(matches)
+			// const convertedMatches: Match[] = response.data.map((item: any) => ({
+			// 	playerScore: item.playerScore,
+			// 	opponentScore: item.opponentScore,
+			// 	playerId: item.playerId,
+			// 	opponentId: item.opponentId,
+			//   }));
+			// console.log(JSON.stringify(convertedMatches))
+
+			//   setMatch(convertedMatches);
+			// console.log(JSON.stringify(matches))
+
+			// response.data.forEach((match: any) => {
+			// 	  let newMatch[]: Match = {
+			// 		playerId: match.playerId,
+			// 		opponentId: match.opponentId,
+			// 		playerScore: match.playerScore,
+			// 		opponentScore: match.opponentScore,
+			// 	  }
+			// 	  setMatch(newMatch)
+			// 	}
+			// )
+			
+
+				
 		  } catch (error) {
 			localStorage.clear()
 			window.location.href= '/login'

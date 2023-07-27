@@ -11,7 +11,7 @@ import NotFound from './pages/NotFound';
 import React, { useContext } from 'react';
 import './components/Nav/main.css';
 import Profile from './pages/Profile';
-import { Random, FriendGame } from './pages/Game/components/Online/index';
+import { Random } from './pages/Game/components/Online/index';
 import { WaitingPage1, WaitingPage2, WaitingPage3 } from './pages/Lobby/components/WaitingPage';
 import { Friends } from './components';
 
@@ -69,7 +69,7 @@ export function Router() {
                     <Route path='/profile/:id' element={<Profile />} />
                     <Route path='/profile' element={<Profile />} />
                     <Route path='/random' element={<Random />} />
-                    <Route path='/friendgame' element={<FriendGame />} />
+                    <Route path='/friendgame' element={<Random />} />
                     <Route path='/findingopponentClassic' element={<WaitingPage1 />} />
                     <Route path='/findingopponentCustom' element={<WaitingPage3 />} />
                     <Route path='/waitingreply' element={<WaitingPage2 />} />

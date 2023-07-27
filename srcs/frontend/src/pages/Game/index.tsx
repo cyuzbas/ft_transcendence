@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { Ball, Paddle, Score, Timer, Net } from './components'
 import { useGame } from '../../contexts'
 import { GameMode } from './logic/types'
@@ -23,6 +23,7 @@ export function Game({ gameMode = 'endless' }: GameProps) {
   const playerPaddleRef = useRef<HTMLDivElement>(null)
   const computerPaddleRef = useRef<HTMLDivElement>(null)
   const { setUp, start, gameState } = useGame()
+  const [rules, setRules] = useState('');
   
   useEffect(() => {
     if (
@@ -47,10 +48,18 @@ export function Game({ gameMode = 'endless' }: GameProps) {
     gameState.isGameRunning,
   ])
 
+  useEffect(() => {
+    if (gameMode === 'solo')
+      setRules("Play using your mouse");
+    else if (gameMode === 'multiplayer')
+      setRules("Play using ArrowUp ArrowDown");
+  }, [gameMode]);
+
   return (
     <>
       <Background>
-        <Timer />
+        {/* <Timer/> */}
+        <Timer str={rules}/>
         <Score />
         <Net />
         <Ball ballRef={ballRef} />

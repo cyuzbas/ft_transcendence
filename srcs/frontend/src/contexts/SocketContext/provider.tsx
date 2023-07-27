@@ -32,7 +32,6 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 	useEffect(() => {
 		function onGameInvite(data: any) {
 		  setGameInvitation(true);
-		//   console.log('+++++++++++++', data);
 		  setInvitationUserName(data.userName);
 		  setinvitationId(data.id);
 		  console.log("You have an invitation from: ", data.userName);
@@ -64,7 +63,7 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 		function onAccept(data: any) {
 		  setGameInvitation(false);
 		  console.log("Accept: ", data.message);
-		  navigate('/random');
+		  navigate('/friendGame');
 		}
 		
 
@@ -125,7 +124,16 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 		// inviteId: Daveti kabul etmek istediğimiz davetin id'si
 		const inviteId = invitationId;
 		socket.emit('AcceptInvitation', { id: inviteId });
-		console.log('accepted');
+		console.log('invitation accepted');
+
+	}
+
+	const handleReject = () => {
+		// inviteId: Daveti kabul etmek istediğimiz davetin id'si
+		const inviteId = invitationId;
+		socket.emit('RejectInvitation', { id: inviteId });
+		console.log('invitation rejected');
+		setGameInvitation(false);
 
 	}
 
@@ -136,7 +144,7 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 			<div className="invitation">
 				You have a game invitation from {invitationUserName}!
 				<button className="accept" onClick={handleAccept}>Accept</button>
-				<button className="reject">Reject</button>
+				<button className="reject" onClick={handleReject}>Reject</button>
 			</div>}
             {children}
         </SocketContext.Provider>

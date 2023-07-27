@@ -27,7 +27,6 @@ export function WaitingPage1() {
     socket.on("matchFound", onMatched);
     return () => {
       socket.off('matchFound', onMatched);
-      // socket.disconnect();
     };
   }, [socket, navigate]);
 
@@ -40,7 +39,6 @@ export function WaitingPage1() {
     socket.on("gameUnqueued", onCancelMatching);
     return () => {
       socket.off('gameUnqueued', onCancelMatching);
-      // socket.disconnect();
     };
   }, [socket, navigate]);
 
@@ -48,7 +46,6 @@ export function WaitingPage1() {
     socket.emit("matchMaking", {type: 'CLASSIC'});
     return () => {
       socket.off('matchMaking');
-      // socket.disconnect();
     };
   }, []);
 
@@ -75,69 +72,6 @@ export function WaitingPage1() {
   )
 }
 
-export function WaitingPage3() {
-  const [isLookingForOpponent, setIsLookingForOpponent] = useState(true);
-  const [isClose, setIsClose] = useState(false)
-  const { socket } = useSocket();
-  const navigate = useNavigate();
-
-
-  useEffect(() => {
-    function onMatched() {
-        console.log('matched');
-        setIsLookingForOpponent(false);
-        navigate('/random');
-    }
-    socket.on("matchFound", onMatched);
-    return () => {
-      socket.off('matchFound', onMatched);
-      // socket.disconnect();
-    };
-  }, [socket, navigate]);
-
-  useEffect(() => {
-    function onCancelMatching() {
-        console.log('cancel');
-        setIsLookingForOpponent(false);
-        navigate('/lobby');
-    }
-    socket.on("gameUnqueued", onCancelMatching);
-    return () => {
-      socket.off('gameUnqueued', onCancelMatching);
-      // socket.disconnect();
-    };
-  }, [socket, navigate]);
-
-  useEffect(() => {
-    socket.emit("matchMaking", {type: 'CUSTOM'});
-    return () => {
-      // socket.off('gameUnqueued', onCancelInvite);
-      // socket.disconnect();
-    };
-  }, []);
-
-  const handleClose = () => {
-    socket.emit("cancelMatching");
-    console.log('idil');
-    setIsLookingForOpponent(false);
-    navigate('/lobby');
-  };
-
-  return (
-    <>
-      {isLookingForOpponent && (
-        <div className='installing'>
-          <p className="loader"></p>
-          <p>Looking for an opponent</p>
-          <button className='close' onClick={handleClose}>
-            Cancel Game Request
-          </button>
-        </div>
-      )}
-    </>
-  )
-}
-
 export function WaitingPage2() {
   const [isLookingForOpponent, setIsLookingForOpponent] = useState(false);
   const { socket } = useSocket();
@@ -151,7 +85,6 @@ export function WaitingPage2() {
     function onSend() {
         console.log('++++++++invite send, waiting for respond');
         setIsLookingForOpponent(true);
-        // navigate('/random');
     }
     socket.on("invitesent", onSend);
     return () => {
@@ -172,16 +105,36 @@ export function WaitingPage2() {
   }, [socket, navigate]);
 
   useEffect(() => {
-    function onCancelInvite() {
-        console.log('cancel');
-        setIsLookingForOpponent(false);
-        navigate('/lobby');
+    function onCancelInvite(data: any) {
+        const isConfirmed = window.confirm(data);
+        if(isConfirmed) {
+            setIsLookingForOpponent(false);
+            navigate(-1);
+        }
     }
     socket.on("error", onCancelInvite);
     return () => {
       socket.off('error', onCancelInvite);
     };
   }, [socket, navigate]);
+
+  // inviteRefused
+
+  useEffect(() => {
+    function onInviteRefused(data: any) {
+        const isConfirmed = window.confirm(data);
+        if(isConfirmed) {
+            setIsLookingForOpponent(false);
+            navigate(-1);
+        }
+    }
+    socket.on("inviteRefused", onInviteRefused);
+    return () => {
+      socket.off('inviteRefused', onInviteRefused);
+    };
+  }, [socket, navigate]);
+
+
 
   useEffect(() => {
     socket.emit("Invite", { userName: username });
@@ -193,7 +146,7 @@ export function WaitingPage2() {
     socket.emit("Uninvite", { userName: username });
     console.log('idil');
     setIsLookingForOpponent(false);
-    navigate('/lobby');
+    navigate(-1);
   };
 
   return (
@@ -206,6 +159,67 @@ export function WaitingPage2() {
             Cancel Invite
           </button>
         </div>
+      )}
+    </>
+  )
+}
+
+export function WaitingPage3() {
+  const [isLookingForOpponent, setIsLookingForOpponent] = useState(true);
+  const { socket } = useSocket();
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    function onMatched() {
+        console.log('matched');
+        setIsLookingForOpponent(false);
+        navigate('/random');
+    }
+    socket.on("matchFound", onMatched);
+    return () => {
+      socket.off('matchFound', onMatched);
+    };
+  }, [socket, navigate]);
+
+  useEffect(() => {
+    function onCancelMatching(data: any) {
+        console.log('cancel', data);
+        setIsLookingForOpponent(false);
+        navigate('/lobby');
+    }
+    socket.on("gameUnqueued", onCancelMatching);
+    return () => {
+      socket.off('gameUnqueued', onCancelMatching);
+    };
+  }, [socket, navigate]);
+
+  useEffect(() => {
+    socket.emit("matchMaking", {type: 'CUSTOM'});
+    console.log('rewuested')
+    return () => {
+      socket.off('matchMaking');
+    };
+  }, []);
+
+  const handleClose = () => {
+    socket.emit("cancelMatching");
+    console.log('idil');
+    setIsLookingForOpponent(false);
+    navigate('/lobby');
+  };
+
+  return (
+    <>
+      {isLookingForOpponent && (
+        <div className='installing'>
+          <p className="loader"></p>
+          <p>Looking for an opponent</p>
+          <button className='close' onClick={handleClose}>
+            Cancel Game Request
+          </button>
+        </div>
+        
       )}
     </>
   )

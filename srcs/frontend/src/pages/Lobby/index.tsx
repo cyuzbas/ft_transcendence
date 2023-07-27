@@ -7,6 +7,7 @@ import SoloImg from './assets/single.png';
 import MultiImg from './assets/multi.png';
 import { PlusIcon } from "./assets/PlusIcon"
 import { CloseIcon } from "./assets/CloseIcon"
+import './styles.css'
 
 export function Lobby() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
@@ -26,23 +27,34 @@ export function Lobby() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setUsername(event.target.value);
 
-
+  const mainLobby = {
+    height: '100%',
+    width: '100%',
+  
+    backgroundColor: 'var(--background-color)',
+  };
 
   return (
+    <>
+    <div className='mainLobby' style={mainLobby}>
     <Components.Container>
       {settings ? (
         <Components.OfflineContainer settings={settings}>
           <Components.Card>
             <Components.TopCard>
-              <img src={SoloImg} alt="Solo" className='img1'/>
-              <Link to='/solo' className='games1'>SOLO</Link>
+              <Link to='/solo' className='games1'>
+                <img src={SoloImg} alt="Solo" className='img1'/>
+                SOLO
+              </Link>
             </Components.TopCard>
             <Components.BottomCard>
-              <img src={MultiImg} alt="Multi" className='img2'/>
-              <Link to='/multiplayer' className='games2'>MULTIPLAYER</Link>
+              <Link to='/multiplayer' className='games2'>
+                <img src={MultiImg} alt="Multi" className='img2'/>
+                MULTIPLAYER
+              </Link>
             </Components.BottomCard>
-          <Settings isOpen={isSettingsModalOpen} setIsOpen={setIsSettingsModalOpen} />
           </Components.Card>
+          <Settings isOpen={isSettingsModalOpen} setIsOpen={setIsSettingsModalOpen} />
         </Components.OfflineContainer>
       ) : (
         <Components.OnlineContainer settings={settings}>
@@ -94,6 +106,8 @@ export function Lobby() {
         </Components.Overlay>
       </Components.OverlayContainer>
     </Components.Container>
+    </div>
+    </>
   );
   
     // <div className='lobby'>

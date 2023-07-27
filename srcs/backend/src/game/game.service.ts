@@ -11,6 +11,15 @@ import { scoreMax } from "./game";
 import { UserService } from 'src/user/user.service';
 import { GameType } from '../typeorm/game.entity';
 
+class GameDto {
+    id: number;
+    playerScore: number;
+    opponentScore: number;
+    type: string;
+    playerId: number;
+    opponentId: number;
+}
+
 @Injectable()
 export class GameService {
     constructor(
@@ -62,13 +71,9 @@ export class GameService {
                 if (!loserObj) loserUsername = "unKnown";
                 else loserUsername = loserObj.userName;
                 
-                game.server.to(`game${game.id}`).emit('gameEnd', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
-                
-                // game.server.to(`game${game.id}`).emit('gameEnd', { winnerUsername, loserUsername, winnerScore, loserScore });
-                // this.socketService.endGame(game, game.id);
+                game.server.to(`game${game.id}`).emit('gameEnd', `${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
                 game.server.socketsLeave(`game${game.id}`);
                 this.socketService.games.delete(game.id);
-                // game.pause = true;
                 return;
             }
 
@@ -300,6 +305,8 @@ export class GameService {
           }
         }
     }
+
+   
 
     async getGamesByPlayerId(playerId: number): Promise<GameEntity[]> {
         return this.gameRepository.find({

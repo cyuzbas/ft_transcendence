@@ -40,4 +40,17 @@ export class GameEntity {
         default: GameType.CLASSIC
     })
     type: string;
+
+    @Expose()
+    @Column({
+        default: 0
+    })
+    playerId: number;
+
+    @Expose()
+    @Column({
+        default: 0
+    })
+    opponentId: number;
+
 }

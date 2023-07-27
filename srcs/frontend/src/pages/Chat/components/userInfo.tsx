@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { MdKeyboardReturn } from "react-icons/md"
 import { BsChatRightText } from "react-icons/bs"
 import { PiGameControllerDuotone } from "react-icons/pi"
-import { GameType } from "../../Lobby/components/WaitingPage";
 import { Link } from "react-router-dom";
 
 type Props = {
@@ -34,10 +33,8 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 			const contact = members.find(member => member.userName !== user.userName);
 			if (contact) {
 				setSelectedMember(contact);
-				// console.log('yes')
 			} else {
 				setSelectedMember(null);
-				// console.log('no')
 			}
 		}
 	}, [members])
@@ -68,7 +65,7 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 					<BsChatRightText size="2em"/>
 						message
 					</button>
-					<Link to={{ pathname: '/waitingreply', search: `?userName=${selectedMember}`}} className="iconBtn" >
+					<Link to={{ pathname: '/waitingreply', search: `?username=${selectedMember.userName}`}} className="iconBtn" >
 						<PiGameControllerDuotone size="2em" />
 						play
 					</Link>

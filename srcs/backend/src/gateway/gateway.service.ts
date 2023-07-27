@@ -30,7 +30,9 @@ export class GatewayService {
     constructor(
         private userService: UserService,
         @InjectRepository(GameEntity)
-        private gameRepository: Repository<GameEntity>
+        private gameRepository: Repository<GameEntity>,
+        @InjectRepository(UserEntity)
+        private userRepository: Repository<UserEntity>,
     ) {
         this.users = new Map();
         this.queueClassic = [];
@@ -80,10 +82,15 @@ export class GatewayService {
         let gameP1 = this.gameRepository.create({
             player: p1,
             opponent: p2,
+            playerId: p1.id,
+            opponentId: p2.id,
         });
         let gameP2 = this.gameRepository.create({
             player: p2,
             opponent: p1,
+            playerId: p2.id,
+            opponentId: p1.id,
+
         });
         if (!gameP1 || !gameP2) {
             return { status: false, message: "Could not create database objects" };
@@ -103,14 +110,6 @@ export class GatewayService {
         }
         return { status: true, message: 'success', payload: [gameP1, gameP2] };
     }
-
-    // getConnectedUserById(userId: number) {
-    //     return [...this.users.values()].find((x) => x.id === userId);
-    // }   /////bunun yerine users service koydun onu game'e de degistirmeyi unutma
-
-    // getUserKVByUserId(userId: number) {
-    //     return [...this.users.entries()].find((u) => u[1].id === userId);
-    // }
 
     getGameByGameId(gameId: string) {
         return this.games.get(gameId);
@@ -132,7 +131,6 @@ export class GatewayService {
             }
             this.queueCustom.splice(index, 1);
         }
-        // console.log(this.queueClassic);
         return { status: true, message: "You have been removed from the queue" };
     }
 
@@ -150,16 +148,15 @@ export class GatewayService {
         return [...this.games.values()].find(g => [g.p1, g.p2].includes(userId));
     }
 
-    inviteUser(userId: number, targetUserId: number, type: GameType): Res<boolean> {
+    async inviteUser(userId: number, targetUserId: number, type: GameType): Promise<Res<boolean>> {
         if (this.isInQueue(userId))
             return { status: false, message: "you are in the queue" };
         if (targetUserId === userId)
             return { status: false, message: "invitation to yourself?" };
         if (!this.isUserOnline(targetUserId))
             return { status: false, message: "target is offline" };
-        if (!this.isInGame(targetUserId))
+        if (await this.isInGame(targetUserId))
             return { status: false, message: "target is already playing a game" };
-        // console.log("idil");
         if (this.isInQueue(targetUserId))
             return { status: false, message: "target is already queued for a random game" };
         let targetInvites = this.invites.get(targetUserId) || [];
@@ -167,17 +164,18 @@ export class GatewayService {
             return { status: false, message: "invitation send already" };
         targetInvites.push({ id: userId, type });
         this.invites.set(targetUserId, targetInvites);
+        console.log(targetInvites);
+        console.log(this.invites);
         return { status: true, message: "success" };
     }
 
     deleteInvite(myUserId: number, targetUserId: number): Res<Invite> {
-        if (!this.isUserOnline(targetUserId))
-            return { status: false, message: "Target is offline" };
         const myInvites = this.invites.get(myUserId) || [];
+        console.log(myInvites)
         if (!myInvites.find(i => i.id === targetUserId))
             return { status: false, message: "no invitation from the user" };
-        const deleted = myInvites.find(i => i.id === targetUserId);
         this.invites.set(myUserId, myInvites.filter(i => i.id !== targetUserId));
+        console.log('geldi')
         return { status: true, message: "success" };
     }
 
@@ -185,8 +183,9 @@ export class GatewayService {
         return (this.queueClassic.includes(userId) || this.queueCustom.includes(userId))
     }
 
-    async isInGame(userId: number) {
+    async isInGame(userId: number) : Promise<boolean> {
         const user = await this.userService.findUserByUserId(userId);
+        // console.log(user.inGame, ' ingame?')
         return(user.inGame);
     }
 
@@ -202,4 +201,70 @@ export class GatewayService {
     isInviting(userId: number) {
         return [...this.invites.values()].find(invites => !!invites.find(i => i.id === userId));
     }
+
+    handleInQueueDisconnection (id: number) {
+        if (this.queueClassic.includes(id) || this.queueCustom.includes(id)) {
+            let indexClassic = this.queueClassic.indexOf(id);
+            if (indexClassic !== -1) {
+                this.queueClassic.splice(indexClassic, 1);
+            }
+
+            let indexCustom = this.queueCustom.indexOf(id);
+            if (indexCustom !== -1) {
+                this.queueCustom.splice(indexCustom, 1);
+            }
+        }
+    }
+
+    async handleInGameDisconnection (id: number) {
+        console.log(this.games,'////////////');
+        const game = await this.findUserGame(id);
+		await this.exitGame(id, game);
+    }
+    
+    handleInviteDisconnection (id: number) {
+        this.invites.forEach((inviteList, userId) => {
+            const matchingInviteIndices = inviteList.reduce((indices, invite, index) => {
+                if (invite.id === id) indices.push(index);
+                return indices;
+            }, []);
+            matchingInviteIndices.reverse().forEach(index => inviteList.splice(index, 1));
+            this.invites.delete(userId);
+        });
+    }
+
+    async findUserGame(userId: number): Promise<Game | null> {
+        for (const game of this.games.values()) {
+            if (game.p1 === (userId) || game.p2 === (userId)) {
+                return game;
+            }
+        }
+        return null;
+    }
+
+    async exitGame(userId: number, game: Game) {
+        const winner = (userId === game.p1) ? game.p2 : game.p1;
+        const loser = (userId === game.p1) ? game.p1 : game.p2;
+        await this.userRepository.update(winner, { inGame: false });
+		await this.userRepository.update(loser, { inGame: false });
+		await this.userRepository.increment({ id: winner }, 'totalWin', 1);
+		// // if game type a gore score
+		let score = game.isCustom ? 150 : 100;
+		await this.userRepository.increment({ id: winner }, 'score', score);
+		await this.userService.changeRank(winner);
+
+		await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
+
+		const winnerObj = await this.userService.findUserByUserId(winner);  ///buraya alinin fonksiyonunu koyacaksin
+		const loserObj = await this.userService.findUserByUserId(loser);  ///buraya alinin fonksiyonunu koyacaksin
+
+		let winnerUsername: String;
+		if (!winnerObj) winnerUsername = "unKnown";
+		else winnerUsername = winnerObj.userName;
+		
+		game.server.to(`game${game.id}`).emit('gameEnd', `${winnerUsername} won the game ${3} - ${0}`);
+		game.server.socketsLeave(`game${game.id}`);
+		this.games.delete(game.id);
+    }
+
 }

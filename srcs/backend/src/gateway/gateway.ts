@@ -64,6 +64,14 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		const userSocket = client.handshake.auth;
 		this.logger.debug(`Client disconnected: [${userSocket.name}] - ${client.id}`);
 		this.logger.debug(`Number of sockets connected: ${this.server.sockets.sockets.size}`);
+		
+		const user = await this.userService.findUserByUserName(userSocket.name);
+		if (user) {
+			this.gatewayService.handleInQueueDisconnection((user.id));
+		}
+		// this.gatewayService.handleInGameDisconnection(user.id);
+		// this.gatewayService.handleInviteDisconnection(user.id);
+		
 		await this.userService.updateStatus(userSocket.name, 'offline');
 		this.onUserUpdate();
 	}
@@ -143,10 +151,10 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', 'No random game after sending an invitation');
             return;
         }
-		// if (this.gatewayService.isInGame(user.id)) {
-		// 	client.emit('error', 'In the game');
-        //     return;
-        // }
+		if (!this.gatewayService.isInGame(user.id)) {
+			client.emit('error', 'In the game');
+            return;
+        }
 		console.log(data);
 		// errorler icin bisi koy
 		const resQueued = this.gatewayService.addUserToQueue(user.id, data.type);
@@ -212,8 +220,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	@SubscribeMessage('Invite')
     async inviteUser( @MessageBody() data: { userName: string, type: GameType }, @ConnectedSocket() client: Socket ) {
-		if (data.type)
-			data.type = GameType.CLASSIC;
+		console.log(data.type,'............');
 		const userSocket = client.handshake.auth;
 		const user = await this.userService.findUserByUserName(userSocket.name);
 		if (!user) {
@@ -224,17 +231,14 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', 'empty username');
             return;
         }
-		// if (this.gatewayService.isInGame(user.id)) {
-        //     client.emit('error', 'in game');
-        //     return;
-        // }
+		console.log( await this.userService.findUserByUserName(data.userName))
         const target = await this.userService.findUserByUserName(data.userName);
 		if (!target) {
 			client.emit('error', 'Invalid user');
 			return;
 		}
 		// this.gatewayService.uninviteUser(user.id, target?.id );
-        const res = this.gatewayService.inviteUser(user.id, target?.id, data.type );
+        const res = await this.gatewayService.inviteUser(user.id, target?.id, data.type );
         if (res.status !== true) {
 			client.emit('error', res.message);
             return;
@@ -245,7 +249,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
     }
 
     @SubscribeMessage('Uninvite')
-    async uninviteUser( @MessageBody() data: { userName: string }, @ConnectedSocket() client: Socket ) {
+    async UninviteUser( @MessageBody() data: { userName: string }, @ConnectedSocket() client: Socket ) {
         const userSocket = client.handshake.auth;
 		const user = await this.userService.findUserByUserName(userSocket.name);
         if (!user || !data.userName ) {
@@ -253,14 +257,15 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
             return;
         }
         const target = await this.userService.findUserByUserName(data.userName);
-        const res = this.gatewayService.deleteInvite(user.id, target?.id);
+        const res = this.gatewayService.deleteInvite(target.id, user.id);
         if (res.status !== true) {
-            client.emit('error', res.message);
+			client.emit('error', res.message);
             return;
         }
-        client.emit('invitationCanceled', { ...res.payload, userName: target.userName });
+		console.log('yes');
+        client.emit('invitationDeleted', { ...res.payload, userName: target.userName });
         this.sendSocketMsgByUserId(target.id, 'invitationDeleted', { ...res.payload, userName: user.userName });
-        this.sendSocketMsgByUserId(target.id, 'warning', `${user.userName} cancelled their invitation`);
+        this.sendSocketMsgByUserId(target.id, 'warning', `cancelled their invitation`);
     }
 
     @SubscribeMessage('AcceptInvitation')
@@ -278,25 +283,25 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', res.message);
             return;
         }
-        const resGameCreate = await this.gatewayService.createGame(this.server, user, target, data.type);
+        const resGameCreate = await this.gatewayService.createGame(this.server, user, target, GameType.CLASSIC);
         if (resGameCreate.status !== true) {
 			client.emit('error', resGameCreate.message);
             return;
         }
 		const socketId = this.mapService.userToSocketId.get(target.id);
 		const socket = this.server.sockets.sockets.get(socketId);
-        // if (this.gatewayService.invites.has(resGameCreate.payload[0].player.id)) {
-		// 	const invites = this.gatewayService.invites.get(resGameCreate.payload[0].player.id);
-        //     invites.forEach((invite) => {
-		// 		this.refuseInvite(invite, socket);
-        //     });
-        // }
-        // if (this.gatewayService.invites.has(resGameCreate.payload[1].player.id)) {
-		// 	const invites = this.gatewayService.invites.get(resGameCreate.payload[1].player.id);
-        //     invites.forEach((invite) => {
-		// 		this.refuseInvite(invite, socket);
-        //     });
-        // }
+        if (this.gatewayService.invites.has(resGameCreate.payload[0].player.id)) {
+			const invites = this.gatewayService.invites.get(resGameCreate.payload[0].player.id);
+            invites.forEach((invite) => {
+				this.refuseInvite(invite, socket);
+            });
+        }
+        if (this.gatewayService.invites.has(resGameCreate.payload[1].player.id)) {
+			const invites = this.gatewayService.invites.get(resGameCreate.payload[1].player.id);
+            invites.forEach((invite) => {
+				this.refuseInvite(invite, socket);
+            });
+        }
         const gameId = [resGameCreate.payload[0].player.id, resGameCreate.payload[1].player.id].sort().join('vs');
         client.join(`game${gameId}`);
         socket.join(`game${gameId}`);
@@ -315,22 +320,16 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
     @SubscribeMessage('RejectInvitation')
     async refuseInvite( @MessageBody() data: Invite, @ConnectedSocket() client: Socket ) {
         const userSocket = client.handshake.auth;
-		const userDto = await this.userService.findUserByUserName(userSocket.name);
-		const user = await this.userService.findUserByUserId(userDto.id);
-        if (!user || !('id' in data)) {
-            client.emit('error', "Invalid data");
-            return;
-        }
+		const user = await this.userService.findUserByUserName(userSocket.name);
+		// const user = await this.userService.findUserByUserId(userDto.id);
         const target = await this.userService.findUserByUserId(data.id);
         const res = this.gatewayService.deleteInvite(user.id, target?.id);
         if (res.status !== true) {
             client.emit('error', res.message);
             return;
         }
-        client.emit('success', `You refused ${target.userName}'s invite`);
-        client.emit('inviteDeleted', { ...res.payload, userName: user.userName });
-        this.sendSocketMsgByUserId(target.id, 'warning', `${user.userName} refused your invite`);
-        this.sendSocketMsgByUserId(target.id, 'inviteRefused', { ...res.payload, userName: user.userName });
+        // client.emit('inviteDeleted', { ...res.payload, userName: user.userName });
+        this.sendSocketMsgByUserId(target.id, 'inviteRefused', `Your friend rejected your invite`);
     }
 	
 	@SubscribeMessage('keyDown')
@@ -354,6 +353,42 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
         if (res.status !== true) {
             return;
         }
+    }
+
+	@SubscribeMessage('keyUp')
+    async KeyUp( @MessageBody() data: string, @ConnectedSocket() client: Socket ) {
+        if (!client || !['w', 's'].includes(data)) {
+            client.emit('error', "Invalid data");
+            return ;
+        }
+		const userSocket = client.handshake.auth;
+		const user = await this.userService.findUserByUserName(userSocket.name);
+        if (!user) {
+            client.emit('error', 'Invalid user');
+            return ;
+        }
+        let move = 0;
+        const res = this.gatewayService.movePaddle(user.id, move);
+        if (res.status !== true) {
+            return;
+        }
+    }
+
+	@SubscribeMessage('gameExited')
+    async gameExited( @ConnectedSocket() client: Socket ) {
+		const userSocket = client.handshake.auth;
+		const user = await this.userService.findUserByUserName(userSocket.name);
+        if (!user) {
+            client.emit('error', 'Invalid user');
+            return ;
+        }
+        let move = 0;
+        const res = this.gatewayService.movePaddle(user.id, move);
+        if (res.status !== true) {
+            return;
+        }
+		const game = await this.gatewayService.findUserGame(user.id);
+		await this.gatewayService.exitGame(user.id, game);
     }
 
 	async sendSocketMsgByUserId(userId: number, event: string, payload: any = null) {

@@ -69,7 +69,7 @@ export function Request() {
         </div>
       ))
     ) : (
-      <p>No users found</p>
+      <p>You don't have friend request!</p>
     )}
     </>
     );

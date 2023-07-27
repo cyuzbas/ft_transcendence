@@ -77,7 +77,7 @@ export function Friends() {
 
   return (
     <>
-      {Array.isArray(users) ? (
+      {( users.length ) ? (
         users.map((user, index) => (
 
           <div className="friends-text-image-component" key={user.avatar}>

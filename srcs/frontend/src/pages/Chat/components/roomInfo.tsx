@@ -38,8 +38,14 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 					invite
 				</button>
 			}
-			<div>
-				{room.description ? ("description" ) : "no"}
+			<div className="roomDescription">
+				{room.description 
+				? 
+				<>
+					<h5>Description</h5>
+					{room.description}
+				</>
+				: null}
 			</div>
 			<h4>
 				Members

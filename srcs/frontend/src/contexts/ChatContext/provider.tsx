@@ -226,7 +226,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     
     const removeRoomUser = async(roomName: string, userName: string, intraId: string) => {
         try {
-            await axios.put(`${URL}/chat/removeRoomUser/${roomName}/${userName}`, {withCredentials:true});
+            await axios.put(`${URL}/chat/removeRoomUser/${roomName}/${userName}`, null, {withCredentials:true});
             socket.emit('memberUpdate', room.roomName);
             socket.emit('removeRoomUser', {
                 roomName,
@@ -269,7 +269,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     
     const handleBlock = async(member: User, blockAction: string) => {
         try {
-            const response = await axios.put(`${URL}/chat/${blockAction}/${user.userName}/${member.userName}`, {withCredentials:true});
+            const response = await axios.put(`${URL}/chat/${blockAction}/${user.userName}/${member.userName}`, null, {withCredentials:true});
             setBlocked(response.data);
         } catch (error) {
             console.log(error);

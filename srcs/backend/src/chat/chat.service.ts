@@ -50,7 +50,7 @@ export class ChatService {
 				roomName: room.roomName,
 				type: room.type,
 				description: room.description,
-				password: await bcrypt.hash(room.password, 10),
+				password: room.type === RoomType.PROTECTED ? await bcrypt.hash(room.password, 10) : null,
 			});
 			return await this.roomRepository.save(newRoom) as RoomDto;
 		}
@@ -114,13 +114,14 @@ export class ChatService {
 			await this.roomUserRepository.save(roomUser);
 		}
 
-		const { roomId, roomName, type } = roomUser.room;
+		const { roomId, roomName, type, description } = roomUser.room;
 		const { userRole, unreadMessages, isMuted, isKicked, isBanned, contact } = roomUser;
 
 		return {
 			roomId,
 			roomName,
 			type,
+			description,
 			unreadMessages,
 			userRole,
 			isMuted,
@@ -181,8 +182,11 @@ export class ChatService {
 		const findRoom = await this.roomRepository.findOne({
 			where: {roomName: room.roomName}
 		});
-
-		return findRoom.password === room.password;
+		if (!findRoom) {
+			throw new HttpException('Room Not Found', HttpStatus.NOT_FOUND)
+		}
+		const isMatch = await bcrypt.compare(room.password, findRoom.password);
+		return isMatch;
 	}
 	
 	async blockUser(blockerUserName: string, blockedUserName: string): Promise<UserDto[]> {
@@ -268,10 +272,11 @@ export class ChatService {
 			throw new HttpException('Rooms Not Found', HttpStatus.NOT_FOUND)
 		}
 
-		const roomData = rooms.map(({ roomId, roomName, type }) => ({
+		const roomData = rooms.map(({ roomId, roomName, type, description }) => ({
 			roomId,
 			roomName,
 			type,
+			description,
 		}));
 		return roomData as RoomDto[];
 	}
@@ -291,11 +296,12 @@ export class ChatService {
 
 		const roomUserData = user.roomLinks
 			.map(({ room, unreadMessages, userRole, isMuted, muteEndTime, isBanned, isKicked, contact }) => {
-				const { roomId, roomName, type } = room;
+				const { roomId, roomName, type, description } = room;
 				return {
 					roomId,
 					roomName,
 					type,
+					description,
 					unreadMessages,
 					userRole,
 					isMuted,

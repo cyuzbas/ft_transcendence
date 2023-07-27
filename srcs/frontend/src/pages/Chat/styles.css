@@ -656,3 +656,6 @@ html {
   font-size: 30px;
 }
 
+.roomDescription {
+  display: flex;
+}

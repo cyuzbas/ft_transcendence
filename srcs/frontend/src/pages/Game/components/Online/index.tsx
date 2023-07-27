@@ -4,6 +4,7 @@ import { Timer } from '../Timer/index';
 import { useNavigate } from 'react-router-dom'
 import './styles.css'
 import { CloseIcon } from '../../../Lobby/assets';
+import { Net } from '../Net';
 
 interface GameState {
   ball: { x: number; y: number; sizeX: number; sizeY: number; };
@@ -94,7 +95,7 @@ export function Random() {
 
   const handleExit = () => {
     socket.emit("gameExited");
-    navigate('/lobby');
+    // navigate('/lobby');
   };
 
 
@@ -116,6 +117,7 @@ export function Random() {
               <button className='exit' onClick={handleExit}>
                 <CloseIcon />
               </button>
+              <Net />
               <div 
                 style={{
                   position: 'absolute',
@@ -168,6 +170,7 @@ export function Random() {
             </>
           )}
         </div>
+        </div>
         {end && (
           <>
             <div className='result'>
@@ -178,7 +181,6 @@ export function Random() {
             </div>
           </>
         )}
-      </div>
     </>
   );
 };

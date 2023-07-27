@@ -8,6 +8,7 @@ import SoloImg from './assets/single.png';
 import MultiImg from './assets/multi.png';
 import { PlusIcon } from "./assets/PlusIcon"
 import { CloseIcon } from "./assets/CloseIcon"
+import './styles.css'
 
 export function Lobby() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
@@ -27,9 +28,16 @@ export function Lobby() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setUsername(event.target.value);
 
-
+  const mainLobby = {
+    height: '100%',
+    width: '100%',
+  
+    backgroundColor: 'var(--background-color)',
+  };
 
   return (
+    <>
+    <div className='mainLobby' style={mainLobby}>
     <Components.Container>
       {settings ? (
         <Components.OfflineContainer settings={settings}>
@@ -99,6 +107,8 @@ export function Lobby() {
         </Components.Overlay>
       </Components.OverlayContainer>
     </Components.Container>
+    </div>
+    </>
   );
   
     // <div className='lobby'>

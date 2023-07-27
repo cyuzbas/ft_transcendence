@@ -220,8 +220,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	@SubscribeMessage('Invite')
     async inviteUser( @MessageBody() data: { userName: string, type: GameType }, @ConnectedSocket() client: Socket ) {
-		if (data.type)
-			data.type = GameType.CLASSIC;
+		console.log(data.type,'............');
 		const userSocket = client.handshake.auth;
 		const user = await this.userService.findUserByUserName(userSocket.name);
 		if (!user) {
@@ -239,7 +238,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			return;
 		}
 		// this.gatewayService.uninviteUser(user.id, target?.id );
-        const res = this.gatewayService.inviteUser(user.id, target?.id, data.type );
+        const res = await this.gatewayService.inviteUser(user.id, target?.id, data.type );
         if (res.status !== true) {
 			client.emit('error', res.message);
             return;
@@ -284,25 +283,25 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', res.message);
             return;
         }
-        const resGameCreate = await this.gatewayService.createGame(this.server, user, target, data.type);
+        const resGameCreate = await this.gatewayService.createGame(this.server, user, target, GameType.CLASSIC);
         if (resGameCreate.status !== true) {
 			client.emit('error', resGameCreate.message);
             return;
         }
 		const socketId = this.mapService.userToSocketId.get(target.id);
 		const socket = this.server.sockets.sockets.get(socketId);
-        // if (this.gatewayService.invites.has(resGameCreate.payload[0].player.id)) {
-		// 	const invites = this.gatewayService.invites.get(resGameCreate.payload[0].player.id);
-        //     invites.forEach((invite) => {
-		// 		this.refuseInvite(invite, socket);
-        //     });
-        // }
-        // if (this.gatewayService.invites.has(resGameCreate.payload[1].player.id)) {
-		// 	const invites = this.gatewayService.invites.get(resGameCreate.payload[1].player.id);
-        //     invites.forEach((invite) => {
-		// 		this.refuseInvite(invite, socket);
-        //     });
-        // }
+        if (this.gatewayService.invites.has(resGameCreate.payload[0].player.id)) {
+			const invites = this.gatewayService.invites.get(resGameCreate.payload[0].player.id);
+            invites.forEach((invite) => {
+				this.refuseInvite(invite, socket);
+            });
+        }
+        if (this.gatewayService.invites.has(resGameCreate.payload[1].player.id)) {
+			const invites = this.gatewayService.invites.get(resGameCreate.payload[1].player.id);
+            invites.forEach((invite) => {
+				this.refuseInvite(invite, socket);
+            });
+        }
         const gameId = [resGameCreate.payload[0].player.id, resGameCreate.payload[1].player.id].sort().join('vs');
         client.join(`game${gameId}`);
         socket.join(`game${gameId}`);
@@ -389,39 +388,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
             return;
         }
 		const game = await this.gatewayService.findUserGame(user.id);
-
-		///////
-
-		// await this.userRepository.update(winner, { inGame: false });
-		// await this.userRepository.increment({ id: winner }, 'totalWin', 1);
-		// // if game type a gore score
-		// let score = game.isCustom ? 150 : 100;
-		// await this.userRepository.increment({ id: winner }, 'score', score);
-		// await this.userService.changeRank(winner);
-
-		// await this.userRepository.update(loser, { inGame: false });
-		// await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
-
-		// const winnerObj = await this.userService.findUserByUserId(winner);  ///buraya alinin fonksiyonunu koyacaksin
-		// const loserObj = await this.userService.findUserByUserId(loser);  ///buraya alinin fonksiyonunu koyacaksin
-
-		// let winnerUsername: String;
-		// if (!winnerObj) winnerUsername = "unKnown";
-		// else winnerUsername = winnerObj.userName;
-
-		// let loserUsername: String;
-		// if (!loserObj) loserUsername = "unKnown";
-		// else loserUsername = loserObj.userName;
-		
-		// game.server.to(`game${game.id}`).emit('gameEnd', `${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
-		
-		// // game.server.to(`game${game.id}`).emit('gameEnd', { winnerUsername, loserUsername, winnerScore, loserScore });
-		// // this.socketService.endGame(game, game.id);
-		// game.server.socketsLeave(`game${game.id}`);
-		// this.socketService.games.delete(game.id);
-
-		// ///////
-
+		await this.gatewayService.exitGame(user.id, game);
     }
 
 	async sendSocketMsgByUserId(userId: number, event: string, payload: any = null) {

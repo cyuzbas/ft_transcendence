@@ -30,7 +30,9 @@ export class GatewayService {
     constructor(
         private userService: UserService,
         @InjectRepository(GameEntity)
-        private gameRepository: Repository<GameEntity>
+        private gameRepository: Repository<GameEntity>,
+        @InjectRepository(UserEntity)
+        private userRepository: Repository<UserEntity>,
     ) {
         this.users = new Map();
         this.queueClassic = [];
@@ -146,15 +148,15 @@ export class GatewayService {
         return [...this.games.values()].find(g => [g.p1, g.p2].includes(userId));
     }
 
-    inviteUser(userId: number, targetUserId: number, type: GameType): Res<boolean> {
+    async inviteUser(userId: number, targetUserId: number, type: GameType): Promise<Res<boolean>> {
         if (this.isInQueue(userId))
             return { status: false, message: "you are in the queue" };
         if (targetUserId === userId)
             return { status: false, message: "invitation to yourself?" };
         if (!this.isUserOnline(targetUserId))
             return { status: false, message: "target is offline" };
-        // if (!this.isInGame(targetUserId))
-        //     return { status: false, message: "target is already playing a game" };
+        if (await this.isInGame(targetUserId))
+            return { status: false, message: "target is already playing a game" };
         if (this.isInQueue(targetUserId))
             return { status: false, message: "target is already queued for a random game" };
         let targetInvites = this.invites.get(targetUserId) || [];
@@ -162,6 +164,8 @@ export class GatewayService {
             return { status: false, message: "invitation send already" };
         targetInvites.push({ id: userId, type });
         this.invites.set(targetUserId, targetInvites);
+        console.log(targetInvites);
+        console.log(this.invites);
         return { status: true, message: "success" };
     }
 
@@ -170,8 +174,8 @@ export class GatewayService {
         console.log(myInvites)
         if (!myInvites.find(i => i.id === targetUserId))
             return { status: false, message: "no invitation from the user" };
-        const deleted = myInvites.find(i => i.id === targetUserId);
         this.invites.set(myUserId, myInvites.filter(i => i.id !== targetUserId));
+        console.log('geldi')
         return { status: true, message: "success" };
     }
 
@@ -179,9 +183,9 @@ export class GatewayService {
         return (this.queueClassic.includes(userId) || this.queueCustom.includes(userId))
     }
 
-    async isInGame(userId: number) {
+    async isInGame(userId: number) : Promise<boolean> {
         const user = await this.userService.findUserByUserId(userId);
-        console.log(user.inGame, ' ingame?')
+        // console.log(user.inGame, ' ingame?')
         return(user.inGame);
     }
 
@@ -212,8 +216,10 @@ export class GatewayService {
         }
     }
 
-    handleInGameDisconnection (id: number) {
+    async handleInGameDisconnection (id: number) {
         console.log(this.games,'////////////');
+        const game = await this.findUserGame(id);
+		await this.exitGame(id, game);
     }
     
     handleInviteDisconnection (id: number) {
@@ -234,6 +240,31 @@ export class GatewayService {
             }
         }
         return null;
+    }
+
+    async exitGame(userId: number, game: Game) {
+        const winner = (userId === game.p1) ? game.p2 : game.p1;
+        const loser = (userId === game.p1) ? game.p1 : game.p2;
+        await this.userRepository.update(winner, { inGame: false });
+		await this.userRepository.update(loser, { inGame: false });
+		await this.userRepository.increment({ id: winner }, 'totalWin', 1);
+		// // if game type a gore score
+		let score = game.isCustom ? 150 : 100;
+		await this.userRepository.increment({ id: winner }, 'score', score);
+		await this.userService.changeRank(winner);
+
+		await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
+
+		const winnerObj = await this.userService.findUserByUserId(winner);  ///buraya alinin fonksiyonunu koyacaksin
+		const loserObj = await this.userService.findUserByUserId(loser);  ///buraya alinin fonksiyonunu koyacaksin
+
+		let winnerUsername: String;
+		if (!winnerObj) winnerUsername = "unKnown";
+		else winnerUsername = winnerObj.userName;
+		
+		game.server.to(`game${game.id}`).emit('gameEnd', `${winnerUsername} won the game ${3} - ${0}`);
+		game.server.socketsLeave(`game${game.id}`);
+		this.games.delete(game.id);
     }
 
 }

@@ -72,12 +72,8 @@ export class GameService {
                 else loserUsername = loserObj.userName;
                 
                 game.server.to(`game${game.id}`).emit('gameEnd', `${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
-                
-                // game.server.to(`game${game.id}`).emit('gameEnd', { winnerUsername, loserUsername, winnerScore, loserScore });
-                // this.socketService.endGame(game, game.id);
                 game.server.socketsLeave(`game${game.id}`);
                 this.socketService.games.delete(game.id);
-                // game.pause = true;
                 return;
             }
 

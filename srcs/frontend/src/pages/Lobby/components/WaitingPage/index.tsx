@@ -58,6 +58,7 @@ export function WaitingPage1() {
 
   return (
     <>
+    <div className="mainWaitinRoom">
       {isLookingForOpponent && (
         <div className='installing'>
           <p className="loader"></p>
@@ -68,6 +69,7 @@ export function WaitingPage1() {
         </div>
         
       )}
+     </div> 
     </>
   )
 }
@@ -118,14 +120,12 @@ export function WaitingPage2() {
     };
   }, [socket, navigate]);
 
-  // inviteRefused
-
   useEffect(() => {
-    function onInviteRefused(data: any) {
-        const isConfirmed = window.confirm(data);
+    async function onInviteRefused(data: any) {
+        const isConfirmed = data;
         if(isConfirmed) {
             setIsLookingForOpponent(false);
-            navigate(-1);
+            // navigate(-1);
         }
     }
     socket.on("inviteRefused", onInviteRefused);
@@ -135,9 +135,8 @@ export function WaitingPage2() {
   }, [socket, navigate]);
 
 
-
   useEffect(() => {
-    socket.emit("Invite", { userName: username });
+    socket.emit("Invite", { userName: username, type: 'CLASSIC' });
     return () => {
     };
   }, []);
@@ -149,8 +148,16 @@ export function WaitingPage2() {
     navigate(-1);
   };
 
+  const handleExit = () => {
+    socket.emit("Uninvite", { userName: username });
+    // console.log('idil');
+    // setIsLookingForOpponent(false);
+    navigate(-1);
+  };
+
   return (
     <>
+    <div className="mainWaitinRoom">
       {isLookingForOpponent && (
         <div className='installing'>
           <p className="loader"></p>
@@ -160,6 +167,15 @@ export function WaitingPage2() {
           </button>
         </div>
       )}
+      {!isLookingForOpponent && (
+        <div className='rejected'>
+          Your friend rejected you!
+          <button className='close' onClick={handleExit}>
+            Turn back
+          </button>
+        </div>
+      )}
+    </div>
     </>
   )
 }
@@ -211,6 +227,7 @@ export function WaitingPage3() {
 
   return (
     <>
+    <div className="mainWaitinRoom">
       {isLookingForOpponent && (
         <div className='installing'>
           <p className="loader"></p>
@@ -221,6 +238,7 @@ export function WaitingPage3() {
         </div>
         
       )}
+    </div>
     </>
   )
 }

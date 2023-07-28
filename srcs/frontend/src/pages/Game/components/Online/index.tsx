@@ -121,10 +121,13 @@ export function Random() {
     const handler = (event: BeforeUnloadEvent) => {
       event.preventDefault();
       event.returnValue = '';
-      socket.emit("gameExited");
+      socket.emit("gameExitedpopstate");
     };
   
+
+    
     window.addEventListener('beforeunload', handler);
+    window.addEventListener('popstate', handler);
   
     return () => {
       window.removeEventListener('beforeunload', handler);

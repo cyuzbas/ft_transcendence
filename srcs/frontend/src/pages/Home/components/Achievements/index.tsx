@@ -30,7 +30,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 		[AchievementType.CHATTERBOX]: boolean;
 		[AchievementType.SOCIAL_BUTTERFLY]: boolean;
 		[AchievementType.CHAMELEON_PLAYER]: boolean;
-		[AchievementType.FRIENDLY_RIVALRY]: boolean;
+		// [AchievementType.FRIENDLY_RIVALRY]: boolean;
 		[AchievementType.EPIC_FAIL]: boolean;
 		id: number;
 	  }
@@ -42,7 +42,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 		const fetchData = async () => {
 		  try {
 
-			const response =  await axios.get(`http://localhost:3001/user/achievements/${user.intraId}`,{withCredentials:true})
+			const response =  await axios.get(`http://localhost:3001/user/achievements/${intraid}`,{withCredentials:true})
 			setUserData(response.data[0]);
 		  } catch (error) {
 			localStorage.clear()
@@ -109,14 +109,14 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 					<h4 className="badgeText">CHAMELEON PLAYER</h4>
 					<div className="infoBadges">Uploaded new picture!</div>
 				</div>
-				<div className="badges">
+				{/* <div className="badges">
 					<div className="badgeClass">
 						<img src={rivalry} className="badgeimage" alt="Friendly Rivalry" 
 						id={(userData && userData[AchievementType.FRIENDLY_RIVALRY])?"earned":"unearned"}/>
 					</div>
 					<h4 className="badgeText ">FRIENDLY RIVALRY</h4>
 					<div className="infoBadges">First game invite!</div>
-				</div>
+				</div> */}
 				<div className="badges">
 					<div className="badgeClass">
 						<img src={fail} className="badgeimage" alt="Epic Fail" 

@@ -20,8 +20,8 @@ function FirstInfoPage() {
 	async function showAlert() {
 		if (inputText === user.userName) {
 			swal({
-				title: "Unsucces!",
-				text: "Error: Same name!",
+				title: "Error!",
+				text: "You can't change to same name!",
 				icon: "warning",
 				dangerMode: true,
 			}).then()
@@ -29,8 +29,8 @@ function FirstInfoPage() {
 		}
 		if (inputText.length === 0) {
 			swal({
-				title: "Unsucces!",
-				text: "Error: Input empty!",
+				title: "Error!",
+				text: "Input empty!",
 				icon: "warning",
 				dangerMode: true,
 			}).then()
@@ -53,12 +53,12 @@ function FirstInfoPage() {
 				swal({
 					title: "Succes!",
 					text: "Your name has been saved! "
-				})
+				}).then()
 			}
 			else {
 				swal({
 					title: "Error!",
-					text: "Error: Duplicated",
+					text: "This name already in use!",
 					icon: "warning",
 					dangerMode: true,
 				}).then()
@@ -132,7 +132,8 @@ function FirstInfoPage() {
 	};
 
 	return (
-		<><Particle />
+		<>
+		<Particle/>
 		<div className="FirstInfoPageContent">
 			<div className="FirstInfoPageContainer">
 				<div className="imageContainer">
@@ -159,8 +160,11 @@ function FirstInfoPage() {
 					<i className="bi bi-pencil-square fs-5"></i>
 					<h6>Edit</h6>
 				</button>
+				
+
 			</div>
-		</div></>
+		</div>
+		</>
 
 	)
 };

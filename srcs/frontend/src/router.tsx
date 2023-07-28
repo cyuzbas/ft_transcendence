@@ -65,7 +65,6 @@ export function Router() {
                     <Route path='/lobby' element={<Lobby />} />
                     <Route path='/chat' element={<ChatProvider><Chat /></ChatProvider>} />
                     <Route path='/settings' element={<SettingsPage />} />
-                    <Route path='/info' element={<FirstInfoPage />} />
                     <Route path='/create2fa' element={<Create2fa />} />
                     <Route path='/profile/:id' element={<Profile />} />
                     <Route path='/random' element={<Random />} />

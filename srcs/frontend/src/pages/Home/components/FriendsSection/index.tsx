@@ -21,7 +21,7 @@ const FriendsSection: React.FC<Props> = ({ id }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get(`http://f1r2s3.codam.nl:3001/friends/allUser/${id}`,{withCredentials:true})
+			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`,{withCredentials:true})
 			const { friends} = response.data;
 			const usersData = [...friends.map((friend: User) => ({ ...friend }))]
 			setUsers(usersData);

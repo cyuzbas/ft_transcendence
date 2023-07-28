@@ -28,7 +28,7 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 			try {
 	
 		
-			const response = await axios.get(`http://f1r2s3.codam.nl:3001/game/${id}`,{withCredentials:true});
+			const response = await axios.get(`http://localhost:3001/game/${id}`,{withCredentials:true});
 			setMatches(response.data)
 				
 		  } catch (error) {

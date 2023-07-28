@@ -84,7 +84,7 @@ export function UserProvider({ children }: UserProviderProps) {
     const fetchData = async () => {
       if (!window.location.pathname.match('/login') ) {
       try {
-        const response = await axios.get('http://f1r2s3.codam.nl:3001/auth/status', { withCredentials: true });
+        const response = await axios.get('http://localhost:3001/auth/status', { withCredentials: true });
         const updatedUser = { ...response.data, twoFactorCorrect: false };
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));

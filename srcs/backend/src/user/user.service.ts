@@ -139,7 +139,7 @@ export class UserService {
 	async updataAvatar(path: string, user: UserEntity): Promise<UserI> {
 		await this.setAchievements(user.intraId, "CHAMELEON_PLAYER")
 		await this.userRepository.update(user.id, {
-			avatar: "http://f1r2s3.codam.nl:3001/user/avatar/" + path
+			avatar: "http://localhost:3001/user/avatar/" + path
 		});
 
 		return user;

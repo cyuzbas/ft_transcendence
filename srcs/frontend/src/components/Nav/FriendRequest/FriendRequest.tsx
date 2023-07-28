@@ -23,7 +23,7 @@ export function Request() {
 
   async function answerRequest(intraId:string, answer:string) {
     try{
-          const response = await axios.post(`http://f1r2s3.codam.nl:3001/friends/friend-request/${user.intraId}/${intraId}/${answer}`,null,{withCredentials:true})
+          const response = await axios.post(`http://localhost:3001/friends/friend-request/${user.intraId}/${intraId}/${answer}`,null,{withCredentials:true})
           const updatedUsers = users.filter((user) => user.intraId !== intraId);
           setUsers(updatedUsers);
     }
@@ -37,7 +37,7 @@ export function Request() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://f1r2s3.codam.nl:3001/friends/getFriendQuery/${user.intraId}`,{withCredentials:true})
+        const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`,{withCredentials:true})
         setUsers(response.data);
         setFriendRequest(response.data.length == 0 ? false : true)
       } catch (error) {

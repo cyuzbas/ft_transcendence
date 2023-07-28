@@ -10,7 +10,7 @@ type SocketContextValue = {
 	// isConnected: boolean,
 }
 
-const URL = 'http://f1r2s3.codam.nl:3001';
+const URL = 'http://localhost:3001';
 const socket = io(URL, { autoConnect: false });
 const SocketContext = createContext({} as SocketContextValue);
 

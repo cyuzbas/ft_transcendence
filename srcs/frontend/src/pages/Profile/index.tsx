@@ -31,7 +31,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
+        const response = await axios.get('http://f1r2s3.codam.nl:3001/friends/allUsers', {withCredentials:true});
         
         response.data.forEach((user: any) => {
           if(user.intraName === id) {

@@ -42,7 +42,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 		const fetchData = async () => {
 		  try {
 
-			const response =  await axios.get(`http://localhost:3001/user/achievements/${user.intraId}`,{withCredentials:true})
+			const response =  await axios.get(`http://f1r2s3.codam.nl:3001/user/achievements/${user.intraId}`,{withCredentials:true})
 			setUserData(response.data[0]);
 		  } catch (error) {
 			localStorage.clear()

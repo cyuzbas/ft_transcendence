@@ -7,7 +7,7 @@ const QRCodeImage = () => {
   useEffect(() => {
     const fetchQRCode = async () => {
       try {
-        const response = await  axios.get('http://localhost:3001/auth/enable2fa', {
+        const response = await  axios.get('http://f1r2s3.codam.nl:3001/auth/enable2fa', {
             withCredentials:true,
           responseType: 'arraybuffer',
         });

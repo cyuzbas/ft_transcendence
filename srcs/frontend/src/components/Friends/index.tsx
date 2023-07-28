@@ -28,7 +28,7 @@ export function Friends() {
 
   async function sendRequest(intraId: string) {
     try {
-      const response = await axios.post(`http://localhost:3001/friends/add/${user.intraId}/${intraId}`,null,{withCredentials:true})
+      const response = await axios.post(`http://f1r2s3.codam.nl:3001/friends/add/${user.intraId}/${intraId}`,null,{withCredentials:true})
       getData()
     }
     catch (error) {
@@ -40,7 +40,7 @@ export function Friends() {
 
   async function removeFriend(intraId: string) {
     try {
-      const response = await axios.post(`http://localhost:3001/friends/delete/${user.intraId}/${intraId}`,null,{withCredentials:true})
+      const response = await axios.post(`http://f1r2s3.codam.nl:3001/friends/delete/${user.intraId}/${intraId}`,null,{withCredentials:true})
       getData()
     }
     catch (error) {
@@ -51,7 +51,7 @@ export function Friends() {
 
   async function getData() {
     try {
-      const response = await axios.get(`http://localhost:3001/friends/allUser/${user.intraId}` , {withCredentials:true});
+      const response = await axios.get(`http://f1r2s3.codam.nl:3001/friends/allUser/${user.intraId}` , {withCredentials:true});
       const { friends, nonFriends, me, query } = response.data;
 
       const usersData = [...friends.map((friend: User) => ({ ...friend, userStatus: userStatus.friends })),

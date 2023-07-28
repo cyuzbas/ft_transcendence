@@ -29,12 +29,12 @@ function Verify2fa() {
 		else {
 			try {
 				console.log("value is " + inputText + "user [" + JSON.stringify(user))
-				const response = await axios.get(`http://localhost:3001/auth/verify/${inputText}/${user.intraId}`, { withCredentials: true });
+				const response = await axios.get(`http://f1r2s3.codam.nl:3001/auth/verify/${inputText}/${user.intraId}`, { withCredentials: true });
 				if (response.data === true) {
 					const updatedUser = { ...user, twoFactorCorrect: true };
 					setUser(updatedUser);
 					localStorage.setItem('user', JSON.stringify(updatedUser));
-					window.location.href = "http://localhost:3000/home"
+					window.location.href = "http://f1r2s3.codam.nl:3000/home"
 
 
 				} else {

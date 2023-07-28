@@ -23,7 +23,7 @@ export class MapService {
 
 @WebSocketGateway( {
 	cors: {
-		origin: ['http://localhost:3000']
+		origin: ['http://f1r2s3.codam.nl:3000']
 	}
 })
 export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{

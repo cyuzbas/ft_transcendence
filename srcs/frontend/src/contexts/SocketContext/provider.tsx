@@ -7,7 +7,6 @@ import './styles.css'
 type SocketContextValue = {
 	URL: string,
 	socket: Socket,
-	// isConnected: boolean,
 }
 
 const URL = 'http://localhost:3001';
@@ -19,7 +18,6 @@ export function useSocket() {
 }
 
 export function SocketProvider({ children }: {children: ReactNode}) {
-	// const [isConnected, setIsConnected] = useState(socket.connected);
 	const [invitationUserName, setInvitationUserName] = useState(' ');
 	const [invitationId, setinvitationId] = useState(' ');
 	const { user } = useUser();
@@ -76,10 +74,6 @@ export function SocketProvider({ children }: {children: ReactNode}) {
     // const {user} = useContext(UserContext)
 		
 	useEffect(() => {
-		// if(isConnected) { // not necessary in final product?
-		// 	socket.disconnect();
-		// };
-
 		if(user.userName !== 'unknown') {
 			socket.auth = { 
 				name: user.userName ,
@@ -90,31 +84,28 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 
 	}, [user])
 
-	useEffect(() => {
-		function onConnect() {
-			console.log('connected', socket)
-		  	// setIsConnected(true);
-		};
+	// useEffect(() => {
+	// 	function onConnect() {
+	// 		console.log('connected', socket)
+	// 	};
 	
-		function onDisconnect() {
-			console.log('disconnected', socket)
-		  	// setIsConnected(false);
-		};
+	// 	function onDisconnect() {
+	// 		console.log('disconnected', socket)
+	// 	};
 		
-		socket.on('connect', onConnect);
-		socket.on('disconnect', onDisconnect);
+	// 	socket.on('connect', onConnect);
+	// 	socket.on('disconnect', onDisconnect);
 	
-		return () => {
-		  socket.off('connect', onConnect);
-		  socket.off('disconnect', onDisconnect);
-		 	socket.disconnect();
-		};
-	}, [user]);
+	// 	return () => {
+	// 	  socket.off('connect', onConnect);
+	// 	  socket.off('disconnect', onDisconnect);
+	// 	 	socket.disconnect();
+	// 	};
+	// }, [user]);
 
 	const value = {
 		URL,
 		socket,
-		// isConnected,
 	}
 
 	const handleAccept = () => {

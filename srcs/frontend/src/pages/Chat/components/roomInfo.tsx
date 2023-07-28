@@ -48,7 +48,7 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 				items={members}
 				renderItem={(member) => (
 					!member.isBanned ?
-						<p className="memberList">
+						<div className="memberList">
 							<div>
 								{member.userName !== user.userName &&
 									<BlockButton member={member} /> 
@@ -87,7 +87,7 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 									: null	
 								}
 							</div>
-						</p>
+						</div>
 					: <></>
 				)}
 				onClickItem={(member) => handleMemberClick(member)}
@@ -103,7 +103,7 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 						items={members}
 						renderItem={(member) => (
 							member.isBanned ?
-								<p className={"memberList offline"}>
+								<div className={"memberList offline"}>
 									<BlockButton member={member} />
 									<div className="avatar-status-wrapper">
 										<img src={member.avatar} alt="avatar" style={{margin:0,width:30, height:30, borderRadius:50}}/>
@@ -114,7 +114,7 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 										{member.userName}
 									</div>
 									<BanButton member={member}/>
-								</p>
+								</div>
 							: <></>
 						)}
 						onClickItem={(member) => handleMemberClick(member)}

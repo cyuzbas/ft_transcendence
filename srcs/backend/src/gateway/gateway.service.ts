@@ -217,9 +217,10 @@ export class GatewayService {
     }
 
     async handleInGameDisconnection (id: number) {
-        console.log(this.games,'////////////');
+        console.log(id);
         const game = await this.findUserGame(id);
-		await this.exitGame(id, game);
+        console.log(game);
+		// await this.exitGame(id, game);
     }
     
     handleInviteDisconnection (id: number) {
@@ -233,8 +234,10 @@ export class GatewayService {
         });
     }
 
-    async findUserGame(userId: number): Promise<Game | null> {
+    async findUserGame(userId: number): Promise<Game> {
+        console.log('id', userId)
         for (const game of this.games.values()) {
+            console.log('game:', game)
             if (game.p1 === (userId) || game.p2 === (userId)) {
                 return game;
             }
@@ -243,6 +246,7 @@ export class GatewayService {
     }
 
     async exitGame(userId: number, game: Game) {
+        console.log(game.p1)
         const winner = (userId === game.p1) ? game.p2 : game.p1;
         const loser = (userId === game.p1) ? game.p1 : game.p2;
         await this.userRepository.update(winner, { inGame: false });
@@ -256,7 +260,7 @@ export class GatewayService {
 		await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
 
 		const winnerObj = await this.userService.findUserByUserId(winner);  ///buraya alinin fonksiyonunu koyacaksin
-		const loserObj = await this.userService.findUserByUserId(loser);  ///buraya alinin fonksiyonunu koyacaksin
+		// const loserObj = await this.userService.findUserByUserId(loser);  ///buraya alinin fonksiyonunu koyacaksin
 
 		let winnerUsername: String;
 		if (!winnerObj) winnerUsername = "unKnown";

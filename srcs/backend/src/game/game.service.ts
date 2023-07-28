@@ -307,7 +307,6 @@ export class GameService {
     }
 
    
-
     async getGamesByPlayerId(intraId: string): Promise<any[]> {
         const user = await this.userService.findByintraIdEntitiy(intraId)
         if(!user)

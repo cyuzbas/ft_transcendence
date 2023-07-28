@@ -202,7 +202,7 @@ export class GatewayService {
         return [...this.invites.values()].find(invites => !!invites.find(i => i.id === userId));
     }
 
-    handleInQueueDisconnection (id: number) {
+    async handleInQueueDisconnection (id: number) {
         if (this.queueClassic.includes(id) || this.queueCustom.includes(id)) {
             let indexClassic = this.queueClassic.indexOf(id);
             if (indexClassic !== -1) {
@@ -223,7 +223,7 @@ export class GatewayService {
 		// await this.exitGame(id, game);
     }
     
-    handleInviteDisconnection (id: number) {
+    async handleInviteDisconnection (id: number) {
         this.invites.forEach((inviteList, userId) => {
             const matchingInviteIndices = inviteList.reduce((indices, invite, index) => {
                 if (invite.id === id) indices.push(index);
@@ -235,7 +235,7 @@ export class GatewayService {
     }
 
     async findUserGame(userId: number): Promise<Game> {
-        console.log('id', userId)
+        console.log('id: ', userId)
         for (const game of this.games.values()) {
             console.log('game:', game)
             if (game.p1 === (userId) || game.p2 === (userId)) {
@@ -258,6 +258,13 @@ export class GatewayService {
 		await this.userService.changeRank(winner);
 
 		await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
+        winner === game.p1 ?
+            await this.gameRepository.update(game.dbIdP1, { playerScore: 3, opponentScore: 0 }) :
+            await this.gameRepository.update(game.dbIdP2, { playerScore: 3, opponentScore: 0 });
+            loser === game.p1 ?
+            await this.gameRepository.update(game.dbIdP1, { playerScore: 0, opponentScore: 3 }) :
+            await this.gameRepository.update(game.dbIdP2, { playerScore: 0, opponentScore: 3 }) ;
+            
 
 		const winnerObj = await this.userService.findUserByUserId(winner);  ///buraya alinin fonksiyonunu koyacaksin
 		// const loserObj = await this.userService.findUserByUserId(loser);  ///buraya alinin fonksiyonunu koyacaksin

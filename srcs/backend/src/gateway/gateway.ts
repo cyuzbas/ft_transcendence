@@ -64,9 +64,9 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		
 		const user = await this.userService.findUserByUserName(userSocket.name);
 		if (user) {
-			this.gatewayService.handleInQueueDisconnection((user.id));
-			// this.gatewayService.handleInGameDisconnection(user.id);
-			this.gatewayService.handleInviteDisconnection(user.id);
+			await this.gatewayService.handleInQueueDisconnection((user.id));
+			await this.gatewayService.handleInGameDisconnection(user.id);
+			await this.gatewayService.handleInviteDisconnection(user.id);
 		}
 		
 		await this.userService.updateStatus(userSocket.name, 'offline');

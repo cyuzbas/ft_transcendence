@@ -6,9 +6,10 @@ import './styles.css'
 import { CloseIcon } from '../../../Lobby/assets';
 import { Net } from '../Net';
 
+// import { usePrompt, Location } from 'react-router-dom';
+
 interface GameState {
   ball: { x: number; y: number; sizeX: number; sizeY: number; };
-  // block: { x: number; y: number; sizeX: number; sizeY: number; };
   paddleLeft: { x: number; y: number; width: number; height: number; };
   paddleRight: { x: number; y: number; width: number; height: number; };
   blockA: { x: number; y: number; width: number; height: number; };
@@ -28,7 +29,8 @@ export function Random() {
   const [message, setMessage] = useState('');
   const { socket } = useSocket();
   const navigate = useNavigate();
-
+  // const location = useLocation();
+  
   useEffect(() => {
     const gameDataHandler = (data: GameState) => {
       // console.log('++++++++++++++++Received game data:', data);
@@ -40,7 +42,7 @@ export function Random() {
       socket.off('gameData', gameDataHandler);
     };
   }, [socket]);
-
+  
   useEffect(() => {
     function gameFoundHandler() {
       console.log('gameFound');
@@ -51,7 +53,7 @@ export function Random() {
       socket.off('gameFound', gameFoundHandler);
     };
   }, [socket]);
-
+  
   useEffect(() => {
     const gameEndHandler = (data: string) => {
       setMessage(data);
@@ -65,29 +67,41 @@ export function Random() {
       socket.off('gameEnd', gameEndHandler);
     };
   }, [socket, message]);
-
+  
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (['w', 's', 'Esc'].includes(event.key)) {
         socket.emit('keyDown', event.key);
       }
     };
-  
+    
     const handleKeyUp = (event: KeyboardEvent) => {
       if (['w', 's', 'Esc'].includes(event.key)) {
         socket.emit('keyUp', event.key);
       }
     };
-  
+    
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
-  
+    
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
   }, [socket]);
 
+  // useEffect(() => {
+  //   const currentLocation = location.pathname;
+  //   console.log(currentLocation);
+  //   return () => {
+  //     // If the location has changed
+  //     if (location.pathname !== currentLocation) {
+  //       console.log('geri  cikti')
+  //       socket.emit("gameExited");
+  //     }
+  //   }
+  // },);
+  
   const handleClose = () => {
     setEnd(false);
     navigate('/lobby');
@@ -97,6 +111,25 @@ export function Random() {
     socket.emit("gameExited");
     // navigate('/lobby');
   };
+
+  // usePrompt('Are you sure you want to leave this page?', (location: Location) => {
+  //   socket.emit("gameExited");
+  //   return true;  // Allow the navigation.
+  // });
+
+  useEffect(() => {
+    const handler = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+      socket.emit("gameExited");
+    };
+  
+    window.addEventListener('beforeunload', handler);
+  
+    return () => {
+      window.removeEventListener('beforeunload', handler);
+    };
+  }, );
 
 
   return (

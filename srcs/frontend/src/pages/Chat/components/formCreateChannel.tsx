@@ -59,8 +59,8 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 					<AiOutlineClose size="2em"/>
 				</button>
 				<div>
-					<select className="form-input" id="type" onChange={(e) => setType(e.target.value as RoomType)}>
-						<option value="" disabled selected>Select type</option>
+					<select className="form-input" id="type" value={type} onChange={(e) => setType(e.target.value as RoomType)}>
+						<option value="" disabled>Select type</option>
 						<option value={RoomType.PUBLIC}>public</option>
 						<option value={RoomType.PRIVATE}>private</option>
 						<option value={RoomType.PROTECTED}>protected</option>

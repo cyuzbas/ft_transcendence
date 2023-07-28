@@ -25,6 +25,7 @@ services:
 
     environment:
       <<: *default-envvars
+      COMPOSE_HTTP_TIMEOUT: 120 # Burada ekledik
     ports:
       - "3000:3000"
     restart: unless-stopped
@@ -42,6 +43,7 @@ services:
       - ./backend/.env
     environment:
       <<: *default-envvars
+      COMPOSE_HTTP_TIMEOUT: 120 # Burada ekledik
     ports:
       - "3001:3000"
     restart: unless-stopped
@@ -56,13 +58,17 @@ services:
       - transcendence:/var/lib/postgresql/data
     environment:
       <<: *db-envvars
-
+      COMPOSE_HTTP_TIMEOUT: 120 # Burada ekledik
 
   adminer:
-    image: adminer
-    restart: always
-    ports: 
-      - 8080:8080
+      image: adminer
+      restart: always
+      ports: 
+        - 8080:8080
+      environment:
+        COMPOSE_HTTP_TIMEOUT: 120 # Burada ekledik
+
+
 volumes:
   transcendence:
   app:

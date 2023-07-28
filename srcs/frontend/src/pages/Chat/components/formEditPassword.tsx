@@ -4,7 +4,6 @@ import { RoomType } from "../../../contexts/ChatContext/types";
 import { AiFillLock, AiFillUnlock, AiOutlineLock } from "react-icons/ai"
 
 export const FormEditPassword = () => {
-  // const [visibility, setVisibility] = useState<boolean>(false);
   const [add, setAdd] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
@@ -28,9 +27,6 @@ export const FormEditPassword = () => {
     });
 
     showSuccessMessage('Password removed succesfully');
-  
-    // setConfirmationText('Password removed succesfully')
-    // setConfirmation(!confirmation);
   }
   
   const onSubmit = async(e: React.FormEvent) => {
@@ -40,17 +36,13 @@ export const FormEditPassword = () => {
       roomId: room.roomId,
       roomName: room.roomName,
       type: RoomType.PROTECTED,
-      password: newPassword, // HASH
+      password: newPassword,
     });
     
     setAdd(false);
     setEdit(false);
     setNewPassword('');
     showSuccessMessage(`Password ${add ? 'added' : 'updated'} succesfully`);
-
-    // setConfirmationText('Password added succesfully')
-    // setConfirmation(!confirmation);
-    // setVisibility(false);
   }
 
   return (
@@ -110,36 +102,7 @@ export const FormEditPassword = () => {
           </div>  
         )
       }
-      {/* {success &&
-        <div> {successMessage} </div>
-      } */}
       </form>
     </>
   )
 }
-
-
-
-
-{/* {visibility &&
-<div className="chat-popup">
-  <div>
-    <input
-      placeholder="type in new password"
-      value={newPassword}
-      onChange={(e) => setNewPassword(e.target.value)}
-      />
-  </div>
-  <button type="submit">submit</button>
-</div>
-}
-{confirmation &&
-<div className="chat-popup">
-  {confirmationText}
-  <div>
-    <button onClick={() => setConfirmation(!confirmation)}>
-      Ok
-    </button>
-  </div>
-</div>
-} */}

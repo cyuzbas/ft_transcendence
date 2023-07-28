@@ -1,5 +1,4 @@
 import './styles.css'
-import { useSocket } from "../../contexts/SocketContext/provider"
 import { MessageInput } from "./components/messageInput";
 import { MessageWindow } from "./components/messageWindow";
 import { RoomInfo } from "./components/roomInfo";
@@ -9,26 +8,21 @@ import { Channels } from "./components/channels";
 import { DirectMessages } from "./components/directMessages";
 import { UserInfo } from "./components/userInfo";
 import { Member, RoomType } from '../../contexts/ChatContext/types';
-import { ChatProvider, useChat } from '../../contexts/ChatContext/provider';
+import { useChat } from '../../contexts/ChatContext/provider';
 import { useEffect } from 'react';
 import { AiOutlineClose } from "react-icons/ai"
 
 export const Chat = () => {
 	const [expanded, setExpanded] = useState<boolean>(true);
 	const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-	const { socket, isConnected } = useSocket();
 	const { room } = useChat();
 
 	useEffect(() => {
 		setSelectedMember(null);
 	}, [room])
 
-	if (!isConnected)
-		return <div>not connected</div>	
-
 	return (
 		<>
-			<div>connected: {socket.id}</div>
 			<div id={expanded ? "chat-grid-expanded" : "chat-grid-non-expanded"}>
 				<div id="chat-left-sidebar">
 					<Channels />

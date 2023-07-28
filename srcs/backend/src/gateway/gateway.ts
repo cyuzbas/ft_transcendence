@@ -5,7 +5,7 @@ import { Logger } from "@nestjs/common";
 import { UserService } from "src/user/user.service";
 import { MessageDto } from "src/dto/message.dto";
 import { UserDto } from "src/dto/user.dto";
-import { NewRoomUserDto, RoomUserDto } from "src/dto/roomUser.dto";
+import { RoomUserDto } from "src/dto/roomUser.dto";
 import { RoomDto } from "src/dto/room.dto";
 import { GatewayService, Invite } from "./gateway.service";
 import { GameService } from "../game/game.service";
@@ -49,7 +49,6 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		if (!user) {
 			return
 		}
-		// client.join(userSocket.intraId);
 		client.join(user.intraId);
 		client.join(user.id.toString());
 		client.emit('userId', user.id);
@@ -65,9 +64,9 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		
 		const user = await this.userService.findUserByUserName(userSocket.name);
 		if (user) {
-			this.gatewayService.handleInQueueDisconnection((user.id));
-			// this.gatewayService.handleInGameDisconnection(user.id);
-			this.gatewayService.handleInviteDisconnection(user.id);
+			await this.gatewayService.handleInQueueDisconnection((user.id));
+			await this.gatewayService.handleInGameDisconnection(user.id);
+			await this.gatewayService.handleInviteDisconnection(user.id);
 		}
 		
 		await this.userService.updateStatus(userSocket.name, 'offline');
@@ -79,6 +78,8 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		const users = await this.userService.getAllUsersStatus();
 		this.server.emit('onUserUpdate', users);
 	}
+
+	//////////////////////////// CHAT /////////////////////////////////////////////////////
 
 	@SubscribeMessage('memberUpdate')
 	async onMemberUpdate(@MessageBody() roomName: string) {
@@ -109,13 +110,11 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	@SubscribeMessage('removeRoomUser')
 	async onRemoveRoomUser(@MessageBody() roomUser: RoomUserDto) {
-		console.log(roomUser)
 		this.server.to(roomUser.intraId).emit('onRemoveRoomUser', roomUser.roomName);
 	}
 
 	@SubscribeMessage('roomUpdate')
 	async onRoomUpdate(@MessageBody() roomUpdate: RoomDto) {
-		// console.log(roomUpdate)
 		this.server.to(roomUpdate.roomName).emit('onRoomUpdate', roomUpdate);
 	}
 	
@@ -131,7 +130,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		this.server.to(blockedUser.id.toString()).emit('blockedBy', user);
 	}
 
-	// /////////////////////////////////////////////////////////////////////
+	////////////////////////// GAME ///////////////////////////////////////
 
 	@SubscribeMessage('matchMaking')
 	async handleMatchMaking( @MessageBody() data: { type: GameType }, @ConnectedSocket() client: Socket ) {

@@ -1,15 +1,13 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useUser } from "../UserContext/provider";
-import { Room, RoomType, RoomUser, UserRole } from "../ChatContext/types";
-import { UserContext } from '..';
 import { useNavigate } from 'react-router-dom'
 import './styles.css'
 
 type SocketContextValue = {
 	URL: string,
 	socket: Socket,
-	isConnected: boolean,
+	// isConnected: boolean,
 }
 
 const URL = 'http://f1r2s3.codam.nl:3001';
@@ -21,10 +19,9 @@ export function useSocket() {
 }
 
 export function SocketProvider({ children }: {children: ReactNode}) {
-	const [isConnected, setIsConnected] = useState(socket.connected);
+	// const [isConnected, setIsConnected] = useState(socket.connected);
 	const [invitationUserName, setInvitationUserName] = useState(' ');
 	const [invitationId, setinvitationId] = useState(' ');
-	// const [room, setRoom] = useState<RoomUser>(GENERAL_CHAT);
 	const { user } = useUser();
 	const navigate = useNavigate();
 	const [gameInvitation, setGameInvitation] = useState(false);
@@ -79,9 +76,9 @@ export function SocketProvider({ children }: {children: ReactNode}) {
     // const {user} = useContext(UserContext)
 		
 	useEffect(() => {
-		if(isConnected) { // not necessary in final product?
-			socket.disconnect();
-		};
+		// if(isConnected) { // not necessary in final product?
+		// 	socket.disconnect();
+		// };
 
 		if(user.userName !== 'unknown') {
 			socket.auth = { 
@@ -96,12 +93,12 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 	useEffect(() => {
 		function onConnect() {
 			console.log('connected', socket)
-		  	setIsConnected(true);
+		  	// setIsConnected(true);
 		};
 	
 		function onDisconnect() {
 			console.log('disconnected', socket)
-		  	setIsConnected(false);
+		  	// setIsConnected(false);
 		};
 		
 		socket.on('connect', onConnect);
@@ -117,7 +114,7 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 	const value = {
 		URL,
 		socket,
-		isConnected,
+		// isConnected,
 	}
 
 	const handleAccept = () => {

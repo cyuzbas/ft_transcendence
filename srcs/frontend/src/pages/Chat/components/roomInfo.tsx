@@ -10,8 +10,7 @@ import { KickButton } from "./buttonKick";
 import { MuteButton } from "./buttonMute";
 import { FormEditPassword } from "./formEditPassword";
 import { useUser } from "../../../contexts";
-import { AiOutlineUserAdd, AiOutlineUsergroupAdd } from "react-icons/ai";
-import { RiSettings3Line } from "react-icons/ri";
+import { AiOutlineUserAdd } from "react-icons/ai";
 
 type Props = {
 	setSelectedMember: React.Dispatch<React.SetStateAction<Member | null>>
@@ -19,7 +18,6 @@ type Props = {
 
 export const RoomInfo = ({ setSelectedMember }: Props) => {
 	const [popupVisibility, setPopupVisibility] = useState<boolean>(false);
-	const [settings, setSettings] = useState<boolean>(false);
 	const { user } = useUser();
 	const { members, room } = useChat();
 	
@@ -40,7 +38,6 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 					invite
 				</button>
 			}
-			{room.description ? ("description" ) : ""}
 			<h4>
 				Members
 			</h4>
@@ -58,20 +55,13 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 								}
 							</div>
 							<div className="membersList avatar-status-wrapper">
-								<img src={member.avatar} style={{margin:0,width:30, height:30, borderRadius:50}}/>
+								<img src={member.avatar} alt="avatar" style={{margin:0,width:30, height:30, borderRadius:50}}/>
 								{member.status === 'online' ?
 								<span className="online-dot"></span> :
 								<span className="offline-dot"></span>
 								}
 								{member.userName}
 							</div >
-							{/* {member.isMuted ?
-							<div>
-								{(room.userRole === UserRole.OWNER || room.userRole === UserRole.ADMIN) && 
-								<MuteButton member={member} />
-								}
-							</div>
-							:( */}
 							<div>
 								{room.userRole === UserRole.OWNER && 
 									member.userRole !== UserRole.ADMIN &&
@@ -79,9 +69,8 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 									<AdminButton member={member}/>
 								}
 								{(room.userRole === UserRole.OWNER || 
-									(room.userRole === UserRole.ADMIN) &&
-									member.userRole !== UserRole.OWNER &&
-									member.userRole !== UserRole.ADMIN) &&
+									(room.userRole === UserRole.ADMIN &&
+									member.userRole !== UserRole.OWNER)) &&
 									member.userName !== user.userName &&
 									<>
 										<BanButton member={member} />
@@ -90,8 +79,6 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 									</>
 								}
 							</div>
-							{/* ) */}
-							{/* } */}
 							<div className={`${member.userRole === UserRole.OWNER ? 'owner' 
 								: member.userRole === UserRole.ADMIN ? 'admin' : ''}`}>
 								{member.userRole === UserRole.OWNER ||
@@ -119,7 +106,7 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 								<p className={"memberList offline"}>
 									<BlockButton member={member} />
 									<div className="avatar-status-wrapper">
-										<img src={member.avatar} style={{margin:0,width:30, height:30, borderRadius:50}}/>
+										<img src={member.avatar} alt="avatar" style={{margin:0,width:30, height:30, borderRadius:50}}/>
 										{member.status === 'online' ?
 											<span className="online-dot"></span> :
 											<span className="offline-dot"></span>
@@ -135,34 +122,6 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 				</>
 			}	
 			</div>
-			{/* <div>
-			{(room.userRole === UserRole.OWNER || room.userRole === UserRole.ADMIN) &&
-				members.some(member => member.isMuted) &&
-				<>
-					<h5>Muted</h5>
-					<ClickableList
-						items={members}
-						renderItem={(member) => (
-							member.isMuted ?
-								<p className={"memberList offline"}>
-									<BlockButton member={member} />
-									<div className="avatar-status-wrapper">
-										<img src={member.avatar} style={{margin:0,width:30, height:30, borderRadius:50}}/>
-										{member.status === 'online' ?
-											<span className="online-dot"></span> :
-											<span className="offline-dot"></span>
-										}
-										{member.userName}
-									</div>
-									<BanButton member={member}/>
-								</p>
-							: <></>
-						)}
-						onClickItem={(member) => handleMemberClick(member)}
-					/>
-				</>
-			}	
-			</div> */}
 		</>
 	)
 }

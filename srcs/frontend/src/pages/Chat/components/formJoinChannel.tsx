@@ -5,7 +5,6 @@ import { ClickableList } from "./clickableList"
 import { useChat } from "../../../contexts/ChatContext/provider"
 import { useUser } from "../../../contexts"
 import { useSocket } from "../../../contexts/SocketContext"
-// import { Prompt } from "./prompt"
 import { AiOutlineLock, AiOutlineExclamationCircle, AiOutlineClose } from "react-icons/ai"
 
 type Props = {
@@ -17,25 +16,23 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
     const [selectedRoom, setSelectedRoom] = useState<Room>();
     const [isProtected, setIsProtected] = useState<boolean>(false);
     const [isBanned, setIsBanned] = useState<boolean>(false);
-    // const [prompt, setPrompt] = useState<boolean>(false);
-    const [promptText, setPromptText] = useState<string>('');
     const [value, setValue] = useState<string>('')
-    const { setRoom, myRooms, setMyRooms, fetchPublicRooms, publicRooms, addRoomUser, updateRoomUser } = useChat();
+    const { setRoom, myRooms, setMyRooms, fetchPublicRooms, publicRooms, addRoomUser } = useChat();
     const { user } = useUser();
     const { socket, URL } = useSocket();
         
     useEffect(() => {
         fetchPublicRooms();
-    }, [])
+    }, [fetchPublicRooms])
 
-    useEffect(() => { // do with gateway?
+    useEffect(() => {
         const getJoinableRooms = () => {
             const filteredRooms = publicRooms.filter(publicRoom => {
                 const myRoom = myRooms.find(myRoom => myRoom.roomName === publicRoom.roomName);
                 if (!myRoom) {
                     return true;
                 } else {
-                    return myRoom.isBanned// || myRoom.isKicked;
+                    return myRoom.isBanned;
                 }
             });
             setJoinableRooms(filteredRooms);
@@ -53,7 +50,6 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         
         if (newRoomUser) {
             if (newRoomUser.isBanned) {
-                setPromptText('You are banned from this channel');
                 setIsBanned(true);
                 return
             } 
@@ -73,14 +69,14 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         }
     }
 
-    const handlePasswordSubmit = async(e: React.FormEvent) => { //make try catch block
+    const handlePasswordSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
         if (selectedRoom) {
             const response = await axios.post(`${URL}/chat/password`, {
                 roomName: selectedRoom.roomName,
                 type: RoomType.PROTECTED,
                 password: value
-            })
+            }, {withCredentials:true})
             if (response.data === false) {
                 alert('incorrect password, try again');
                 setValue('');
@@ -92,43 +88,47 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
 
     return (
         <>
-            <h4 className="formTitleJoin">
-            Join Existing Channel
+            {joinableRooms.length > 0 &&
+            <>
+                <h4 className="formTitleJoin">
+                Join Existing Channel
 
-            </h4>
-            <div className="roomJoinList">
-                <ClickableList
-                    items={joinableRooms}
-                    renderItem={room => 
-                        <p className="roomList">
-                         {room.roomName} {room.type === RoomType.PROTECTED ? <AiOutlineLock /> : null}
-                        </p>}
-                    onClickItem={room => handleRoomListClick(room)}
-                />
-            </div>
-            <div>
-                {isProtected && 
-                    <form onSubmit={handlePasswordSubmit}>
-                        <input
-                            placeholder="Enter Password"
-                            value={value}
-                            onChange={(e) => setValue(e.target.value)}
-                            />
-                        <button className="formBtn" >JOIN</button>
-                    </form>
-                }
-                {isBanned &&
-                <div className="banned-popup">
-                    <AiOutlineExclamationCircle size="6em" color="red"/>
-                    <div className="banned-popup-text">
-                        You Are Banned From This Channel
-                        <button className="iconBtn formCloseBtn" onClick={() => setIsBanned(false)}>
-                            <AiOutlineClose size="2em"/>
-                        </button>
-                    </div>
+                </h4>
+                <div className="roomJoinList">
+                    <ClickableList
+                        items={joinableRooms}
+                        renderItem={room => 
+                            <p className="roomList">
+                            {room.roomName} {room.type === RoomType.PROTECTED ? <AiOutlineLock /> : null}
+                            </p>}
+                        onClickItem={room => handleRoomListClick(room)}
+                    />
                 </div>
-                }
-            </div>
+                <div>
+                    {isProtected && 
+                        <form onSubmit={handlePasswordSubmit}>
+                            <input
+                                placeholder="Enter Password"
+                                value={value}
+                                onChange={(e) => setValue(e.target.value)}
+                                />
+                            <button className="formBtn" >JOIN</button>
+                        </form>
+                    }
+                    {isBanned &&
+                    <div className="banned-popup">
+                        <AiOutlineExclamationCircle size="6em" color="red"/>
+                        <div className="banned-popup-text">
+                            You Are Banned From This Channel
+                            <button className="iconBtn formCloseBtn" onClick={() => setIsBanned(false)}>
+                                <AiOutlineClose size="2em"/>
+                            </button>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </>
+            }
         </>
     )
 }

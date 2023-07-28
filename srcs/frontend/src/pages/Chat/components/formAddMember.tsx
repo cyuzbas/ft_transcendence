@@ -4,7 +4,7 @@ import { useChat } from "../../../contexts/ChatContext/provider";
 import { User, UserRole, useUser } from "../../../contexts";
 import { AiOutlineClose } from "react-icons/ai"
 import { ClickableList } from "./clickableList";
-import { AiOutlineUserAdd, AiOutlineCheck } from "react-icons/ai"
+import { AiOutlineCheck } from "react-icons/ai"
 
 type addContactProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -24,7 +24,7 @@ export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
 		.filter(users => users.userName !== user.userName)
 		
 		setUnknownMembers(filteredUsers);
-	},[allUsers])
+	},[allUsers, members, user.userName])
 
 	const isSelected = (user: User) => {
 		return selectedUsers.some(selectedUser => selectedUser.userName === user.userName)
@@ -73,7 +73,7 @@ export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
 				renderItem={ user =>
 					<p>
 						<label className={`user-row avatar-status-wrapper ${isSelected(user) ? 'selected' : ''}`}>
-							<img src={user.avatar} style={{margin:0,width:50, height:50, borderRadius:50}}/>
+							<img src={user.avatar} alt="avatar" style={{margin:0,width:50, height:50, borderRadius:50}}/>
 							{user.status === 'online' ?
 							<span className="online-dot-big"></span> :
 							<span className="offline-dot-big"></span>
@@ -94,4 +94,3 @@ export const FormAddMember = ({ setPopupVisibility }: addContactProps) => {
 		</div>
 	)
 }
-

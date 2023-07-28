@@ -7,26 +7,30 @@ type Props = {
 	id: string;
 };
 
-type User = {
-	avatar: string;
-	userName: string;
-	intraId: string;
-	intraName: string;
-	isLogged: boolean;
-};
+
+type GameDto = {
+    playerAvatar: string;
+    opponentAvatar: string;
+    playerUsername: string;
+    opponentUsername: string;
+    playerScore: number;
+    opponentScore: number;
+}
 
 const MatchHistory: React.FC<Props> = ({ id }) => {
 
-	const [users, setUsers] = useState<User[]>([]);
+	const [matches, setMatches] = useState<GameDto[]>([]);
 
+
+	
 	useEffect(() => {
 		const fetchData = async () => {
-		  try {
-			const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`,{withCredentials:true});
-			const { friends} = response.data;
-			const usersData = [...friends.map((friend: User) => ({ ...friend }))]
-			setUsers(usersData);
-			
+			try {
+	
+		
+			const response = await axios.get(`http://localhost:3001/game/${id}`,{withCredentials:true});
+			setMatches(response.data)
+				
 		  } catch (error) {
 			localStorage.clear()
 			window.location.href= '/login'
@@ -35,24 +39,23 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 		fetchData();
 	  }, []);
 	
-	const isWon = true;
-	const isLost = true;
+
 
   return (
 	<>
 		<div className="MatchHistorySection">
-	{Array.isArray(users) ? (
-		users.map((user, index) => (
+	{( matches.length ) ? (
+		matches.map((match, index) => (
 	// There will be array of oponents match
-			<div className={isWon ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'}>
+			<div className={(match.playerScore > match.opponentScore) ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'}>
 				<div className="imageUserMatch" id="imageFirstUser">
-					<img src={user.avatar} id="Avatar" alt=""/>
+					<img src={match.playerAvatar} id="Avatar" alt=""/>
 				</div>
-				<div className="MatchHistoryScore" id="ScoreFirstUser">5</div>
+				<div className="MatchHistoryScore" id="ScoreFirstUser">{match.playerScore}</div>
 				<div className="VS">-</div>
-				<div className="MatchHistoryScore" id="ScoreSecondUser">3</div>
+				<div className="MatchHistoryScore" id="ScoreSecondUser">{match.opponentScore}</div>
 				<div className="imageUserMatch" id="imageSecondUser">
-					<img src={user.avatar} id="Avatar" alt=""/>
+					<img src={match.opponentAvatar} id="Avatar" alt=""/>
 				</div>
 			{/* <div className={isLost ? 'UserMatchHistory userLostMatch' : 'UserMatchHistory userWonMatch'}>
 				<div className="imageUserMatch" id="imageFirstUser">
@@ -70,7 +73,7 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 		</div>
 		))):
 		(
-			<div>No users found</div>
+			<p  className="NoUsersFound">You haven't played a match before!</p>
 		)
 		
 	}

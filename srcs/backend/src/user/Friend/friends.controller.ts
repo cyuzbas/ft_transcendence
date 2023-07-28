@@ -68,10 +68,14 @@ export class FriendsController {
 
     @Post('add/:myId/:friendId')
     async sendFriendRequest(
+        @Req() req,
         @Param('myId')myIntraId:string,
-    @Param('friendId') friendIntraId:string ) {
+    @Param('friendId') friendIntraId:string) {
         const friend = await this.userService.findByintraIdEntitiy(friendIntraId);
         const user = await this.userService.findByintraIdEntitiy(myIntraId);
+        if(user.id != req.user.id){
+            return;
+        }
         if (user.id == friend.id) {
             return;
         }
@@ -89,19 +93,26 @@ export class FriendsController {
 
     @Post('/delete/:userIntraId/:friendIntraId')
     async deleteFriend(
+        @Req() req,
         @Param('userIntraId') userIntraId:string,
         @Param('friendIntraId') friendIntraId:string
     ) : Promise<Boolean>{
     const friend = await this.userService.findByintraId(friendIntraId);
     const user = await this.userService.findByintraId(userIntraId);
+    console.log("user " + req.user.id + " friend " + friend.id + " my " + user.id)
     if(!friend || !user)
     return false;
-        return await this.friendsService.deleteFriends(user, friend);
+    if(user.id != req.user.id){
+        console.log("ayni degil!" + user.id + " " + req.user.id)
+        return false;
+    }
+    return await this.friendsService.deleteFriends(user, friend);
 
     }
 
     @Post('/friend-request/:myId/:friendId/:answer')
     async friendRequestAnswer(  
+        @Req() req,
         @Param('myId') myIntraId: string,
         @Param('friendId') friendIntraId: string,
         @Param('answer') answer: string,):Promise<Boolean>{
@@ -110,7 +121,10 @@ export class FriendsController {
     const user = await this.userService.findByintraId(myIntraId);
     if(!friend || !user || answer === undefined)
     return false;
-        return await this.friendsService.friendRequestAnswer(user, friend,answer)
+    if(user.id != req.user.id)
+        return false;
+
+    return await this.friendsService.friendRequestAnswer(user, friend,answer)
         
     }
 

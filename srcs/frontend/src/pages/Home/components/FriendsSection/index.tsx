@@ -35,7 +35,7 @@ const FriendsSection: React.FC<Props> = ({ id }) => {
 	
   return (<>
 	<div id="AllFriends" className="UsersSection">
-	{Array.isArray(users) ? (
+	{( users.length ) ? (
         users.map((user, index) => (
 		<div className="FriendsSectionComponent" key={user.intraId}>
 			<div className="imageClassFS">
@@ -51,8 +51,8 @@ const FriendsSection: React.FC<Props> = ({ id }) => {
             </div>
 	</div>))):
 		(
-			<p>No users found</p>
-			)
+			<p className="NoUsersFound">You don't have any friends yet!</p>
+		)
 		}
 	</div>	
 	</>

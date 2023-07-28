@@ -11,6 +11,15 @@ import { scoreMax } from "./game";
 import { UserService } from 'src/user/user.service';
 import { GameType } from '../typeorm/game.entity';
 
+class GameDto {
+    id: number;
+    playerScore: number;
+    opponentScore: number;
+    type: string;
+    playerId: number;
+    opponentId: number;
+}
+
 @Injectable()
 export class GameService {
     constructor(
@@ -62,13 +71,9 @@ export class GameService {
                 if (!loserObj) loserUsername = "unKnown";
                 else loserUsername = loserObj.userName;
                 
-                game.server.to(`game${game.id}`).emit('gameEnd', `user ${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
-                
-                // game.server.to(`game${game.id}`).emit('gameEnd', { winnerUsername, loserUsername, winnerScore, loserScore });
-                // this.socketService.endGame(game, game.id);
+                game.server.to(`game${game.id}`).emit('gameEnd', `${winnerUsername} won the game ${winnerScore} - ${loserScore}`);
                 game.server.socketsLeave(`game${game.id}`);
                 this.socketService.games.delete(game.id);
-                // game.pause = true;
                 return;
             }
 
@@ -301,13 +306,30 @@ export class GameService {
         }
     }
 
-    async getGamesByPlayerId(playerId: number): Promise<GameEntity[]> {
-        return this.gameRepository.find({
+   
+    async getGamesByPlayerId(intraId: string): Promise<any[]> {
+        const user = await this.userService.findByintraIdEntitiy(intraId)
+        if(!user)
+            return
+        const playerId = user.id
+         const games = await this.gameRepository.find({
           where: {
             player: {
                 id: playerId
             }
-          }
+          },
+          relations: ["player", "opponent"]
         });
+        const matchHistory = games.map(game => {
+            return {
+                playerAvatar: game.player.avatar,
+                opponentAvatar: game.opponent.avatar,
+                playerUsername: game.player.userName,
+                opponentUsername: game.opponent.userName,
+                playerScore: game.playerScore,
+                opponentScore: game.opponentScore
+            }
+        });
+        return matchHistory;
     }
 }

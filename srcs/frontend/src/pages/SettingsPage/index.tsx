@@ -80,10 +80,10 @@ function SettingsPage() {
 			const headers = { 'Content-Type': 'multipart/form-data' };
 			try {
 				 await axios
-					.post(`http://localhost:3001/user/avatar/${selectedFile.name}`,
+					.post(`http://localhost:3001/user/avatar/${selectedFile.name + user.intraId}`,
 						formData, { withCredentials: true, headers })
 
-				const updatedUser = { ...user, avatar: `http://localhost:3001/user/avatar/${selectedFile.name}` };
+				const updatedUser = { ...user, avatar: `http://localhost:3001/user/avatar/${selectedFile.name + user.intraId}` };
 				setUser(updatedUser)
 				localStorage.setItem('user', JSON.stringify(updatedUser));
 				if (inputRef.current) {
@@ -125,12 +125,8 @@ function SettingsPage() {
 			}
 
 		} else {
-			console.log("goto")
-
 			window.location.href = 'http://localhost:3000/create2fa';
-
 		}
-		console.log("handler finish")
 
 	};
 

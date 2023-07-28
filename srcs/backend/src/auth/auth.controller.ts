@@ -59,8 +59,15 @@ export class AuthController {
 		if(!req.user){
 			window.location.href = '/login'
 		}
-		else
+		else{
+			delete req.user.twoFactorAuthSecret
+			delete req.user.totalLoose
+			delete req.user.totalWin
+			delete req.user.score
+			delete req.user.rank
+			delete req.user.inGame
 			return req.user;
+		}
 	}
 
 

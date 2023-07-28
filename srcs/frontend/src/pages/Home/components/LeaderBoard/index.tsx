@@ -4,10 +4,13 @@ import React, { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../../../../contexts'
 
 type User = {
+	id: number;
     avatar: string;
     userName: string;
     intraId: string;
 	isLogged: boolean;
+	totalWin: number;
+	totalLoose: number;
 	score: number;
 	rank: number;
   };
@@ -15,7 +18,7 @@ type User = {
 function LeaderBoard() {
 
 	const [users, setUsers] = useState<User[]>([]);
-	const { user } = useContext(UserContext)
+	const { user,setUser } = useContext(UserContext)
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -23,6 +26,16 @@ function LeaderBoard() {
 		  try {
 			const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
 			setUsers(response.data);
+			console.log("asfjlnasfhasjfhasj")
+			response.data.forEach((user1 :any) => {
+				if(user1.intraId === user.intraId){
+					const updatedUser = { ...user, totalWin: user1.totalWin, totalLoose: user1.totalLoose, rank: user1.rank, score: user1.score, inGame:user1.inGame};
+					setUser(updatedUser)
+					localStorage.setItem('user', JSON.stringify(updatedUser));
+					console.log("burds")
+				}
+			});
+			
 		  } catch (error) {
 			localStorage.clear()
 			window.location.href= '/login'
@@ -33,16 +46,16 @@ function LeaderBoard() {
 
   return (
 	<div className="UserScoreSection">
-		{Array.isArray(users) ? (
+		{( users.length ) ? (
 			users
-			.sort((a, b) => b.score - a.score)
+			.sort((a, b) => a.rank - b.rank)
 			.map((user, index) => {
 				return(
 				<div className="UserScoreComponent" key={user.intraId}>
 					<div className='UserScoreHash'>
 						<i className="bi bi-hash fs-3"></i>
 					</div>
-					<div className="UserScoreRank">{index + 1}</div>
+					<div className="UserScoreRank">{user.rank}</div>
 					<div className="imageClassUS">
 						<img src={user.avatar} id="Avatar" alt=""/>
 					</div>

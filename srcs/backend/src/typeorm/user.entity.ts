@@ -58,27 +58,6 @@ export class UserEntity {
 	@OneToMany(() => ACHIEVEMENTSEntity, (achievements) => achievements.user)
 	achievements: ACHIEVEMENTSEntity;
 
-	
-
-
-  
-
-
-	@OneToMany(() => RoomUserEntity, roomUser => roomUser.contact)
-	contactLinks: RoomUserEntity[];
-
-	@ManyToMany(() => UserEntity, user => user.blockedBy)
-	@JoinTable({ name: "block" })
-	blocking: UserEntity[];
-	
-	@ManyToMany(() => UserEntity, user => user.blocking)
-	blockedBy: UserEntity[];
-
-  	@JoinTable()
-    @OneToMany(() => GameEntity, game => game.player)
-    games: GameEntity[];
-  
-
     @Column({
         default: 0
     })
@@ -102,6 +81,26 @@ export class UserEntity {
 
 	@Column({})
 	inGame: boolean = false;
+
+
+  
+
+
+	@OneToMany(() => RoomUserEntity, roomUser => roomUser.contact)
+	contactLinks: RoomUserEntity[];
+
+	@ManyToMany(() => UserEntity, user => user.blockedBy)
+	@JoinTable({ name: "block" })
+	blocking: UserEntity[];
+	
+	@ManyToMany(() => UserEntity, user => user.blocking)
+	blockedBy: UserEntity[];
+
+  	@JoinTable()
+    @OneToMany(() => GameEntity, game => game.player)
+    games: GameEntity[];
+  
+
 
 
 }

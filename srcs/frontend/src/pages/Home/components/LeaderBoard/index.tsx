@@ -2,6 +2,7 @@ import './styles.css'
 import axios from 'axios';
 import React, { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../../../../contexts'
+import { AchievementType } from '../../../../AchievementsEnum';
 
 type User = {
 	id: number;
@@ -32,9 +33,34 @@ function LeaderBoard() {
 					const updatedUser = { ...user, totalWin: user1.totalWin, totalLoose: user1.totalLoose, rank: user1.rank, score: user1.score, inGame:user1.inGame};
 					setUser(updatedUser)
 					localStorage.setItem('user', JSON.stringify(updatedUser));
-					console.log("burds")
+
 				}
 			});
+			
+			if(user.totalWin == 5){
+			console.log("burda");
+				try{
+						await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.PONG_WHISPERER}`, null,{withCredentials:true})
+						console.log("succes")
+					}
+				catch(error){console.log("error")}
+			}
+			if(user.totalWin == 1){
+				console.log("burda");
+					try{
+							await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.FIRST_VICTORY}`, null,{withCredentials:true})
+							console.log("succes")
+						}
+					catch(error){console.log("error")}
+				}
+				if(user.totalLoose == 2){
+					console.log("burda");
+						try{
+								await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.EPIC_FAIL}`, null,{withCredentials:true})
+								console.log("succes")
+							}
+						catch(error){console.log("error")}
+					}
 			
 		  } catch (error) {
 			localStorage.clear()

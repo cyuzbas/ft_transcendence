@@ -24,9 +24,47 @@ export class FriendsService {
         //check is it undefined or not
         if (user.requestedFriends === undefined)
             user.requestedFriends = [];
+        console.log(user.requestedFriends)
 
-        user.requestedFriends = [...user.requestedFriends, friend];
-        await this.userRepository.save(user)
+
+
+        const index = user.requestedFriends.findIndex((getFriend) => getFriend.id === friend.id);
+        //delete requestarray
+        if (index !== -1) {
+
+        }
+        else {
+            user.requestedFriends = await this.getMyFriendQuery(user.id);
+
+            //check is it undefined or not
+            if (user.requestedFriends === undefined)
+                user.requestedFriends = [];
+
+            const index = user.requestedFriends.findIndex((getFriend) => getFriend.id === friend.id);
+            //delete requestarray
+            if (index !== -1) {
+
+            }
+            else {
+                user.requestedFriends = [...user.requestedFriends, friend];
+                await this.userRepository.save(user)
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 
@@ -79,11 +117,11 @@ export class FriendsService {
             await this.userRepository.save(friend);
         }
         else {
-            
+
 
             friend.friends = await this.getFriends1(friend.id)
             console.log("friend=>user1 " + friend.friends)
-    
+
             if (friend.friends === undefined) {
                 console.log("friends undefined1")
                 return false;

@@ -19,8 +19,8 @@ function SettingsPage() {
 	async function showAlert() {
 		if (inputText === user.userName) {
 			swal({
-				title: "Unsucces!",
-				text: "Error: Same name!",
+				title: "Error!",
+				text: "You can't change to same name!",
 				icon: "warning",
 				dangerMode: true,
 			}).then()
@@ -28,8 +28,8 @@ function SettingsPage() {
 		}
 		if (inputText.length === 0) {
 			swal({
-				title: "Unsucces!",
-				text: "Error: Input empty!",
+				title: "Error!",
+				text: "Input empty!",
 				icon: "warning",
 				dangerMode: true,
 			}).then()
@@ -57,7 +57,7 @@ function SettingsPage() {
 			else {
 				swal({
 					title: "Error!",
-					text: "Error: Duplicated",
+					text: "This name already in use!",
 					icon: "warning",
 					dangerMode: true,
 				}).then()

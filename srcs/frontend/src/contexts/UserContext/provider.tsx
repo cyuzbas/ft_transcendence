@@ -4,6 +4,7 @@ import axios from "axios";
 import { Login } from "../../pages";
 import Verify2fa from '../../pages/Verify2fa'
 import SettingsPage from "../../pages/SettingsPage";
+import FirstInfoPage from "../../pages/FirstInfoPage";
 
 export type User = {
   userName: string;
@@ -111,8 +112,8 @@ export function UserProvider({ children }: UserProviderProps) {
       return(
         <UserContext.Provider value={{ user, setUser }}>
           <Routes>
-          <Route path='/settings' element={<SettingsPage />} />
-          <Route path='*' element={<SettingsPage/>} />
+          <Route path='/info' element={<FirstInfoPage />} />
+          <Route path='*' element={<FirstInfoPage/>} />
         </Routes>
         </UserContext.Provider>
       )

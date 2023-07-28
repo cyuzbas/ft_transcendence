@@ -12,6 +12,7 @@ type User = {
   intraId: string;
   intraName: string;
   isLogged: boolean;
+  inGame: boolean;
 };
 
 const FriendsSection: React.FC<Props> = ({ id }) => {
@@ -46,8 +47,10 @@ const FriendsSection: React.FC<Props> = ({ id }) => {
 				<a href={`/profile/${user.intraName}`} className="visitUserProfile">{user.intraName}</a>
 			</div>
 			<div className="personOnlineContainer">
-              <i className="bi bi-circle-fill fs-5 FriendsOnlineDisplay"
-                id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
+			<i className="bi bi-circle-fill fs-5 FriendsOnlineDisplay"
+                id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}>
+				<div className={user.inGame ? "indicatorGame" : "indicatorNotGame"}>Ingame</div>	
+				</i>
             </div>
 	</div>))):
 		(

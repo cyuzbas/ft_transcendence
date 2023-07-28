@@ -37,12 +37,9 @@ export function Home() {
           <h4 className="UserName">{user.userName}</h4>
           <div className="ProfileStatusInfo">
             <i className="bi bi-circle-fill fs-5"  id={user.isLogged ? "indicatorOnline" : "indicatorOffline"}></i>
-            {/* {!isGaming && user.isLogged && ( */}
+            {user.isLogged && (
               <h4 className="UserStatus">Online</h4> 
-            {/* )} */}
-            {/* {isGaming && user.isLogged && (
-              <h4 className="UserStatus">In Game</h4> 
-            )} */}
+             )} 
             {!user.isLogged && (
               <h4 className="UserStatus">Offline</h4> 
             )}

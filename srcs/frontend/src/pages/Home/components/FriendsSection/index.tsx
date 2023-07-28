@@ -1,5 +1,5 @@
 import './styles.css'
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 type Props = {
@@ -32,7 +32,7 @@ const FriendsSection: React.FC<Props> = ({ id }) => {
 		  }
 		};
 		fetchData();
-	  }, []);
+	  }, [id]);
 	
   return (<>
 	<div id="AllFriends" className="UsersSection">

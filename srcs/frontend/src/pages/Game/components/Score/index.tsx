@@ -1,12 +1,11 @@
 import { useGame } from '../../../../contexts'
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import './styles.css'
-import { useEffect, useState } from 'react';
 
 export function Score() {
   const { gameState } = useGame()
   // const [gameEnd, setGameEnd] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
 
   // useEffect(() => {

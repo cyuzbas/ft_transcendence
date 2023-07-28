@@ -24,7 +24,7 @@ export function Modal({ children, isOpen, setIsOpen }: ModalProps) {
           icon={<CloseIcon />}
           className='close-button'
           onClick={() => {
-            console.log('cancel');
+            // console.log('cancel');
             socket.emit('cancelMatching');
             setIsOpen(false);
           }}

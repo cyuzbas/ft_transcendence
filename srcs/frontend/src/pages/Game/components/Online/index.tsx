@@ -121,16 +121,25 @@ export function Random() {
     const handler = (event: BeforeUnloadEvent) => {
       event.preventDefault();
       event.returnValue = '';
-      socket.emit("gameExitedpopstate");
+      socket.emit("gameExited");
+    };
+    window.addEventListener('beforeunload', handler);  
+    return () => {
+      window.removeEventListener('beforeunload', handler);
+    };
+  }, );
+
+  useEffect(() => {
+    const handler = (event: PopStateEvent) => {
+      event.preventDefault();
+      socket.emit("gameExited");
+      navigate(-1);
     };
   
-
-    
-    window.addEventListener('beforeunload', handler);
     window.addEventListener('popstate', handler);
   
     return () => {
-      window.removeEventListener('beforeunload', handler);
+      window.removeEventListener('popstate', handler);
     };
   }, );
 

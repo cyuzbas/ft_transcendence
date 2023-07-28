@@ -30,7 +30,7 @@ export class UserController {
     @Get('avatar/:filename')
     getImage(@Param('filename') filename: string, @Res() res, @Req() req) {
 		const imageFilePath = join(__dirname, '../../upload', filename);
-		console.log("filename is  " + filename + " " + imageFilePath)
+		// console.log("filename is  " + filename + " " + imageFilePath)
       return res.sendfile(imageFilePath);
     }
     

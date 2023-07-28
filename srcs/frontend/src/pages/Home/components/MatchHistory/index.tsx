@@ -1,6 +1,6 @@
 import './styles.css'
-import React, { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../../../contexts'
+import React, { useEffect, useState } from 'react';
+// import { UserContext } from '../../../../contexts'
 import axios from 'axios';
 
 type Props = {
@@ -38,7 +38,7 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 		  }
 		};
 		fetchData();
-	  }, []);
+	  }, [id]);
 	
 
 
@@ -48,7 +48,7 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 	{( matches.length ) ? (
 		matches.map((match, index) => (
 	// There will be array of oponents match
-			<div className={(match.playerScore > match.opponentScore) ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'}>
+			<div className={(match.playerScore > match.opponentScore) ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'} key={index}>
 				<div className="imageUserMatch" id="imageFirstUser">
 					<img src={match.playerAvatar} id="Avatar" alt=""/>
 				</div>

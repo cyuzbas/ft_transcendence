@@ -46,12 +46,12 @@ export class UserService {
 
 
 	async setAchievements(getIntraId: string, type: string): Promise<Boolean> {
-		console.log("set achievement work")
+		// console.log("set achievement work")
 		const user = await this.findByintraIdEntitiy(getIntraId)
 		const updateField = {} as ACHIEVEMENTSEntity;
 		updateField[type] = true;
 		await this.achievementsRepository.update(user.id, updateField);
-		console.log("set achievement finish")
+		// console.log("set achievement finish")
 		return true;
 	}
 
@@ -181,11 +181,11 @@ export class UserService {
 		const user = await this.userRepository.findOne({
 			where: { userName: userName }
 		});
-		console.log("hello status")
+		// console.log("hello status")
 		if (!user)
 			return
 		user.status = status;
-		console.log("status changed")
+		// console.log("status changed")
 
 		
 		await this.userRepository.save(user);
@@ -195,11 +195,11 @@ export class UserService {
 		const user = await this.userRepository.findOne({
 			where: { userName: userName }
 		});
-		console.log("hello isLogged")
+		// console.log("hello isLogged")
 		if (!user)
 			return
 		user.isLogged = isLogged;
-		console.log("isLogged changed")
+		// console.log("isLogged changed")
 		await this.userRepository.save(user);
 	}
 

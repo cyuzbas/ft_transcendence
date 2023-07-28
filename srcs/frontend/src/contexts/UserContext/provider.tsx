@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import axios from "axios";
 import { Login } from "../../pages";
 import Verify2fa from '../../pages/Verify2fa'
-import SettingsPage from "../../pages/SettingsPage";
+// import SettingsPage from "../../pages/SettingsPage";
 import FirstInfoPage from "../../pages/FirstInfoPage";
 
 export type User = {
@@ -89,7 +89,7 @@ export function UserProvider({ children }: UserProviderProps) {
         const updatedUser = { ...response.data, twoFactorCorrect: false };
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
-        console.log("user name" + user.userName)
+        // console.log("user name" + user.userName)
      
       } catch (error) {
           window.location.href = '/login';
@@ -97,7 +97,7 @@ export function UserProvider({ children }: UserProviderProps) {
       }
     }};
     fetchData();
-  }, []);
+  }, );
   if(!user.isLogged){
     return (
       <Routes>

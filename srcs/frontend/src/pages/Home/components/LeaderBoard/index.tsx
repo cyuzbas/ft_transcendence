@@ -23,11 +23,11 @@ function LeaderBoard() {
 
 	useEffect(() => {
 		const fetchData = async () => {
-		  console.log(user.userName);
+		//   console.log(user.userName);
 		  try {
 			const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
 			setUsers(response.data);
-			console.log("asfjlnasfhasjfhasj")
+			// console.log("asfjlnasfhasjfhasj")
 			response.data.forEach((user1 :any) => {
 				if(user1.intraId === user.intraId){
 					const updatedUser = { ...user, totalWin: user1.totalWin, totalLoose: user1.totalLoose, rank: user1.rank, score: user1.score, inGame:user1.inGame};
@@ -37,24 +37,24 @@ function LeaderBoard() {
 				}
 			});
 			
-			if(user.totalWin == 5){
-			console.log("burda");
+			if(user.totalWin === 5){
+			// console.log("burda");
 				try{
 						await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.PONG_WHISPERER}`, null,{withCredentials:true})
 						console.log("succes")
 					}
 				catch(error){console.log("error")}
 			}
-			if(user.totalWin == 1){
-				console.log("burda");
+			if(user.totalWin === 1){
+				// console.log("burda");
 					try{
 							await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.FIRST_VICTORY}`, null,{withCredentials:true})
 							console.log("succes")
 						}
 					catch(error){console.log("error")}
 				}
-				if(user.totalLoose == 2){
-					console.log("burda");
+				if(user.totalLoose === 2){
+					// console.log("burda");
 						try{
 								await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.EPIC_FAIL}`, null,{withCredentials:true})
 								console.log("succes")

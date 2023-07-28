@@ -1,31 +1,30 @@
-import { useState, MouseEvent } from 'react'
+import { useState } from 'react'
+// import { useState, MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { Settings } from './components/SettingsModal'
 import * as Components from './containers';
 import React from "react";
 import SoloImg from './assets/single.png';
 import MultiImg from './assets/multi.png';
-import { PlusIcon } from "./assets/PlusIcon"
-import { CloseIcon } from "./assets/CloseIcon"
 import './styles.css'
 
 export function Lobby() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
-  const [settings, toggle] = React.useState(true);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>('');
+  const [settings, toggle] = useState(true);
+  // const [isOpen, setIsOpen] = useState<boolean>(false);
+  // const [username, setUsername] = useState<string>('');
 
-  const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setIsOpen(true);
-  };
+  // const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
+  //   event.preventDefault();
+  //   setIsOpen(true);
+  // };
 
-  const handleClose = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setIsOpen(false);
-  };
+  // const handleClose = (event: MouseEvent<HTMLButtonElement>) => {
+  //   event.preventDefault();
+  //   setIsOpen(false);
+  // };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setUsername(event.target.value);
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setUsername(event.target.value);
 
   const mainLobby = {
     height: '100%',
@@ -39,7 +38,7 @@ export function Lobby() {
     <div className='mainLobby' style={mainLobby}>
     <Components.Container>
       {settings ? (
-        <Components.OfflineContainer settings={settings}>
+        <Components.OfflineContainer deneme={settings.toString()}>
           <Components.Card>
             <Components.TopCard>
               <Link to='/solo' className='games1'>
@@ -57,7 +56,7 @@ export function Lobby() {
           <Settings isOpen={isSettingsModalOpen} setIsOpen={setIsSettingsModalOpen} />
         </Components.OfflineContainer>
       ) : (
-        <Components.OnlineContainer settings={settings}>
+        <Components.OnlineContainer deneme={settings.toString()}>
           {/* <WaitingPage isOpen={isLookingForOpponent} setIsOpen={setIsLookingForOpponent} /> */}
           <Components.Card>
 
@@ -90,15 +89,15 @@ export function Lobby() {
         </Components.OnlineContainer>
       )}
   
-      <Components.OverlayContainer settings={settings}>
-        <Components.Overlay settings={settings}>
-          <Components.LeftOverlayPanel settings={settings}>
+      <Components.OverlayContainer deneme={settings.toString()}>
+        <Components.Overlay deneme={settings.toString()}>
+          <Components.LeftOverlayPanel deneme={settings.toString()}>
             <Components.GhostButton onClick={() => toggle(true)}>
               play offline
             </Components.GhostButton>
           </Components.LeftOverlayPanel>
   
-          <Components.RightOverlayPanel settings={settings}>
+          <Components.RightOverlayPanel deneme={settings.toString()}>
             <Components.GhostButton onClick={() => toggle(false)}>
               play online
             </Components.GhostButton> 

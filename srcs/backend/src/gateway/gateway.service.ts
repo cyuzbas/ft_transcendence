@@ -76,7 +76,7 @@ export class GatewayService {
 
     async createGame(server: Server, p1: UserEntity, p2: UserEntity, type: GameType): Promise<Res<GameEntity[]>> {
         const gameId = [p1.id, p2.id].sort().join('vs');
-        console.log(type);
+        // console.log(type);
         if (this.games.has(gameId))
             return { status: true, message: "A game with the same players is already running"};
         let gameP1 = this.gameRepository.create({
@@ -164,18 +164,18 @@ export class GatewayService {
             return { status: false, message: "invitation send already" };
         targetInvites.push({ id: userId, type });
         this.invites.set(targetUserId, targetInvites);
-        console.log(targetInvites);
-        console.log(this.invites);
+        // console.log(targetInvites);
+        // console.log(this.invites);
         return { status: true, message: "success" };
     }
 
     deleteInvite(myUserId: number, targetUserId: number): Res<Invite> {
         const myInvites = this.invites.get(myUserId) || [];
-        console.log(myInvites)
+        // console.log(myInvites)
         if (!myInvites.find(i => i.id === targetUserId))
             return { status: false, message: "no invitation from the user" };
         this.invites.set(myUserId, myInvites.filter(i => i.id !== targetUserId));
-        console.log('geldi')
+        // console.log('geldi')
         return { status: true, message: "success" };
     }
 
@@ -217,9 +217,9 @@ export class GatewayService {
     }
 
     async handleInGameDisconnection (id: number) {
-        console.log(id);
+        // console.log(id);
         const game = await this.findUserGame(id);
-        console.log(game);
+        // console.log(game);
 		// await this.exitGame(id, game);
     }
     
@@ -235,9 +235,9 @@ export class GatewayService {
     }
 
     async findUserGame(userId: number): Promise<Game> {
-        console.log('id: ', userId)
+        // console.log('id: ', userId)
         for (const game of this.games.values()) {
-            console.log('game:', game)
+            // console.log('game:', game)
             if (game.p1 === (userId) || game.p2 === (userId)) {
                 return game;
             }
@@ -246,7 +246,7 @@ export class GatewayService {
     }
 
     async exitGame(userId: number, game: Game) {
-        console.log(game.p1)
+        // console.log(game.p1)
         clearInterval(game.interval);
         const winner = (userId === game.p1) ? game.p2 : game.p1;
         const loser = (userId === game.p1) ? game.p1 : game.p2;
@@ -268,14 +268,14 @@ export class GatewayService {
 
 		await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
         if (winner === game.p1) {
-            console.log('yess', game.dbIdP1)
+            // console.log('yess', game.dbIdP1)
             await this.gameRepository.update(game.dbIdP1, { playerScore: 3 });
             await this.gameRepository.update(game.dbIdP1, { opponentScore: 0 });
             await this.gameRepository.update(game.dbIdP2, { playerScore: 0 });
             await this.gameRepository.update(game.dbIdP2, { opponentScore: 3 });
         }
         else if (winner === game.p2) {
-            console.log('no', game.dbIdP1)
+            // console.log('no', game.dbIdP1)
             await this.gameRepository.update(game.dbIdP1, { playerScore: 0 }) ;
             await this.gameRepository.update(game.dbIdP1, { opponentScore: 3 }) ;
             await this.gameRepository.update(game.dbIdP2, { playerScore: 3 }) ;

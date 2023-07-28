@@ -45,7 +45,7 @@ export class AuthController {
 				console.log("Login succes");
 		});
 		this.userService.updateLogIn(user.userName,true);
-		console.log("redirect : " + JSON.stringify(user));
+		// console.log("redirect : " + JSON.stringify(user));
 		if(user.TwoFactorAuth)
 			res.redirect(`http://localhost:3000/verify2fa`)
 		else
@@ -93,7 +93,7 @@ export class AuthController {
 	async verifyToken(@Param('token') token: string, @Param('intraId') intraId: string) {
 		const user = await this.userService.findByintraIdEntitiy(intraId);
 		const result = this.authService.verifyTwoFactorAuthentication(token, user.twoFactorAuthSecret);
-		console.log(result);
+		// console.log(result);
 		await this.userService.updateTwoFactorStatus(user.id, true)
 		if (result)
 			return true

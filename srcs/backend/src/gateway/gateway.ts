@@ -152,7 +152,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', 'In the game');
             return;
         }
-		console.log(data);
+		// console.log(data);
 		// errorler icin bisi koy
 		const resQueued = this.gatewayService.addUserToQueue(user.id, data.type);
 		if (resQueued.status !== true) {
@@ -176,11 +176,11 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		const gameId = [resMatching.payload[0].id, resMatching.payload[1].id].sort().join('vs');
 		socket1.join(`game${gameId}`);
 		socket2.join(`game${gameId}`);
-		if (socket1.rooms.has(`game${gameId}`) && socket2.rooms.has(`game${gameId}`)) {
-			console.log(`two users are in the room game${gameId}`);
-		} else {
-			console.log(`Error: One or both users have not joined game room: game${gameId}`);
-		}
+		// if (socket1.rooms.has(`game${gameId}`) && socket2.rooms.has(`game${gameId}`)) {
+		// 	console.log(`two users are in the room game${gameId}`);
+		// } else {
+		// 	console.log(`Error: One or both users have not joined game room: game${gameId}`);
+		// }
 		const resGameCreate = await this.gatewayService.createGame(this.server, resMatching.payload[0], resMatching.payload[1], data.type);
 		if (resGameCreate.status !== true) {
 			if (resGameCreate.message)
@@ -217,7 +217,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	@SubscribeMessage('Invite')
     async inviteUser( @MessageBody() data: { userName: string, type: GameType }, @ConnectedSocket() client: Socket ) {
-		console.log(data.type,'............');
+		// console.log(data.type,'............');
 		const userSocket = client.handshake.auth;
 		const user = await this.userService.findUserByUserName(userSocket.name);
 		if (!user) {
@@ -228,7 +228,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', 'empty username');
             return;
         }
-		console.log( await this.userService.findUserByUserName(data.userName))
+		// console.log( await this.userService.findUserByUserName(data.userName))
         const target = await this.userService.findUserByUserName(data.userName);
 		if (!target) {
 			client.emit('error', 'Invalid user');
@@ -259,7 +259,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			client.emit('error', res.message);
             return;
         }
-		console.log('yes');
+		// console.log('yes');
         client.emit('invitationDeleted', { ...res.payload, userName: target.userName });
         this.sendSocketMsgByUserId(target.id, 'invitationDeleted', { ...res.payload, userName: user.userName });
         this.sendSocketMsgByUserId(target.id, 'warning', `cancelled their invitation`);
@@ -392,7 +392,7 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
         const client = await this.userService.findUserByUserId(userId);
         const isClientOnline = client.isLogged;
         if (isClientOnline) {
-			console.log('isclient online');
+			// console.log('isclient online');
 			const socketId = this.mapService.userToSocketId.get(client.id);
 			const socket = this.server.sockets.sockets.get(socketId);
 			if (socket) {

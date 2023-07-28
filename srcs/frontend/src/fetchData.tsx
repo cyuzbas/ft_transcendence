@@ -3,9 +3,9 @@ import axios, { AxiosResponse } from 'axios';
 export async function fetchData(path: string): Promise<any> {
   try {
     const url = 'http://localhost:3001/' + path
-    console.log(url)
+    // console.log(url)
     const response = await axios.get( url, { withCredentials: true });
-    console.log(JSON.stringify(response.data))
+    // console.log(JSON.stringify(response.data))
     return JSON.stringify(response.data);
   }  catch (error) {
         console.error('Error message:', error);

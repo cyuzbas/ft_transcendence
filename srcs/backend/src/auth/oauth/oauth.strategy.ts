@@ -29,7 +29,7 @@ export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .toPromise();
-    console.log("Acces token " + accessToken)
+    // console.log("Acces token " + accessToken)
 
     const user = await this.userService.findByintraId(data.data.id);
     if (user) {

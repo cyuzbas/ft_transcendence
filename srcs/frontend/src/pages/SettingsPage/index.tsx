@@ -107,9 +107,9 @@ function SettingsPage() {
 
 
 	async function handleClick2FA() {
-		console.log("handler start")
+		// console.log("handler start")
 		if (user.TwoFactorAuth) {
-			console.log("handler if")
+			// console.log("handler if")
 
 			try {
 

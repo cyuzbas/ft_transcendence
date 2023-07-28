@@ -13,7 +13,7 @@ function Verify2fa() {
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setInputText(e.target.value);
-		console.log(e.target.value)
+		// console.log(e.target.value)
 	};
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -28,7 +28,7 @@ function Verify2fa() {
 		}
 		else {
 			try {
-				console.log("value is " + inputText + "user [" + JSON.stringify(user))
+				// console.log("value is " + inputText + "user [" + JSON.stringify(user))
 				const response = await axios.get(`http://localhost:3001/auth/verify/${inputText}/${user.intraId}`, { withCredentials: true });
 				if (response.data === true) {
 					const updatedUser = { ...user, twoFactorCorrect: true };

@@ -33,12 +33,14 @@ export function Range({
         step={step ?? 1}
         id={name}
         value={value}
-        defaultValue={defaultValue}
         onChange={(e) => {
           handleChange(e.target.value)
           setValue(e.target.value)
         }}
       />
     </div>
+
   )
 }
+
+

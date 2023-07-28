@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect }  from 'react';
-import { Nav, Navbar, Form, FormControl } from 'react-bootstrap';
+import { Nav, Navbar } from 'react-bootstrap';
 import styled from 'styled-components';
 import Intra from '../../../img/ft.png';
 import { UserContext } from '../../../contexts'
@@ -46,7 +46,7 @@ function NavigationBar () {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`, {withCredentials:true});
-        setFriendRequest(response.data.length == 0 ?  false :true)
+        setFriendRequest(response.data.length === 0 ?  false :true)
       } catch (error) {
         localStorage.clear()
 			window.location.href= '/login'
@@ -54,7 +54,7 @@ function NavigationBar () {
     };
 
     fetchData();
-  }, []);
+  }, );
 
 
 
@@ -64,7 +64,7 @@ return (
     <Navbar>
 	    <Navbar.Brand href="/home">
         <img src={Intra} alt="Ft-icon" className='icon'/>
-        <text className='brand'>PONG</text>
+        <span className='brand'>PONG</span>
       </Navbar.Brand>
       {/* <Form className="form-center">
         <FormControl type="text" placeholder="Search" className="" />
@@ -89,7 +89,7 @@ return (
         </div>
           </Nav.Item> 
           <Nav.Item><Nav.Link href="/home">
-            <text className='userName'>{user.userName}</text>
+            <span className='userName'>{user.userName}</span>
             <img src={user.avatar} className='avatar' alt='Avatar'/>
           </Nav.Link></Nav.Item>  
         </Nav>

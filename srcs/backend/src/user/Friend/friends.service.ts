@@ -24,7 +24,7 @@ export class FriendsService {
         //check is it undefined or not
         if (user.requestedFriends === undefined)
             user.requestedFriends = [];
-        console.log(user.requestedFriends)
+        // console.log(user.requestedFriends)
 
 
 
@@ -71,10 +71,10 @@ export class FriendsService {
     async deleteFriends(user: UserI, friend: UserI): Promise<Boolean> {
         user.friends = await this.getFriends(user.id)
         if (user.friends === undefined) {
-            console.log("undefined")
+            // console.log("undefined")
             return false;
         }
-        console.log("user=>friend " + user.friends)
+        // console.log("user=>friend " + user.friends)
         const index = user.friends.findIndex((getFriend) => getFriend.id === friend.id);
         //delete requestarray
         if (index !== -1) {
@@ -86,10 +86,10 @@ export class FriendsService {
 
 
             if (user.friends === undefined) {
-                console.log("undefined1")
+                // console.log("undefined1")
                 return false;
             }
-            console.log("user=>friend " + user.friends)
+            // console.log("user=>friend " + user.friends)
             const index11 = user.friends.findIndex((getFriend) => getFriend.id === friend.id);
             //delete requestarray
             if (index11 !== -1) {
@@ -97,17 +97,17 @@ export class FriendsService {
                 await this.userRepository.save(user);
             }
             else {
-                console.log("index problem")
+                // console.log("index problem")
                 return false;
             }
         }
 
 
         friend.friends = await this.getFriends(friend.id)
-        console.log("friend=>user " + friend.friends)
+        // console.log("friend=>user " + friend.friends)
 
         if (friend.friends === undefined) {
-            console.log("friends undefined")
+            // console.log("friends undefined")
             return false;
         }
         const index1 = friend.friends.findIndex((getFriend) => getFriend.id === user.id);
@@ -120,10 +120,10 @@ export class FriendsService {
 
 
             friend.friends = await this.getFriends1(friend.id)
-            console.log("friend=>user1 " + friend.friends)
+            // console.log("friend=>user1 " + friend.friends)
 
             if (friend.friends === undefined) {
-                console.log("friends undefined1")
+                // console.log("friends undefined1")
                 return false;
             }
             const index112 = friend.friends.findIndex((getFriend) => getFriend.id === user.id);
@@ -133,7 +133,7 @@ export class FriendsService {
                 await this.userRepository.save(friend);
             }
             else {
-                console.log("friend index")
+                // console.log("friend index")
                 return false;
             }
         }
@@ -155,7 +155,7 @@ export class FriendsService {
             user.friends = await this.getFriends(user.id)
             if (user.friends === undefined) {
                 user.friends = [];
-                console.log("user frind undefined!")
+                // console.log("user frind undefined!")
                 this.userService.setAchievements(user.intraId, "SOCIAL_BUTTERFLY")
             }
             if (user.friends.length == 0)
@@ -163,8 +163,8 @@ export class FriendsService {
 
             friend.friends = await this.getFriends(friend.id)
 
-            console.log(user.friends)
-            console.log(friend.friends)
+            // console.log(user.friends)
+            // console.log(friend.friends)
             if (friend.friends.length == 0)
                 this.userService.setAchievements(friend.intraId, "SOCIAL_BUTTERFLY")
             user.friends.push(friend)

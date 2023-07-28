@@ -107,29 +107,29 @@ function FirstInfoPage() {
 	};
 
 
-	async function handleClick2FA() {
-		console.log("handler start")
-		if (user.TwoFactorAuth) {
-			console.log("handler if")
+	// async function handleClick2FA() {
+	// 	console.log("handler start")
+	// 	if (user.TwoFactorAuth) {
+	// 		console.log("handler if")
 
-			try {
+	// 		try {
 
-				const updatedUser = { ...user, TwoFactorAuth: false, twoFactorCorrect: false };
-				setUser(updatedUser)
-				localStorage.setItem('user', JSON.stringify(updatedUser));
-				await axios.post(`http://localhost:3001/auth/disabled2fa`,
-					null, { withCredentials: true })
-			}
-			catch (error) {
-				localStorage.clear()
-				window.location.href = '/login'
-			}
+	// 			const updatedUser = { ...user, TwoFactorAuth: false, twoFactorCorrect: false };
+	// 			setUser(updatedUser)
+	// 			localStorage.setItem('user', JSON.stringify(updatedUser));
+	// 			await axios.post(`http://localhost:3001/auth/disabled2fa`,
+	// 				null, { withCredentials: true })
+	// 		}
+	// 		catch (error) {
+	// 			localStorage.clear()
+	// 			window.location.href = '/login'
+	// 		}
 
-		} else {
-			window.location.href = 'http://localhost:3000/create2fa';
-		}
+	// 	} else {
+	// 		window.location.href = 'http://localhost:3000/create2fa';
+	// 	}
 
-	};
+	// };
 
 	return (
 		<>

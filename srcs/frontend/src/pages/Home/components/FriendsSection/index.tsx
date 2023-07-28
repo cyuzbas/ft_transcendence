@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
 type Props = {
-  id: string;
+  id?: string;
 };
 
 type User = {
@@ -37,7 +37,7 @@ const FriendsSection: React.FC<Props> = ({ id }) => {
 	<div id="AllFriends" className="UsersSection">
 	{( users.length ) ? (
         users.map((user, index) => (
-		<div className="FriendsSectionComponent" key={user.intraId}>
+		<div className="FriendsSectionComponent" key={index}>
 			<div className="imageClassFS">
 				<img src={user.avatar} id="Avatar" alt=""/>
 			</div>

@@ -25,7 +25,7 @@ export function Login(){
 			</div>
 			<button className='LoginWith42' onClick={goToLogin} >
 				<img src={fourtytwo} className='ftLogo' alt='42 Logo'></img>
-				<text className='ftLogin-text'>LOGIN WITH 42</text>
+				<span className='ftLogin-text'>LOGIN WITH 42</span>
 			</button>
 		</div>
 		</>

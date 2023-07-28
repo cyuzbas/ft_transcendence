@@ -1,6 +1,6 @@
 // import { SettingsIcon } from '../../assets'
 // import { Button } from './Button'
-import { Modal } from './Modal'
+// import { Modal } from './Modal'
 import { useState,useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useSocket } from "../../../../contexts"
@@ -32,7 +32,7 @@ export function WaitingPage1() {
 
   useEffect(() => {
     function onCancelMatching() {
-        console.log('cancel');
+        // console.log('cancel');
         setIsLookingForOpponent(false);
         navigate('/lobby');
     }
@@ -47,11 +47,11 @@ export function WaitingPage1() {
     return () => {
       socket.off('matchMaking');
     };
-  }, []);
+  }, [socket]);
 
   const handleClose = () => {
     socket.emit("cancelMatching");
-    console.log('idil');
+    // console.log('idil');
     setIsLookingForOpponent(false);
     navigate('/lobby');
   };
@@ -85,7 +85,7 @@ export function WaitingPage2() {
 
   useEffect(() => {
     function onSend() {
-        console.log('++++++++invite send, waiting for respond');
+        // console.log('++++++++invite send, waiting for respond');
         setIsLookingForOpponent(true);
     }
     socket.on("invitesent", onSend);
@@ -139,11 +139,11 @@ export function WaitingPage2() {
     socket.emit("Invite", { userName: username, type: 'CLASSIC' });
     return () => {
     };
-  }, []);
+  }, [socket, username]);
 
   const handleClose = () => {
     socket.emit("Uninvite", { userName: username });
-    console.log('idil');
+    // console.log('idil');
     setIsLookingForOpponent(false);
     navigate(-1);
   };
@@ -212,15 +212,15 @@ export function WaitingPage3() {
 
   useEffect(() => {
     socket.emit("matchMaking", {type: 'CUSTOM'});
-    console.log('rewuested')
+    // console.log('rewuested')
     return () => {
       socket.off('matchMaking');
     };
-  }, []);
+  }, [socket]);
 
   const handleClose = () => {
     socket.emit("cancelMatching");
-    console.log('idil');
+    // console.log('idil');
     setIsLookingForOpponent(false);
     navigate('/lobby');
   };

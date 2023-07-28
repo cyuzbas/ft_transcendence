@@ -99,11 +99,11 @@ export class FriendsController {
     ) : Promise<Boolean>{
     const friend = await this.userService.findByintraId(friendIntraId);
     const user = await this.userService.findByintraId(userIntraId);
-    console.log("user " + req.user.id + " friend " + friend.id + " my " + user.id)
+    // console.log("user " + req.user.id + " friend " + friend.id + " my " + user.id)
     if(!friend || !user)
     return false;
     if(user.id != req.user.id){
-        console.log("ayni degil!" + user.id + " " + req.user.id)
+        // console.log("ayni degil!" + user.id + " " + req.user.id)
         return false;
     }
     return await this.friendsService.deleteFriends(user, friend);

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 interface ContainerProps {
-  settings: boolean;
+  deneme: string;
 }
 
 export const Container = styled.div`
@@ -27,7 +27,7 @@ export const OnlineContainer = styled.div<ContainerProps>`
  width: 50%;
  opacity: 0;
  z-index: 1;
- ${props => props.settings !== true ? `
+ ${props => props.deneme !== "true" ? `
    transform: translateX(100%);
    opacity: 1;
    z-index: 5;
@@ -44,7 +44,7 @@ transition: all 0.3s ease-in-out;
 left: 0;
 width: 50%;
 z-index: 2;
-${props => (props.settings !== true ? `transform: translateX(100%);` : null)}
+${props => (props.deneme !== "true" ? `transform: translateX(100%);` : null)}
 `;
 
 export const TopCard = styled.div`
@@ -247,7 +247,7 @@ overflow: hidden;
 transition: transform 0.3s ease-in-out;
 z-index: 100;
 ${props =>
- props.settings !== true ? `transform: translateX(-100%);` : null}
+ props.deneme !== "true" ? `transform: translateX(-100%);` : null}
 `;
 
 export const Overlay = styled.div<ContainerProps>`
@@ -264,7 +264,7 @@ height: 100%;
 width: 200%;
 transform: translateX(0);
 transition: transform 0.3s ease-in-out;
-${props => (props.settings !== true ? `transform: translateX(50%);` : null)}
+${props => (props.deneme !== "true" ? `transform: translateX(50%);` : null)}
 `;
 
 export const OverlayPanel = styled.div`
@@ -284,11 +284,11 @@ export const OverlayPanel = styled.div`
 
 export const LeftOverlayPanel = styled(OverlayPanel)<ContainerProps>`
   transform: translateX(-20%);
-  ${props => props.settings !== true ? `transform: translateX(0);` : null}
+  ${props => props.deneme !== "true" ? `transform: translateX(0);` : null}
 `;
 
 export const RightOverlayPanel = styled(OverlayPanel)<ContainerProps>`
     right: 0;
     transform: translateX(0);
-    ${props => props.settings !== true ? `transform: translateX(20%);` : null}
+    ${props => props.deneme !== "true" ? `transform: translateX(20%);` : null}
 `;

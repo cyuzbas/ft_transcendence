@@ -8,7 +8,7 @@ export class MessageEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(() => UserEntity, (user) => user.messages, {onDelete: 'SET NULL'}) // set default, "user deleted" // can't delete user maybe uncessecary
+	@ManyToOne(() => UserEntity, (user) => user.messages)
 	user: UserEntity;
 
 	@Column()
@@ -16,6 +16,4 @@ export class MessageEntity {
 
 	@ManyToOne(() => RoomEntity, (room) => room.messages, {onDelete: 'CASCADE'})
 	room: RoomEntity;
-
-	//date created?
 }

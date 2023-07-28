@@ -13,7 +13,6 @@ type createChannelProps = {
 export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) => {
 	const [type, setType] = useState<RoomType>(RoomType.PUBLIC);
 	const [roomName, setRoomName] = useState<string>('');
-	const [description, setDescription] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const { setRoom, createNewRoom, addRoomUser, setMyRooms } = useChat();
 	const { user } = useUser();
@@ -22,27 +21,30 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 	const handleSubmit = async(e: React.FormEvent) => {
 		e.preventDefault();
 		
-		await createNewRoom({
-			roomName: roomName,
-			type: type,
-			description: description,
-			password: password,
-		});
-
-		const newRoomUser = await addRoomUser({
-			roomName: roomName, 
-			userName: user.userName, 
-			userRole: UserRole.OWNER,
-			contactName: null,
-		});
-
-		if (newRoomUser) {
-			setMyRooms(prev => [...prev, newRoomUser])
-			setRoom(newRoomUser);
-			socket.emit('joinRoom', roomName);
-		};
-
-		setPopupVisibility(false);
+		try {
+			await createNewRoom({
+				roomName: roomName,
+				type: type,
+				password: password,
+			});
+	
+			const newRoomUser = await addRoomUser({
+				roomName: roomName, 
+				userName: user.userName, 
+				userRole: UserRole.OWNER,
+				contactName: null,
+			});
+	
+			if (newRoomUser) {
+				setMyRooms(prev => [...prev, newRoomUser])
+				setRoom(newRoomUser);
+				socket.emit('joinRoom', roomName);
+			};
+	
+			setPopupVisibility(false);
+		} catch (error: any) {
+      alert(error.response.data.message);
+		}
 	}
 	
 	return (
@@ -57,12 +59,11 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 					<AiOutlineClose size="2em"/>
 				</button>
 				<div>
-					{/* <label htmlFor="type">Type</label> */}
-						<select className="form-input" id="type" onChange={(e) => setType(e.target.value as RoomType)}>
-							<option value="" disabled selected>Select type</option>
-							<option value={RoomType.PUBLIC}>public</option>
-							<option value={RoomType.PRIVATE}>private</option>
-							<option value={RoomType.PROTECTED}>protected</option>
+					<select className="form-input" id="type" onChange={(e) => setType(e.target.value as RoomType)}>
+						<option value="" disabled selected>Select type</option>
+						<option value={RoomType.PUBLIC}>public</option>
+						<option value={RoomType.PRIVATE}>private</option>
+						<option value={RoomType.PROTECTED}>protected</option>
 					</select>
 				</div>
 				<div >
@@ -73,17 +74,9 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 						required
 						placeholder="Enter Name" 
 						value={roomName}
-						onChange={(e) => setRoomName(e.target.value.trim())}/> 
-				</div>
-				<div>
-					<p>
-						Description
-						</p>
-					<textarea 
-						rows={4}
-						placeholder="Enter Description: optional"
-						value={description}
-						onChange={(e) => setDescription(e.target.value)}/>
+						maxLength={25}
+						onChange={(e) => setRoomName(e.target.value.trim())}
+					/> 
 				</div>
 				{type === 'protected' && (
 					<div>
@@ -91,6 +84,7 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 							required
 							placeholder="Enter Password"
 							value={password}
+							maxLength={25}
 							onChange={(e) => setPassword(e.target.value.trim())}/>
 					</div>
 				)}

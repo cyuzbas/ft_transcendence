@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
-import { Member, RoomUser, useChat } from "../../../contexts";
+import { Member, useChat } from "../../../contexts";
 import { useSocket } from "../../../contexts/SocketContext";
 
 export function useMuteTimer(member: Member, roomName: string) {
   const [muteRemaining, setMuteRemaining] = useState<number>(0);
-  const { room, updateRoomUser } = useChat();
+  const { updateRoomUser } = useChat();
   const { socket } = useSocket();
   
-  // console.log(member)
-
-  const unmuteUser = async() => {
-    await updateRoomUser({
-      ...member,
-      isMuted: false,
-    }, roomName);
-    socket.emit('memberUpdate', room.roomName); //not for unreadmessages
-
-  }
-
+  
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
+
+    const unmuteUser = async() => {
+      await updateRoomUser({
+        ...member,
+        isMuted: false,
+      }, roomName);
+      socket.emit('memberUpdate', roomName);
+    }
 
     if (member.isMuted && member.muteEndTime) {
       const currentTime = new Date();
@@ -29,7 +27,6 @@ export function useMuteTimer(member: Member, roomName: string) {
 
       if (diff > 0) {
         intervalId = setInterval(() => {
-          // setMuteRemaining((muteRemaining) => muteRemaining - 1);
           setMuteRemaining((muteRemaining) => {
             if (muteRemaining <= 1) {
               clearInterval(intervalId);
@@ -50,8 +47,7 @@ export function useMuteTimer(member: Member, roomName: string) {
         clearInterval(intervalId);
       }
     };
-  }, [member]);
-  // }, [room]);
+  }, [member, roomName, updateRoomUser, socket]);
 
   return muteRemaining;
 }

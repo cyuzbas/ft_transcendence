@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { ClickableList } from "./clickableList";
 import { useChat } from "../../../contexts/ChatContext/provider";
-import { RoomType, User, UserRole, useUser } from "../../../contexts";
+import { User, useUser } from "../../../contexts";
 import { useSetupDmConversation } from "./hookSetupDm";
-import { useSocket } from "../../../contexts/SocketContext";
-import { AiOutlineClose, AiOutlineUserAdd, AiOutlineCheck } from "react-icons/ai"
+import { AiOutlineClose } from "react-icons/ai"
 
 type addContactProps = {
 	setPopupVisibility: (value: React.SetStateAction<boolean>) => void,
@@ -13,9 +12,8 @@ type addContactProps = {
 export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 	const [unknowContacts, setUnknownContacts] = useState<User[]>([]);
 	const setupDmConversation = useSetupDmConversation();
-	const { allUsers, myRooms, createNewRoom, addRoomUser, setRoom, setMyRooms } = useChat();
+	const { allUsers, myRooms } = useChat();
 	const { user } = useUser();
-	const { socket } = useSocket();
 	
 	useEffect(() => {
 		const filteredUsers = allUsers
@@ -23,9 +21,9 @@ export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 		.filter(contact => contact.userName !== user.userName)
 		
 		setUnknownContacts(filteredUsers);
-	},[allUsers])
+	},[allUsers, myRooms, user.userName])
 
-	const handleClick = async(newContact: User) => { // prevent e.default()?
+	const handleClick = async(newContact: User) => {
 		await setupDmConversation(newContact);
 		setPopupVisibility(false);
 	}
@@ -44,7 +42,7 @@ export const FormAddContact = ({ setPopupVisibility }: addContactProps) => {
 				items={unknowContacts}
 				renderItem={(newContact) => (
 					<p className="user-row avatar-status-wrapper">
-						<img src={newContact.avatar} style={{margin:0,width:50, height:50, borderRadius:50}}/>
+						<img src={newContact.avatar} alt="avatar" style={{margin:0,width:50, height:50, borderRadius:50}}/>
 						{newContact.status === 'online' ?
 						<span className="online-dot-big"></span> :
 						<span className="offline-dot-big"></span>

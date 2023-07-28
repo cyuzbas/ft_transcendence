@@ -1,12 +1,12 @@
-import { Post, Body, Controller, Get, Param, Delete, Put } from '@nestjs/common';
+import { Post, Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { RoomDto } from 'src/dto/room.dto';
 import { MessageDto } from 'src/dto/message.dto';
-import { UserRole } from 'src/typeorm/roomUser.entity';
-import { RoomType } from 'src/typeorm/room.entity';
 import { NewRoomUserDto, RoomUserDto } from 'src/dto/roomUser.dto';
 import { UserDto } from 'src/dto/user.dto';
+import { AuthenticatedGuard } from 'src/auth/oauth/oauth.guard';
 
+@UseGuards(AuthenticatedGuard)
 @Controller('chat')
 export class ChatController {
 
@@ -90,9 +90,4 @@ export class ChatController {
 	async checkPassword(@Body() room: RoomDto): Promise<boolean> {
 		return await this.chatService.checkPassword(room);
 	}
-
-	@Delete(':id')
-	delete(@Param('id') id: number) {
-		return this.chatService.deleteRoom(id);
-	}	
 }

@@ -10,38 +10,40 @@ export const useSetupDmConversation = () => {
     const sortedIntraId = [user.intraId, contact.intraId].sort();
     const joinedIntraId = sortedIntraId.join('');
   
-    await createNewRoom({			
-      roomName: joinedIntraId,
-      type: RoomType.DIRECTMESSAGE,
-    });
-  
-    const newRoomUser1 = await addRoomUser({
-      roomName: joinedIntraId,
-      userName: user.userName,
-      userRole: UserRole.MEMBER,
-      contactName: contact.userName,
-    });
-  
-    const newRoomUser2 = await addRoomUser({ //include intraId here
-      roomName: joinedIntraId,
-      userName: contact.userName,
-      userRole: UserRole.MEMBER,
-      contactName: user.userName,
-    });
-
-    // console.log(newRoomUser1, newRoomUser2);
-  
-    if (newRoomUser1) {
-      setMyRooms(prev => [...prev, newRoomUser1])
-      setRoom(newRoomUser1);
-      socket.emit('joinRoom', joinedIntraId);
-    }
-  
-    if (newRoomUser2) {
-      socket.emit('roomInvite', {
-        ...newRoomUser2,
-        intraId: contact.intraId, 
+    try {
+      await createNewRoom({			
+        roomName: joinedIntraId,
+        type: RoomType.DIRECTMESSAGE,
       });
+    
+      const newRoomUser1 = await addRoomUser({
+        roomName: joinedIntraId,
+        userName: user.userName,
+        userRole: UserRole.MEMBER,
+        contactName: contact.userName,
+      });
+    
+      const newRoomUser2 = await addRoomUser({
+        roomName: joinedIntraId,
+        userName: contact.userName,
+        userRole: UserRole.MEMBER,
+        contactName: user.userName,
+      });
+    
+      if (newRoomUser1) {
+        setMyRooms(prev => [...prev, newRoomUser1])
+        setRoom(newRoomUser1);
+        socket.emit('joinRoom', joinedIntraId);
+      }
+    
+      if (newRoomUser2) {
+        socket.emit('roomInvite', {
+          ...newRoomUser2,
+          intraId: contact.intraId, 
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 }

@@ -1,8 +1,9 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 import axios from "axios";
-import { GENERAL_CHAT, Member, Message, NewRoomUser, Room, RoomType, RoomUser, UserDetails, UserRole } from "./types";
+import { GENERAL_CHAT, Member, Message, NewRoomUser, Room, RoomUser } from "./types";
 import { useSocket } from "../SocketContext/provider";
 import { User, useUser } from "../UserContext";
+import { AchievementType } from "../../AchievementsEnum";
 
 export type ChatContextValue = {
     room: RoomUser,
@@ -22,8 +23,8 @@ export type ChatContextValue = {
     removeRoomUser: (roomName: string, userName: string, intraId: string) => Promise<void>,
     updateRoomUser: (updatedRoomUser: Member, roomName: string) => Promise<void>,
     updateRoom: (updatedRoom: Room) => Promise<void>,
-    // handleUnreadMessage: (roomName: string) => Promise<void>,
     handleBlock: (member: User, blockAction: string) => Promise<void>,
+    setAchievement: () => Promise<void>,
 };
 
 const ChatContext = createContext({} as ChatContextValue);
@@ -48,13 +49,13 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             return
         } 
 
-        function onRoomInvite(newRoomUser: RoomUser) { // THIS OLD MYROOMS???
+        function onRoomInvite(newRoomUser: RoomUser) {
             setMyRooms(prev => [...prev, newRoomUser]);
             socket.emit('joinRoom', newRoomUser.roomName);
         };
       
         socket.on('onRoomInvite', onRoomInvite);
-        socket.emit('userUpdate'); //MOVE DOWN?
+        socket.emit('userUpdate');
 
         fetchMyRooms();
         fetchBlocked();
@@ -85,7 +86,6 @@ export function ChatProvider({ children }: {children: ReactNode}) {
                     ...room,
                     unreadMessages: 0,
                 }, room.roomName)
-                // clearUnreadMessages();
             }
         };
 
@@ -118,8 +118,6 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         };
 
         function onRoomUserUpdate(updatedRoomUser: RoomUser) {
-            // console.log(updatedRoomUser)
-
             if (updatedRoomUser.roomName === room.roomName) {
                 if (updatedRoomUser.isBanned) {
                     setRoom(GENERAL_CHAT);
@@ -161,12 +159,10 @@ export function ChatProvider({ children }: {children: ReactNode}) {
 
     const fetchMyRooms = async() => {
         try {
-            const response = await axios.get(`${URL}/chat/myRooms/${user.userName}`);
+            const response = await axios.get(`${URL}/chat/myRooms/${user.userName}`, {withCredentials:true});
             setMyRooms(response.data);
             for (const room of response.data) {
-                // if (!room.isBanned && !room.isKicked) {
-                    socket.emit('joinRoom', room.roomName);
-                // }
+                socket.emit('joinRoom', room.roomName);
             }
         } catch (error) {
             console.log(error);
@@ -175,7 +171,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
 
     const fetchPublicRooms = async() => {
         try {
-            const response = await axios.get(`${URL}/chat/publicRooms`);
+            const response = await axios.get(`${URL}/chat/publicRooms`, {withCredentials:true});
             setPublicRooms(response.data);
         } catch (error) {
             console.log(error)
@@ -184,7 +180,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
 
     const fetchBlocked = async() => {
         try {
-            const response = await axios.get(`${URL}/chat/blocked/${user.userName}`);
+            const response = await axios.get(`${URL}/chat/blocked/${user.userName}`, {withCredentials:true});
             setBlocked(response.data);
         } catch (error) {
             console.log(error);
@@ -193,7 +189,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
 
     const fetchMessages = async() => {
         try {
-            const response = await axios.get(`${URL}/chat/messages/${room?.roomName}`);
+            const response = await axios.get(`${URL}/chat/messages/${room?.roomName}`, {withCredentials:true});
             const filteredOnBlocked = response.data
                 .filter((message: Message) => !blocked.some(blocked => blocked.userName === message.userName));
             setMessages(filteredOnBlocked);
@@ -204,10 +200,9 @@ export function ChatProvider({ children }: {children: ReactNode}) {
 
     const fetchMembers = async() => {
         try {
-            const response = await axios.get(`${URL}/chat/members/${room?.roomName}`);
+            const response = await axios.get(`${URL}/chat/members/${room?.roomName}`, {withCredentials:true});
             response.data.sort((a: Member, b: Member) => a.userName.localeCompare(b.userName));
             setMembers(response.data);
-            // console.log(response.data);
         } catch (error) {
             console.log(error);
         }
@@ -215,38 +210,31 @@ export function ChatProvider({ children }: {children: ReactNode}) {
 
     const createNewRoom = async(newRoom: Room) => {
         try {
-            await axios.post(`${URL}/chat/newRoom`, newRoom);
-        } catch (error) {
-            console.log(error);
-            alert(error); // do something with this
+            await axios.post(`${URL}/chat/newRoom`, newRoom, {withCredentials:true});
+        } catch (error: any) {
+            throw (error);
         }
     }
     
     const addRoomUser = async(newRoomUser: NewRoomUser) => {
         try {
-            const response = await axios.post(`${URL}/chat/addRoomUser/`, newRoomUser);
+            const response = await axios.post(`${URL}/chat/addRoomUser/`, newRoomUser, {withCredentials:true});
             socket.emit('memberUpdate', room.roomName);
-            // console.log(response.data)
             return response.data as RoomUser;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
         }
     }
     
     const removeRoomUser = async(roomName: string, userName: string, intraId: string) => {
         try {
-            await axios.put(`${URL}/chat/removeRoomUser/${roomName}/${userName}`);
-            // setMyRooms(prevRooms => {
-            //     return prevRooms.filter(prevRoom => prevRoom.roomName !== room.roomName)
-            // });
-            // socket.emit('leaveRoom', room.roomName);
-            // setRoom(GENERAL_CHAT);
+            await axios.put(`${URL}/chat/removeRoomUser/${roomName}/${userName}`, null, {withCredentials:true});
             socket.emit('memberUpdate', room.roomName);
             socket.emit('removeRoomUser', {
                 roomName,
                 intraId,
             });
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }
@@ -256,26 +244,24 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             const response = await axios.put(`${URL}/chat/updateRoomUser/`, {
                 ...updatedMember, 
                 roomName
-            });
-            // socket.emit('memberUpdate', room.roomName); //not for unreadmessages
+            }, {withCredentials:true});
             socket.emit('roomUserUpdate', {
                 ...response.data,
                 intraId: updatedMember.intraId,
             });
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
         }
     };
 
     const updateRoom = async(updatedRoom: Room) => {
         try {
-            const response = await axios.put(`${URL}/chat/updateRoom`, updatedRoom);
-            const { roomId, roomName, type, description } = response.data;
+            const response = await axios.put(`${URL}/chat/updateRoom`, updatedRoom, {withCredentials:true});
+            const { roomId, roomName, type } = response.data;
             socket.emit('roomUpdate', {
                 roomId,
                 roomName,
                 type,
-                description,
             });
         } catch (error) {
             console.log(error);
@@ -284,42 +270,21 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     
     const handleBlock = async(member: User, blockAction: string) => {
         try {
-            const response = await axios.put(`${URL}/chat/${blockAction}/${user.userName}/${member.userName}`);
+            const response = await axios.put(`${URL}/chat/${blockAction}/${user.userName}/${member.userName}`, null, {withCredentials:true});
             setBlocked(response.data);
         } catch (error) {
             console.log(error);
         }
     };
 
-    // const handleUnreadMessage = async(roomName: string) => {
-    //     const foundRoom = myRooms.find(room => room.roomName === roomName);
-    //     if (foundRoom) {
-    //         // updateRoomUser
-    //         // updateRoomUser API call
-    //         setMyRooms(prevRooms =>
-    //             prevRooms.map(room =>
-    //                 room.roomName === foundRoom.roomName
-    //                 ? { ...room, unreadMessages: room.unreadMessages + 1 }
-    //                 : room
-    //             )
-    //         );
-    //     }
-    // };
-
-    // const clearUnreadMessages = () => { //also api call to clear
-        // if (room) {
-
-            // room.unreadMessages = 0;
-        // }
-        // updateRoomUser({
-        //     ...user,
-        //     ...room,
-        //     unreadMessages: 0,
-        // }, room.roomName);
-    // }
-    
-    // function onRoom
-    // socket.on('onRoomUpdate', onRoomUpdate);
+    const setAchievement = async() => {
+        try {
+            await axios.post(`${URL}/user/setAchievements/${user.intraId}/${AchievementType.CHATTERBOX}`,
+                null,{withCredentials:true});
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 	const value = {
         room,
@@ -339,8 +304,8 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         removeRoomUser,
         updateRoomUser,
         updateRoom,
-        // handleUnreadMessage,
         handleBlock,
+        setAchievement,
 	};
     
 	return (

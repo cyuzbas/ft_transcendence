@@ -308,17 +308,29 @@ export class GameService {
 
    
 
-    async getGamesByPlayerId(intraId: string): Promise<GameEntity[]> {
+    async getGamesByPlayerId(intraId: string): Promise<any[]> {
         const user = await this.userService.findByintraIdEntitiy(intraId)
         if(!user)
             return
         const playerId = user.id
-        return this.gameRepository.find({
+         const games = await this.gameRepository.find({
           where: {
             player: {
                 id: playerId
             }
-          }
+          },
+          relations: ["player", "opponent"]
         });
+        const matchHistory = games.map(game => {
+            return {
+                playerAvatar: game.player.avatar,
+                opponentAvatar: game.opponent.avatar,
+                playerUsername: game.player.userName,
+                opponentUsername: game.opponent.userName,
+                playerScore: game.playerScore,
+                opponentScore: game.opponentScore
+            }
+        });
+        return matchHistory;
     }
 }

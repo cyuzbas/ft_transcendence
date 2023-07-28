@@ -4,6 +4,7 @@ import { GameMode, gameModes } from './pages/Game/logic/types';
 import { Game, Lobby, Home, Chat, Login } from './pages';
 import { SocketProvider } from './contexts/SocketContext/provider';
 import SettingsPage from './pages/SettingsPage';
+import FirstInfoPage from './pages/FirstInfoPage';
 import Create2fa from './pages/Create2fa';
 import Navbar from './components/Nav/NavBar/navBar';
 import SideBar from './components/Nav/SideBar/sideBar';
@@ -64,6 +65,7 @@ export function Router() {
                     <Route path='/lobby' element={<Lobby />} />
                     <Route path='/chat' element={<ChatProvider><Chat /></ChatProvider>} />
                     <Route path='/settings' element={<SettingsPage />} />
+                    <Route path='/info' element={<FirstInfoPage />} />
                     <Route path='/create2fa' element={<Create2fa />} />
                     <Route path='/profile/:id' element={<Profile />} />
                     <Route path='/random' element={<Random />} />

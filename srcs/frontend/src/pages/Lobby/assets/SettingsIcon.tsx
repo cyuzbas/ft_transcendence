@@ -7,7 +7,7 @@ export function SettingsIcon({ ...props }) {
       height='44px'
       viewBox='0 0 24 24'
       width='44px'
-      fill='#000000'
+      fill='var(--foreground-color)'
     >
       <g>
         <path d='M0,0h24v24H0V0z' fill='none' />

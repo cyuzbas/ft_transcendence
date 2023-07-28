@@ -65,7 +65,7 @@ export function Lobby() {
             <Link to='/findingopponentCustom' className='mylink2'>CUSTOM GAME</Link>
             
             {/* add hereee */}
-            {!isOpen && (
+            {/* {!isOpen && (
               <button onClick={handleOpen} className='flap'>
                 Invite a Friend
               </button>
@@ -78,10 +78,10 @@ export function Lobby() {
                   </Link>
                 <button className='close' onClick={handleClose} >
                   <CloseIcon />
-                </button>
+                </button> */}
                 
-              </div>
-            )}
+              {/* </div>
+            )} */}
             
             {/* <Link to='/invitation' className='button'>Random Game</Link> */}
             {/* <Components.Button onClick={handleRandomGame}>Random Game</Components.Button> */}

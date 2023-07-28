@@ -23,7 +23,7 @@ export const GENERAL_CHAT = {
 	isBanned: false,
 	isKicked: false,
 	isMuted: false,
-	muteEndTime: new Date,
+	muteEndTime: new Date(),
 }
 export type Message = {
 	id: number,
@@ -36,7 +36,6 @@ export type Room = {
 	roomId?: number;
 	roomName: string;
 	type: RoomType;
-	description?: string;
 	password?: string;
 };
 

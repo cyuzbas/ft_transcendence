@@ -3,11 +3,11 @@ import { Member, RoomType } from "../../../contexts/ChatContext/types";
 import { useUser } from "../../../contexts";
 import { useSetupDmConversation } from "./hookSetupDm";
 import { BlockButton } from "./buttonBlock";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { MdKeyboardReturn } from "react-icons/md"
 import { BsChatRightText } from "react-icons/bs"
 import { PiGameControllerDuotone } from "react-icons/pi"
-import { GameType } from "../../Lobby/components/WaitingPage";
+import { CgProfile } from "react-icons/cg"
 import { Link } from "react-router-dom";
 
 type Props = {
@@ -34,13 +34,11 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 			const contact = members.find(member => member.userName !== user.userName);
 			if (contact) {
 				setSelectedMember(contact);
-				// console.log('yes')
 			} else {
 				setSelectedMember(null);
-				// console.log('no')
 			}
 		}
-	}, [members])
+	}, [members, room, user, setSelectedMember])
 
 	return (
 		<>
@@ -49,33 +47,41 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 					<MdKeyboardReturn size="2em"/>
 				</button>
 			}
-			<div />
+			<div className="userInfo">
 			{selectedMember &&
-			<img src={selectedMember.avatar} style={{margin:10,width:190, height:150, borderRadius:10}}/>
+			<img src={selectedMember.avatar} alt="avatar" style={{margin:10,width:190, height:150, borderRadius:10}}/>
 			}
 			<div />
 			{selectedMember && 
-				selectedMember.userName !== user.userName &&
-				<BlockButton member={selectedMember}/>
+				selectedMember.userName !== user.userName ?
+				<h2>
+					<BlockButton member={selectedMember}/>
+					{selectedMember?.userName}
+				</h2>
+				: <h2>Me</h2>
 			}
-			{selectedMember?.userName}
-			<div />
 			{selectedMember 
 				&& selectedMember.userName !== user.userName 
 				&& room.type !== RoomType.DIRECTMESSAGE 
 				&& 
 				<>
 					<button className="iconBtn" onClick={() => openConversation(selectedMember)}>
-					<BsChatRightText size="1.8em"/>
+					<BsChatRightText size="3em"/>
 						chat
 					</button>
 					<div />
 					<Link to={{ pathname: '/waitingreply', search: `?username=${selectedMember.userName}`}} className="iconBtn" >
-						<PiGameControllerDuotone size="2em" />
+						<PiGameControllerDuotone size="3em" />
 						play
+					</Link>
+					<div />
+					<Link to={`/profile/${selectedMember.userName}`} className="iconBtn">
+						<CgProfile size="3em"/>
+						profile
 					</Link>
 					</>
 			}
+		</div>
 		</>
 	)
 }

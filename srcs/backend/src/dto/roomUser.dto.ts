@@ -24,10 +24,6 @@ export class RoomUserDto {
 	type?: RoomType;
 
 	@IsOptional()
-	@IsString()
-	description?: string;
-
-	@IsOptional()
 	@IsNumber()
 	unreadMessages?: number;
 

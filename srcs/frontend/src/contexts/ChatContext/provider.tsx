@@ -1,8 +1,9 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 import axios from "axios";
-import { GENERAL_CHAT, Member, Message, NewRoomUser, Room, RoomType, RoomUser, UserDetails, UserRole } from "./types";
+import { GENERAL_CHAT, Member, Message, NewRoomUser, Room, RoomUser } from "./types";
 import { useSocket } from "../SocketContext/provider";
 import { User, useUser } from "../UserContext";
+import { AchievementType } from "../../AchievementsEnum";
 
 export type ChatContextValue = {
     room: RoomUser,
@@ -23,6 +24,7 @@ export type ChatContextValue = {
     updateRoomUser: (updatedRoomUser: Member, roomName: string) => Promise<void>,
     updateRoom: (updatedRoom: Room) => Promise<void>,
     handleBlock: (member: User, blockAction: string) => Promise<void>,
+    setAchievement: () => Promise<void>,
 };
 
 const ChatContext = createContext({} as ChatContextValue);
@@ -255,12 +257,11 @@ export function ChatProvider({ children }: {children: ReactNode}) {
     const updateRoom = async(updatedRoom: Room) => {
         try {
             const response = await axios.put(`${URL}/chat/updateRoom`, updatedRoom, {withCredentials:true});
-            const { roomId, roomName, type, description } = response.data;
+            const { roomId, roomName, type } = response.data;
             socket.emit('roomUpdate', {
                 roomId,
                 roomName,
                 type,
-                description,
             });
         } catch (error) {
             console.log(error);
@@ -275,6 +276,15 @@ export function ChatProvider({ children }: {children: ReactNode}) {
             console.log(error);
         }
     };
+
+    const setAchievement = async() => {
+        try {
+            await axios.post(`${URL}/user/setAchievements/${user.intraId}/${AchievementType.CHATTERBOX}`,
+                null,{withCredentials:true});
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 	const value = {
         room,
@@ -295,6 +305,7 @@ export function ChatProvider({ children }: {children: ReactNode}) {
         updateRoomUser,
         updateRoom,
         handleBlock,
+        setAchievement,
 	};
     
 	return (

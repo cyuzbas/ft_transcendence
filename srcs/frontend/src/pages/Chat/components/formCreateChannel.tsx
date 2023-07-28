@@ -13,7 +13,6 @@ type createChannelProps = {
 export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) => {
 	const [type, setType] = useState<RoomType>(RoomType.PUBLIC);
 	const [roomName, setRoomName] = useState<string>('');
-	const [description, setDescription] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const { setRoom, createNewRoom, addRoomUser, setMyRooms } = useChat();
 	const { user } = useUser();
@@ -26,7 +25,6 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 			await createNewRoom({
 				roomName: roomName,
 				type: type,
-				description: description,
 				password: password,
 			});
 	
@@ -79,17 +77,6 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 						maxLength={25}
 						onChange={(e) => setRoomName(e.target.value.trim())}
 					/> 
-				</div>
-				<div>
-					<p>
-						Description
-						</p>
-					<textarea 
-						rows={4}
-						placeholder="Enter Description: optional"
-						value={description}
-						maxLength={100}
-						onChange={(e) => setDescription(e.target.value)}/>
 				</div>
 				{type === 'protected' && (
 					<div>

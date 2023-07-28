@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react"
-import { Message, RoomType } from "../../../contexts/ChatContext/types"
+import { useEffect, useRef } from "react"
+import { Message } from "../../../contexts/ChatContext/types"
 import { useSocket } from "../../../contexts/SocketContext/provider";
 import { useChat } from "../../../contexts/ChatContext/provider";
 import { useUser } from "../../../contexts";
@@ -20,15 +20,12 @@ export const MessageWindow = () => {
         } else {
           const foundRoom = myRooms.find(room => room.roomName === newMessage.roomName);
           if (foundRoom) {
-            // console.log(foundRoom)
-            // const { contactName, ...room } = foundRoom;
             updateRoomUser({
               ...user,
               ...foundRoom,
               unreadMessages: foundRoom.unreadMessages + 1,
             }, newMessage.roomName);
           }
-          // handleUnreadMessage(newMessage.roomName);
         }
       } 
     };
@@ -37,13 +34,13 @@ export const MessageWindow = () => {
     return () => {
       socket.off('onMessage');
     }
-  }, [room, myRooms, blocked])
+  }, [room, myRooms, blocked, setMessages, socket, updateRoomUser, user])
 
   useEffect(() => {
       lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
   
-  return ( // change appearance of chat and dm messages
+  return (
     <div id="chat-window">
       <div id="chat-container">
         {messages.map((message) => 

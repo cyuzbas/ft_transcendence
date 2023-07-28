@@ -38,15 +38,6 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 					invite
 				</button>
 			}
-			<div className="roomDescription">
-				{room.description 
-				? 
-				<>
-					<h5>Description</h5>
-					{room.description}
-				</>
-				: null}
-			</div>
 			<h4>
 				Members
 			</h4>
@@ -64,7 +55,7 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 								}
 							</div>
 							<div className="membersList avatar-status-wrapper">
-								<img src={member.avatar} style={{margin:0,width:30, height:30, borderRadius:50}}/>
+								<img src={member.avatar} alt="avatar" style={{margin:0,width:30, height:30, borderRadius:50}}/>
 								{member.status === 'online' ?
 								<span className="online-dot"></span> :
 								<span className="offline-dot"></span>
@@ -78,9 +69,8 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 									<AdminButton member={member}/>
 								}
 								{(room.userRole === UserRole.OWNER || 
-									(room.userRole === UserRole.ADMIN) &&
-									member.userRole !== UserRole.OWNER &&
-									member.userRole !== UserRole.ADMIN) &&
+									(room.userRole === UserRole.ADMIN &&
+									member.userRole !== UserRole.OWNER)) &&
 									member.userName !== user.userName &&
 									<>
 										<BanButton member={member} />
@@ -116,7 +106,7 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 								<p className={"memberList offline"}>
 									<BlockButton member={member} />
 									<div className="avatar-status-wrapper">
-										<img src={member.avatar} style={{margin:0,width:30, height:30, borderRadius:50}}/>
+										<img src={member.avatar} alt="avatar" style={{margin:0,width:30, height:30, borderRadius:50}}/>
 										{member.status === 'online' ?
 											<span className="online-dot"></span> :
 											<span className="offline-dot"></span>

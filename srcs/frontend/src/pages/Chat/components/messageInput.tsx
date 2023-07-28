@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSocket } from "../../../contexts/SocketContext/provider";
 import { useChat, useUser } from "../../../contexts";
 import { useMuteTimer } from "./hookMuteTimer";
@@ -7,17 +7,17 @@ export const MessageInput = () => {
   const [message, setMessage] = useState<string>('');
   const { user } = useUser()
   const { socket } = useSocket();
-  const { room } = useChat();
+  const { room, setAchievement } = useChat();
   const muteRemaining = useMuteTimer({...user, ...room}, room.roomName);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
+    setAchievement();
     socket.emit('newMessage', {
         userName: user.userName,
         content: message,
         roomName: room.roomName,
     });
-    
     setMessage('');
   }
 

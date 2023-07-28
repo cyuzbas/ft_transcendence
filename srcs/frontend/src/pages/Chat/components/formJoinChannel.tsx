@@ -16,7 +16,6 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
     const [selectedRoom, setSelectedRoom] = useState<Room>();
     const [isProtected, setIsProtected] = useState<boolean>(false);
     const [isBanned, setIsBanned] = useState<boolean>(false);
-    // const [promptText, setPromptText] = useState<string>('');
     const [value, setValue] = useState<string>('')
     const { setRoom, myRooms, setMyRooms, fetchPublicRooms, publicRooms, addRoomUser } = useChat();
     const { user } = useUser();
@@ -24,7 +23,7 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         
     useEffect(() => {
         fetchPublicRooms();
-    }, [])
+    }, [fetchPublicRooms])
 
     useEffect(() => {
         const getJoinableRooms = () => {
@@ -51,7 +50,6 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         
         if (newRoomUser) {
             if (newRoomUser.isBanned) {
-                // setPromptText('You are banned from this channel');
                 setIsBanned(true);
                 return
             } 
@@ -71,7 +69,7 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         }
     }
 
-    const handlePasswordSubmit = async(e: React.FormEvent) => { //make try catch block
+    const handlePasswordSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
         if (selectedRoom) {
             const response = await axios.post(`${URL}/chat/password`, {
@@ -90,43 +88,47 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
 
     return (
         <>
-            <h4 className="formTitleJoin">
-            Join Existing Channel
+            {joinableRooms.length > 0 &&
+            <>
+                <h4 className="formTitleJoin">
+                Join Existing Channel
 
-            </h4>
-            <div className="roomJoinList">
-                <ClickableList
-                    items={joinableRooms}
-                    renderItem={room => 
-                        <p className="roomList">
-                         {room.roomName} {room.type === RoomType.PROTECTED ? <AiOutlineLock /> : null}
-                        </p>}
-                    onClickItem={room => handleRoomListClick(room)}
-                />
-            </div>
-            <div>
-                {isProtected && 
-                    <form onSubmit={handlePasswordSubmit}>
-                        <input
-                            placeholder="Enter Password"
-                            value={value}
-                            onChange={(e) => setValue(e.target.value)}
-                            />
-                        <button className="formBtn" >JOIN</button>
-                    </form>
-                }
-                {isBanned &&
-                <div className="banned-popup">
-                    <AiOutlineExclamationCircle size="6em" color="red"/>
-                    <div className="banned-popup-text">
-                        You Are Banned From This Channel
-                        <button className="iconBtn formCloseBtn" onClick={() => setIsBanned(false)}>
-                            <AiOutlineClose size="2em"/>
-                        </button>
-                    </div>
+                </h4>
+                <div className="roomJoinList">
+                    <ClickableList
+                        items={joinableRooms}
+                        renderItem={room => 
+                            <p className="roomList">
+                            {room.roomName} {room.type === RoomType.PROTECTED ? <AiOutlineLock /> : null}
+                            </p>}
+                        onClickItem={room => handleRoomListClick(room)}
+                    />
                 </div>
-                }
-            </div>
+                <div>
+                    {isProtected && 
+                        <form onSubmit={handlePasswordSubmit}>
+                            <input
+                                placeholder="Enter Password"
+                                value={value}
+                                onChange={(e) => setValue(e.target.value)}
+                                />
+                            <button className="formBtn" >JOIN</button>
+                        </form>
+                    }
+                    {isBanned &&
+                    <div className="banned-popup">
+                        <AiOutlineExclamationCircle size="6em" color="red"/>
+                        <div className="banned-popup-text">
+                            You Are Banned From This Channel
+                            <button className="iconBtn formCloseBtn" onClick={() => setIsBanned(false)}>
+                                <AiOutlineClose size="2em"/>
+                            </button>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </>
+            }
         </>
     )
 }

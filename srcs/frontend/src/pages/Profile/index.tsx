@@ -34,7 +34,7 @@ export default function Profile() {
         const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
         
         response.data.forEach((user: any) => {
-          if(user.intraName === id) {
+          if(user.intraName === id || user.userName === id) {
             let profileUser: User = {
               avatar: user.avatar,
               userName: user.userName,

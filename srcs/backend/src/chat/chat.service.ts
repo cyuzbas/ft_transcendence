@@ -9,7 +9,7 @@ import { DataSource, Repository } from 'typeorm';
 import { RoomUserEntity } from 'src/typeorm/roomUser.entity';
 import { NewRoomUserDto, RoomUserDto } from 'src/dto/roomUser.dto';
 import { UserDto } from 'src/dto/user.dto';
-import * as bcrypt from 'bcrypt';
+// import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ChatService {
@@ -49,8 +49,8 @@ export class ChatService {
 			const newRoom = this.roomRepository.create({
 				roomName: room.roomName,
 				type: room.type,
-				description: room.description,
-				password: room.type === RoomType.PROTECTED ? await bcrypt.hash(room.password, 10) : null,
+				password: room.password,
+				// password: room.type === RoomType.PROTECTED ? await bcrypt.hash(room.password, 10) : null,
 			});
 			return await this.roomRepository.save(newRoom) as RoomDto;
 		}
@@ -114,14 +114,13 @@ export class ChatService {
 			await this.roomUserRepository.save(roomUser);
 		}
 
-		const { roomId, roomName, type, description } = roomUser.room;
+		const { roomId, roomName, type } = roomUser.room;
 		const { userRole, unreadMessages, isMuted, isKicked, isBanned, contact } = roomUser;
 
 		return {
 			roomId,
 			roomName,
 			type,
-			description,
 			unreadMessages,
 			userRole,
 			isMuted,
@@ -172,7 +171,6 @@ export class ChatService {
 		}
 		room.password = roomUpdate.password;
 		room.type = roomUpdate.type;
-		room.description = roomUpdate.description;
 		await this.roomRepository.save(room);
 		const { password, ...roomData } = room;
 		return roomData as RoomDto
@@ -185,7 +183,7 @@ export class ChatService {
 		if (!findRoom) {
 			throw new HttpException('Room Not Found', HttpStatus.NOT_FOUND)
 		}
-		const isMatch = await bcrypt.compare(room.password, findRoom.password);
+		const isMatch = true //await bcrypt.compare(room.password, findRoom.password);
 		return isMatch;
 	}
 	
@@ -272,11 +270,10 @@ export class ChatService {
 			throw new HttpException('Rooms Not Found', HttpStatus.NOT_FOUND)
 		}
 
-		const roomData = rooms.map(({ roomId, roomName, type, description }) => ({
+		const roomData = rooms.map(({ roomId, roomName, type }) => ({
 			roomId,
 			roomName,
 			type,
-			description,
 		}));
 		return roomData as RoomDto[];
 	}
@@ -296,12 +293,11 @@ export class ChatService {
 
 		const roomUserData = user.roomLinks
 			.map(({ room, unreadMessages, userRole, isMuted, muteEndTime, isBanned, isKicked, contact }) => {
-				const { roomId, roomName, type, description } = room;
+				const { roomId, roomName, type } = room;
 				return {
 					roomId,
 					roomName,
 					type,
-					description,
 					unreadMessages,
 					userRole,
 					isMuted,
@@ -360,7 +356,7 @@ export class ChatService {
 				isKicked,
 				isMuted,
 				muteEndTime,
-			} as RoomUserDto; // as member?
+			} as RoomUserDto;
 		});
 		return userData as RoomUserDto[];
 	}	

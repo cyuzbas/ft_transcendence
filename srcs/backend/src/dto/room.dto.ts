@@ -14,11 +14,6 @@ export class RoomDto {
 	type: RoomType;
 
 	@IsOptional()
-	@IsString()
-	@MaxLength(100)
-	description?: string;
-
-	@IsOptional()
 	@MaxLength(25)
 	password?: string;
 }

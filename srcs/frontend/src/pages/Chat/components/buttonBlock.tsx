@@ -1,7 +1,6 @@
 import { User } from "../../../contexts";
 import { useChat } from "../../../contexts/ChatContext";
 import { MdBlock, MdBlockFlipped } from "react-icons/md"
-import { SiAdblock } from "react-icons/si"
 
 
 export const BlockButton: React.FC<{ member: User }> = ({ member }) => {

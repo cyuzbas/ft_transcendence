@@ -2,10 +2,10 @@ import { Server } from "socket.io";
 import { GameType } from "src/typeorm/game.entity";
 
 export const numActPerSendData = 2;
-export const baseSpeed = 120;
+export const baseSpeed = 100;
 export const scoreMax = 3;
 // export const startTime = 1e3;
-export const gameTps = 120;
+export const gameTps = 40;
 export const ballSpeed = (baseSpeed / gameTps); //padWidth den fazla olmasin
 export const ballSizeX = 2.4;
 export const ballSizeY = 3.2;
@@ -43,7 +43,7 @@ export class Ball {
     this.directionY = customBallSpeed * Math.sin(Math.PI / 4);
     this.sizeX = ballSizeX;
     this.sizeY = ballSizeY;
-    this.accel = 0;
+    this.accel = 0.1;
   }
 }
 

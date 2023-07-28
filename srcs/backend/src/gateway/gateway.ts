@@ -379,11 +379,11 @@ export class MyGateway implements OnGatewayConnection, OnGatewayDisconnect{
             client.emit('error', 'Invalid user');
             return ;
         }
-        let move = 0;
-        const res = this.gatewayService.movePaddle(user.id, move);
-        if (res.status !== true) {
-            return;
-        }
+        // let move = 0;
+        // const res = this.gatewayService.movePaddle(user.id, move);
+        // if (res.status !== true) {
+        //     return;
+        // }
 		const game = await this.gatewayService.findUserGame(user.id);
 		await this.gatewayService.exitGame(user.id, game);
     }

@@ -13,10 +13,9 @@ export function Home() {
   const { user , setUser} = useContext(UserContext);
 
   useEffect(() => {
-    //TODO api yaz win icin!! ne lazim cicege sor! win lose score ingame rank
     const fetchData = async () => {
       try {
-      const response = await axios.get(`http://localhost:3001/user/${user?.intraId}`)
+      const response = await axios.get(`http://f1r2s3.codam.nl:3001/user/${user?.intraId}`,{withCredentials:true})
       setUser(response.data);
       localStorage.setItem('user', JSON.stringify(response.data));
       } catch (error) {

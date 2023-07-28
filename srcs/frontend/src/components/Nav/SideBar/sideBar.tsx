@@ -10,7 +10,7 @@ function SideBar() {
 
 	async function logout() {
 			try{
-			await axios.get('http://localhost:3001/auth/logout',{withCredentials:true})
+			await axios.get('http://f1r2s3.codam.nl:3001/auth/logout',{withCredentials:true})
 			
 			localStorage.clear();
 			window.location.href="/login"

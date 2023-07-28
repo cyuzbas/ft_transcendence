@@ -45,7 +45,7 @@ function NavigationBar () {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`, {withCredentials:true});
+        const response = await axios.get(`http://f1r2s3.codam.nl:3001/friends/getFriendQuery/${user.intraId}`, {withCredentials:true});
         setFriendRequest(response.data.length == 0 ?  false :true)
       } catch (error) {
         localStorage.clear()

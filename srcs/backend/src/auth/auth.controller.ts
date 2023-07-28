@@ -28,7 +28,7 @@ export class AuthController {
 	async logout(@Req() req, @Res() res) {
 		this.userService.updateLogIn(req.user.userName, false)
 		req.logout(() => {
-			res.redirect('http://localhost:3000/login');
+			res.redirect('http://f1r2s3.codam.nl:3000/login');
 		  });
 	}
 
@@ -47,9 +47,9 @@ export class AuthController {
 		this.userService.updateLogIn(user.userName,true);
 		console.log("redirect : " + JSON.stringify(user));
 		if(user.TwoFactorAuth)
-			res.redirect(`http://localhost:3000/verify2fa`)
+			res.redirect(`http://f1r2s3.codam.nl:3000/verify2fa`)
 		else
-			res.redirect(`http://localhost:3000/home`);
+			res.redirect(`http://f1r2s3.codam.nl:3000/home`);
 	}
 
 

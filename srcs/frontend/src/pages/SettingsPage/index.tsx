@@ -125,12 +125,8 @@ function SettingsPage() {
 			}
 
 		} else {
-			console.log("goto")
-
 			window.location.href = 'http://localhost:3000/create2fa';
-
 		}
-		console.log("handler finish")
 
 	};
 

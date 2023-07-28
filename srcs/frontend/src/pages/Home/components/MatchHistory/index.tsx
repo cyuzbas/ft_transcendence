@@ -7,26 +7,18 @@ type Props = {
 	id: string;
 };
 
-type User = {
-	avatar: string;
-	userName: string;
-	intraId: string;
-	intraName: string;
-	isLogged: boolean;
-};
 
-class GameDto {
-    id?: number;
-    playerScore?: number;
-    opponentScore?: number;
-    type?: string;
-    playerId?: number;
-    opponentId?: number;
+type GameDto = {
+    playerAvatar: string;
+    opponentAvatar: string;
+    playerUsername: string;
+    opponentUsername: string;
+    playerScore: number;
+    opponentScore: number;
 }
 
 const MatchHistory: React.FC<Props> = ({ id }) => {
 
-	const [users, setUsers] = useState<User[]>([]);
 	const [matches, setMatches] = useState<GameDto[]>([]);
 
 
@@ -34,45 +26,10 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				// const response = await axios.get(`http://localhost:3001/friends/allUser/${id}`,{withCredentials:true});
-				// const { friends, nonFriends, me, query } = response.data;
-			
-				// const usersData = [...friends.map((friend: User) => ({ ...friend })),
-				// ...nonFriends.map((nonFriend: User) => ({ ...nonFriend})),
-				// ...query.map((query:User) =>({...query })),
-				// ...me.map((meUser: User) => ({ ...meUser }))];
-				// setUsers(response.data);
-			// 
-			//{"id":2,"playerScore":3,"opponentScore":2,"type":"CLASSIC","playerId":1,"opponentId":2},
-			// const response = await axios.get(`http://localhost:3001/game/${id}`,{withCredentials:true});
-			// console.log("BURASI MATCH  " + JSON.stringify(response.data))
-			// setMatches(response.data)
-			// console.log(response.data[0].playerId)
-			// console.log(JSON.stringify(matches))
-			//  console.log(matches)
-			// const convertedMatches: Match[] = response.data.map((item: any) => ({
-			// 	playerScore: item.playerScore,
-			// 	opponentScore: item.opponentScore,
-			// 	playerId: item.playerId,
-			// 	opponentId: item.opponentId,
-			//   }));
-			// console.log(JSON.stringify(convertedMatches))
-
-			//   setMatch(convertedMatches);
-			// console.log(JSON.stringify(matches))
-
-			// response.data.forEach((match: any) => {
-			// 	  let newMatch[]: Match = {
-			// 		playerId: match.playerId,
-			// 		opponentId: match.opponentId,
-			// 		playerScore: match.playerScore,
-			// 		opponentScore: match.opponentScore,
-			// 	  }
-			// 	  setMatch(newMatch)
-			// 	}
-			// )
-			
-
+	
+		
+			const response = await axios.get(`http://localhost:3001/game/${id}`,{withCredentials:true});
+			setMatches(response.data)
 				
 		  } catch (error) {
 			localStorage.clear()
@@ -82,24 +39,23 @@ const MatchHistory: React.FC<Props> = ({ id }) => {
 		fetchData();
 	  }, []);
 	
-	const isWon = true;
-	const isLost = true;
+
 
   return (
 	<>
 		<div className="MatchHistorySection">
-	{( users.length ) ? (
-		users.map((user, index) => (
+	{( matches.length ) ? (
+		matches.map((match, index) => (
 	// There will be array of oponents match
-			<div className={isWon ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'}>
+			<div className={(match.playerScore > match.opponentScore) ? 'UserMatchHistory userWonMatch' : 'UserMatchHistory userLostMatch'}>
 				<div className="imageUserMatch" id="imageFirstUser">
-					<img src={user.avatar} id="Avatar" alt=""/>
+					<img src={match.playerAvatar} id="Avatar" alt=""/>
 				</div>
-				<div className="MatchHistoryScore" id="ScoreFirstUser">5</div>
+				<div className="MatchHistoryScore" id="ScoreFirstUser">{match.playerScore}</div>
 				<div className="VS">-</div>
-				<div className="MatchHistoryScore" id="ScoreSecondUser">3</div>
+				<div className="MatchHistoryScore" id="ScoreSecondUser">{match.opponentScore}</div>
 				<div className="imageUserMatch" id="imageSecondUser">
-					<img src={user.avatar} id="Avatar" alt=""/>
+					<img src={match.opponentAvatar} id="Avatar" alt=""/>
 				</div>
 			{/* <div className={isLost ? 'UserMatchHistory userLostMatch' : 'UserMatchHistory userWonMatch'}>
 				<div className="imageUserMatch" id="imageFirstUser">

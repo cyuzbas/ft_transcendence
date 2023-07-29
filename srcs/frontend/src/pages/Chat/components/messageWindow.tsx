@@ -12,8 +12,7 @@ export const MessageWindow = () => {
 
   useEffect(() => {
     const onMessage = (newMessage: Message) => {
-      const isBlocked = blocked
-        .some(blocked => blocked.userName === newMessage.userName);
+      const isBlocked = blocked.some(blocked => blocked.userName === newMessage.userName);
       if (!isBlocked) {
         if (newMessage.roomName === room.roomName) {
           setMessages(prevMessages => [...prevMessages, newMessage]);

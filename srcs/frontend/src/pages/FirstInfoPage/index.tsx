@@ -7,7 +7,6 @@ import Particle from '../Login/Particle';
 
 function FirstInfoPage() {
 
-
 	const { user, setUser } = useContext(UserContext)
 	const [inputText, setInputText] = useState("");
 
@@ -37,8 +36,6 @@ function FirstInfoPage() {
 
 			return;
 		}
-
-
 
 		try {
 			const response = await axios.post("http://localhost:3001/user/update-user-profile", {
@@ -72,7 +69,6 @@ function FirstInfoPage() {
 	}
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-
 	async function postimage() {
 
 		if (selectedFile) {
@@ -98,38 +94,16 @@ function FirstInfoPage() {
 		}
 	}
 
-
-
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files && event.target.files.length > 0) {
 			setSelectedFile(event.target.files[0]);
 		}
 	};
 
-
-	// async function handleClick2FA() {
-	// 	console.log("handler start")
-	// 	if (user.TwoFactorAuth) {
-	// 		console.log("handler if")
-
-	// 		try {
-
-	// 			const updatedUser = { ...user, TwoFactorAuth: false, twoFactorCorrect: false };
-	// 			setUser(updatedUser)
-	// 			localStorage.setItem('user', JSON.stringify(updatedUser));
-	// 			await axios.post(`http://localhost:3001/auth/disabled2fa`,
-	// 				null, { withCredentials: true })
-	// 		}
-	// 		catch (error) {
-	// 			localStorage.clear()
-	// 			window.location.href = '/login'
-	// 		}
-
-	// 	} else {
-	// 		window.location.href = 'http://localhost:3000/create2fa';
-	// 	}
-
-	// };
+	const onSubmit = (e: any) => {
+		e.preventDefault();
+		return false
+	}
 
 	return (
 		<>
@@ -149,19 +123,17 @@ function FirstInfoPage() {
 					</button>
 				</div>
 				<form className="EnterName"
-					onSubmit={showAlert}>
+					onSubmit={(e) => {onSubmit(e)}}>
 					<input
 						onChange={handleChange}
 						className="NameInput"
 						type="text"
 						placeholder="* Change your name" />
+					<button type="submit" className="SubmitButton EditNameButton" onClick={showAlert}>
+						<i className="bi bi-pencil-square fs-5"></i>
+						<h6>Edit</h6>
+					</button>
 				</form>
-				<button type="submit" className="SubmitButton EditNameButton" onClick={showAlert}>
-					<i className="bi bi-pencil-square fs-5"></i>
-					<h6>Edit</h6>
-				</button>
-				
-
 			</div>
 		</div>
 		</>

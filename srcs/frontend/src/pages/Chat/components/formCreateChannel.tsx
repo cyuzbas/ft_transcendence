@@ -49,7 +49,7 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 	
 	return (
 		<>
-			<form className="createChannel-form" onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit}>
 				<h4 className="formTitle">
 					Create New Channel 
 					</h4>
@@ -59,33 +59,39 @@ export const FormCreateChannel = ({ setPopupVisibility }: createChannelProps) =>
 					<AiOutlineClose size="2em"/>
 				</button>
 				<div>
-					<select className="form-input" id="type" value={type} onChange={(e) => setType(e.target.value as RoomType)}>
-						<option value="" disabled>Select type</option>
+					<p>
+					Select Type
+					<select className="form-input" value={type} onChange={(e) => setType(e.target.value as RoomType)}>
 						<option value={RoomType.PUBLIC}>public</option>
 						<option value={RoomType.PRIVATE}>private</option>
 						<option value={RoomType.PROTECTED}>protected</option>
 					</select>
+					</p>
 				</div>
 				<div >
 					<p>
 						Channel Name
-						</p>
 					<input
 						required
 						placeholder="Enter Name" 
 						value={roomName}
 						maxLength={25}
 						onChange={(e) => setRoomName(e.target.value.trim())}
-					/> 
+						/> 
+					</p>
 				</div>
 				{type === 'protected' && (
 					<div>
+						<p>
+						Password
 						<input 
 							required
 							placeholder="Enter Password"
 							value={password}
 							maxLength={25}
-							onChange={(e) => setPassword(e.target.value.trim())}/>
+							onChange={(e) => setPassword(e.target.value.trim())}
+						/>
+						</p>
 					</div>
 				)}
 				<button className="formBtn" type="submit">

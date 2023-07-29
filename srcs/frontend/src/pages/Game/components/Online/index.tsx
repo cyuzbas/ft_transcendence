@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSocket } from '../../../../contexts';
 import { Timer } from '../Timer/index';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import './styles.css'
 import { CloseIcon } from '../../../Lobby/assets';
 import { Net } from '../Net';
+import ReactDOM from 'react-dom';
 
 // import { usePrompt, Location } from 'react-router-dom';
 
@@ -29,7 +30,7 @@ export function Random() {
   const [message, setMessage] = useState('');
   const { socket } = useSocket();
   const navigate = useNavigate();
-  // const location = useLocation();
+  const location = useLocation();
   
   useEffect(() => {
     const gameDataHandler = (data: GameState) => {
@@ -132,16 +133,30 @@ export function Random() {
   useEffect(() => {
     const handler = (event: PopStateEvent) => {
       event.preventDefault();
-      socket.emit("gameExited");
-      navigate(-1);
+      ReactDOM.flushSync(() => {
+        // First, make the socket.emit call
+        socket.emit("gameExited");
+
+        // Then, perform the navigation
+        navigate('/lobby');
+      });
     };
   
-    window.addEventListener('popstate', handler);
+    window.addEventListener('popstate', handler,true);
   
     return () => {
       window.removeEventListener('popstate', handler);
     };
-  }, );
+  }, [navigate]);
+
+  // useEffect(() => {
+  //   return () => {
+  //     navigate(-1);
+  //     // socket.emit("gameExited");
+  //     // navigate('/lobby');
+
+  //   };
+  // }, [location]);
 
 
   return (

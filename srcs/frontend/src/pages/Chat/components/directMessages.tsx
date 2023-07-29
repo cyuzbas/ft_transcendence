@@ -10,12 +10,14 @@ export const DirectMessages = () => {
 
     return (
         <>
-			<h3>
+			<div className="borderTop-small" />
+            <h3>
                 Direct Messages
                 <button className="plusBtn" onClick={() => setPopupVisibility(true)}>
                     + 
                 </button>
             </h3>
+            <div className="dmSideBar">
             <ClickableList
                 items={myRooms}
                 renderItem={room => room.type === RoomType.DIRECTMESSAGE
@@ -35,6 +37,7 @@ export const DirectMessages = () => {
                 }
                 onClickItem={room => setRoom(room)}
                 />
+            </div>
             {popupVisibility && (
                 <div className="formBackdrop" onClick={() => setPopupVisibility(false)}>
                     <div className="user-popup" onClick={(e) => e.stopPropagation()}>

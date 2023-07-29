@@ -70,14 +70,6 @@
   }
 
 
-  .EditName {
-	display: flex;
-	flex-direction: row;
-	/* align-items: center; */
-	margin-left: 230px;
-	margin-top: 200px;
- }
-
   .EnterName {
 	width: 200px;
  }
@@ -89,6 +81,7 @@
  }
 
   .EditNameButton {
-	padding: 10px 20px 10px 20px;
+	padding: 0px 20px 0px 20px;
 	margin: 20px;
+	margin-left: 40px;
   }

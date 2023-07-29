@@ -93,16 +93,17 @@
 	grid-area: label1;
  }
 
-  .EditName {
+  .EditNameSettings {
 	display: flex;
 	flex-direction: row;
-	/* align-items: center; */
 	margin-left: 230px;
 	margin-top: 200px;
  }
 
-  .EnterName {
-	width: 200px;
+  .EnterNameSettings {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
  }
 
   .NameInput {

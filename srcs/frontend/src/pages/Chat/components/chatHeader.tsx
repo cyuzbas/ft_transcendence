@@ -25,7 +25,7 @@ export const ChatHeader = ({ expanded, setExpanded }: Props) => {
 				<button className="leaveChat-btn" onClick={() => removeRoomUser(room.roomName, user.userName, user.intraId)}>
 					{room.type !== RoomType.DIRECTMESSAGE ? "LEAVE CHANNEL" : "LEAVE CONVERSATION"}
 				</button>
-				: <button className="leaveChat-btn"></button>
+				: null
 			}
 		</div>
 	)

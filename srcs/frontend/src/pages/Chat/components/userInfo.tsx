@@ -47,41 +47,45 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 					<MdKeyboardReturn size="2em"/>
 				</button>
 			}
-			<div className="userInfo">
-			{selectedMember &&
-			<img src={selectedMember.avatar} alt="avatar" style={{margin:10,width:190, height:150, borderRadius:10}}/>
-			}
-			<div />
 			{selectedMember && 
 				selectedMember.userName !== user.userName ?
-				<h2>
+				<h2 className="borderTop">
 					<BlockButton member={selectedMember}/>
 					{selectedMember?.userName}
 				</h2>
-				: <h2>Me</h2>
+				: <h2 className="borderTop">Me</h2>
 			}
-			{selectedMember 
-				&& selectedMember.userName !== user.userName 
-				&& room.type !== RoomType.DIRECTMESSAGE 
-				&& 
-				<>
-					<button className="iconBtn" onClick={() => openConversation(selectedMember)}>
-					<BsChatRightText size="3em"/>
-						chat
-					</button>
-					<div />
-					<Link to={{ pathname: '/waitingreply', search: `?username=${selectedMember.userName}`}} className="iconBtn" >
-						<PiGameControllerDuotone size="3em" />
-						play
-					</Link>
-					<div />
-					<Link to={`/profile/${selectedMember.userName}`} className="iconBtn">
-						<CgProfile size="3em"/>
-						profile
-					</Link>
-					</>
-			}
-		</div>
+			<div className="userInfo">
+				<div>
+					{selectedMember 
+						&& selectedMember.userName !== user.userName 
+						&& room.type !== RoomType.DIRECTMESSAGE 
+						&& 
+						<>
+							<button className="iconBtn" onClick={() => openConversation(selectedMember)}>
+							<BsChatRightText size="3em"/>
+							</button>
+						</>
+					}
+					{selectedMember 
+						&& selectedMember.userName !== user.userName 
+						&& 
+						<>
+							<Link to={{ pathname: '/waitingreply', search: `?username=${selectedMember.userName}`}} className="iconBtn" >
+								<PiGameControllerDuotone size="3em" />
+							</Link>
+							<Link to={`/profile/${selectedMember.userName}`} className="iconBtn">
+								<CgProfile size="3em"/>
+							</Link>
+							</>
+					}
+				</div>
+				<div>
+					{selectedMember &&
+					<img src={selectedMember.avatar} alt="avatar" style={{margin:10,width:190, height:150, borderRadius:10}}/>
+					}
+				</div>
+			</div>
 		</>
 	)
 }

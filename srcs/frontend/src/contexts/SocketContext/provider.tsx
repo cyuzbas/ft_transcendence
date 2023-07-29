@@ -69,6 +69,7 @@ export function SocketProvider({ children }: {children: ReactNode}) {
 		return () => {
 		  socket.off('gameAccepted', onAccept);
 		};
+		// eslint-disable-next-line
 	  }, []);
 
 	  

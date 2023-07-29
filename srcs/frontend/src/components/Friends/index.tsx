@@ -69,11 +69,11 @@ export function Friends() {
   useEffect(() => {
     const fetchData = async () => {
       
-      getData()    
+      getData()
     };
 
     fetchData();
-  }, [getData]);
+  });
 
   return (
     <>

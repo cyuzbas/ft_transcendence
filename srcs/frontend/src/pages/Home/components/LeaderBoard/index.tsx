@@ -23,14 +23,12 @@ function LeaderBoard() {
 
 	const effectHasRunRef = useRef(false);
 
-	// eslint-disable-next-line
 	useEffect(() => {
 		const fetchData = async () => {
 		//   console.log(user.userName);
 		  try {
 			const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
 			setUsers(response.data);
-			// console.log("asfjlnasfhasjfhasj")
 			// response.data.forEach((user1 :any) => {
 			// 	if(user1.intraId === user.intraId){
 			// 		const updatedUser = { ...user, totalWin: user1.totalWin, totalLoose: user1.totalLoose, rank: user1.rank, score: user1.score, inGame:user1.inGame};
@@ -84,33 +82,35 @@ function LeaderBoard() {
 		  }
 		};
 		fetchData();
+		// eslint-disable-next-line
 	  }, [ user.userName ]);
 
-  return (
-	<div className="UserScoreSection">
-		{( users.length ) ? (
-			users
-			.sort((a, b) => a.rank - b.rank)
-			.map((user) => {
-				return(
-				<div className="UserScoreComponent" key={user.intraId}>
-					<div className='UserScoreHash'>
-						<i className="bi bi-hash fs-3"></i>
+
+	return (
+		<div className="UserScoreSection">
+			{( users.length ) ? (
+				users
+				.sort((a, b) => a.rank - b.rank)
+				.map((user) => {
+					return(
+					<div className="UserScoreComponent" key={user.intraId}>
+						<div className='UserScoreHash'>
+							<i className="bi bi-hash fs-3"></i>
+						</div>
+						<div className="UserScoreRank">{user.rank}</div>
+						<div className="imageClassUS">
+							<img src={user.avatar} id="Avatar" alt=""/>
+						</div>
+						<div className="UserScoreUsername">{user.userName}</div>
+						<div className="UserScoreValue">{user.score}</div>
 					</div>
-					<div className="UserScoreRank">{user.rank}</div>
-					<div className="imageClassUS">
-						<img src={user.avatar} id="Avatar" alt=""/>
-					</div>
-					<div className="UserScoreUsername">{user.userName}</div>
-					<div className="UserScoreValue">{user.score}</div>
-				</div>
-				);
-			})
-		) : (
-				<p>No users found</p>
-		)}
-	</div>
-	);
-  };
-  
-  export default LeaderBoard;
+					);
+				})
+			) : (
+					<p>No users found</p>
+			)}
+		</div>
+		);
+	};
+	
+	export default LeaderBoard;

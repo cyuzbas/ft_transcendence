@@ -89,6 +89,10 @@ function FirstInfoPage() {
 				localStorage.setItem('user', JSON.stringify(updatedUser));
 				if (inputRef.current) {
 					inputRef.current.value = '';
+					swal({
+						title: "Succes!",
+						text: "Your photo has been saved! "
+					})
 				}
 			}
 			catch (error) {

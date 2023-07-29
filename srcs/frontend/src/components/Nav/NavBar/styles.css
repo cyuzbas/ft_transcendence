@@ -20,13 +20,31 @@ background-color: rgb(88, 110, 124);
     right: 20%;
 }
 
-.avatar{
-    width: 35px;
-    height: 30px;
-    border-radius: 50%;
+.userNamePhotoCont{
+    display: flex;
+    flex-direction: row;
+}
+
+.userNameNavbar{
+padding-top: 7px;
+}
+
+.imageClassNavbar {
+	width: 35px;
+	height: 35px;
     margin-right: 15px; 
     margin-left: 15px; 
+	border-radius: 50%;
+	overflow: hidden;
+
 }
+
+.imageClassNavbar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
 
 .friendsRequestButton:hover{
     color: white;

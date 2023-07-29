@@ -32,7 +32,8 @@ const FriendsSection: React.FC<Props> = ({ id }) => {
 		  }
 		};
 		fetchData();
-	  }, [id]);
+		
+	  },[id]);
 	
   return (<>
 	<div id="AllFriends" className="UsersSection">

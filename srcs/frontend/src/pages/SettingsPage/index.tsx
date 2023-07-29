@@ -88,6 +88,10 @@ function SettingsPage() {
 				localStorage.setItem('user', JSON.stringify(updatedUser));
 				if (inputRef.current) {
 					inputRef.current.value = '';
+					swal({
+						title: "Succes!",
+						text: "Your photo has been saved! "
+					})
 				}
 			}
 			catch (error) {
@@ -147,12 +151,6 @@ function SettingsPage() {
 						</button>
 
 					</div>
-					{/* <div className="ChangePPLine">
-						<button type="submit" className="SubmitButton" onClick={postimage}>
-							<i className="bi bi-images fs-2"></i>
-							<h4>Choose Avatar</h4>
-						</button>
-					</div> */}
 				</div>
 				<div className="ChangeOthers">
 					<div className="EditName">

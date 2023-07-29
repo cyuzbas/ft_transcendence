@@ -17,14 +17,22 @@ export class FriendsService {
         private readonly userService: UserService
     ) { }
 
+
+    async getCombinedFriends(userId: number): Promise<UserI[]> {
+        const myFriends = await this.getMyFriendQuery(userId);
+        const friends = await this.getFriendsQuery(userId);
+    
+        const combinedFriends = [...myFriends, ...friends];
+        return combinedFriends;
+    }
+
     async requestFriend(user: UserI, friend: UserI) {
         //first get before query
-        user.requestedFriends = await this.getFriendsQuery(user.id);
+        user.requestedFriends = await this.getCombinedFriends(user.id);
 
         //check is it undefined or not
         if (user.requestedFriends === undefined)
             user.requestedFriends = [];
-        // console.log(user.requestedFriends)
 
 
 
@@ -34,21 +42,9 @@ export class FriendsService {
 
         }
         else {
-            user.requestedFriends = await this.getMyFriendQuery(user.id);
-
-            //check is it undefined or not
-            if (user.requestedFriends === undefined)
-                user.requestedFriends = [];
-
-            const index = user.requestedFriends.findIndex((getFriend) => getFriend.id === friend.id);
-            //delete requestarray
-            if (index !== -1) {
-
-            }
-            else {
+         
                 user.requestedFriends = [...user.requestedFriends, friend];
                 await this.userRepository.save(user)
-            }
 
         }
 

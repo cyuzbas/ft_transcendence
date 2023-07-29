@@ -23,6 +23,7 @@ export const Chat = () => {
 
 	return (
 		<>
+		{/* <div className="chat-container"> */}
 			<div id={expanded ? "chat-grid-expanded" : "chat-grid-non-expanded"}>
 				<div id="chat-left-sidebar">
 					<Channels />
@@ -51,6 +52,7 @@ export const Chat = () => {
 					</div>
 				}
 			</div>
+			{/* </div> */}
 		</>
 	)
 }

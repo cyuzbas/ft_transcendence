@@ -4,7 +4,6 @@ import { GameMode, gameModes } from './pages/Game/logic/types';
 import { Game, Lobby, Home, Chat, Login } from './pages';
 import { SocketProvider } from './contexts/SocketContext/provider';
 import SettingsPage from './pages/SettingsPage';
-// import FirstInfoPage from './pages/FirstInfoPage';
 import Create2fa from './pages/Create2fa';
 import Navbar from './components/Nav/NavBar/navBar';
 import SideBar from './components/Nav/SideBar/sideBar';

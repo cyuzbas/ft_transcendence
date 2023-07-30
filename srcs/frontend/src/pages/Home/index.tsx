@@ -24,7 +24,7 @@ export function Home() {
     };
 
     fetchData();
-  }, []);
+  }, [setUser, user?.intraId]);
 
   return (
 

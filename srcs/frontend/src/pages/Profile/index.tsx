@@ -60,7 +60,7 @@ export default function Profile() {
     };
 
     fetchData();
-  }, [user?.intraId]);
+  }, [user?.intraId, id]);
 
 
   return (

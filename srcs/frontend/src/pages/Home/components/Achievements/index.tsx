@@ -1,11 +1,9 @@
 import './styles.css'
-import React, { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../../../contexts'
+import React, { useEffect, useState } from 'react';
 import social from '../../../../img/achievements/social.png'
 import fresPaddle from '../../../../img/achievements/freshPaddle.png'
 import chameleon from '../../../../img/achievements/chameleon.png'
 import chatterBox from '../../../../img/achievements/chatterBox.png'
-import rivalry from '../../../../img/achievements/rivalry.png'
 import whisperer from '../../../../img/achievements/pongWhisperer.png'
 import victory from '../../../../img/achievements/firstVictory.png'
 import fail from '../../../../img/achievements/epicFail.png'
@@ -19,10 +17,7 @@ type Props = {
 
 const Achievements: React.FC<Props> = ({ intraid }) => {
 	
-	const { user , setUser} = useContext(UserContext)
 
-
-	  
 	  interface AchievementData {
 		[AchievementType.FRESH_PADDLE]: boolean;
 		[AchievementType.FIRST_VICTORY]: boolean;
@@ -50,7 +45,7 @@ const Achievements: React.FC<Props> = ({ intraid }) => {
 		  }
 		};
 		fetchData();
-	  }, []);
+	  }, [ intraid ]);
 
 	
 

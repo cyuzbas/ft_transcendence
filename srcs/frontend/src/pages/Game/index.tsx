@@ -49,6 +49,7 @@ export function Game({ gameMode = 'endless' }: GameProps) {
 
       start()
     }
+    // eslint-disable-next-line
   }, [
     ballRef.current,
     playerPaddleRef.current,

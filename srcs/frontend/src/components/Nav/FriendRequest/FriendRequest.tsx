@@ -23,7 +23,7 @@ export function Request() {
 
   async function answerRequest(intraId:string, answer:string) {
     try{
-          const response = await axios.post(`http://localhost:3001/friends/friend-request/${user.intraId}/${intraId}/${answer}`,null,{withCredentials:true})
+          await axios.post(`http://localhost:3001/friends/friend-request/${user.intraId}/${intraId}/${answer}`,null,{withCredentials:true})
           const updatedUsers = users.filter((user) => user.intraId !== intraId);
           setUsers(updatedUsers);
     }
@@ -39,7 +39,7 @@ export function Request() {
       try {
         const response = await axios.get(`http://localhost:3001/friends/getFriendQuery/${user.intraId}`,{withCredentials:true})
         setUsers(response.data);
-        setFriendRequest(response.data.length == 0 ? false : true)
+        setFriendRequest(response.data.length === 0 ? false : true)
       } catch (error) {
         localStorage.clear()
 			window.location.href= '/login'
@@ -47,7 +47,7 @@ export function Request() {
     };
 
     fetchData();
-  }, []);
+  }, [user.intraId]);
 
     return(
       <>

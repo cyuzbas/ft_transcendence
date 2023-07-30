@@ -71,7 +71,7 @@ export class Game {
   }
 
   update(time: number) {
-    if (this.lastTime != 0) {
+    if (this.lastTime !== 0) {
       const delta = time - this.lastTime
 
       this.ball.update(delta, [this.paddle1.rect(), this.paddle2.rect()])

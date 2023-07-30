@@ -66,9 +66,6 @@ return (
         <img src={Intra} alt="Ft-icon" className='icon'/>
         <span className='brand'>PONG</span>
       </Navbar.Brand>
-      {/* <Form className="form-center">
-        <FormControl type="text" placeholder="Search" className="" />
-      </Form> */}
       <Nav className="ms-auto">
 		  <Nav.Item>
         <div className="friend-drop-down-container" ref={dropdownRef}>
@@ -89,8 +86,12 @@ return (
         </div>
           </Nav.Item> 
           <Nav.Item><Nav.Link href="/home">
-            <span className='userName'>{user.userName}</span>
-            <img src={user.avatar} className='avatar' alt='Avatar'/>
+            <div className='userNamePhotoCont'>
+            <span className='userNameNavbar'>{user.userName}</span>
+            <div className="imageClassNavbar">
+              <img src={user.avatar} className='avatar' alt='Avatar'/>
+            </div>
+            </div>
           </Nav.Link></Nav.Item>  
         </Nav>
     </Navbar>

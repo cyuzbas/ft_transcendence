@@ -210,6 +210,7 @@ html {
 
 .userInfo {
   display: flex;
+  flex-direction: column;
   margin-left: 5px;
   align-items: center;
   justify-content: center;
@@ -469,6 +470,24 @@ html {
   height: 11px;
   width: 11px;
   background-color: #ff0000;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.onlineDot {
+  height: 30px;
+  width: 30px;
+  background-color: #04fc04;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.offlineDot {
+  height: 30px;
+  width: 30px;
+  background-color: red;
   border-radius: 50%;
   display: inline-block;
   margin-left: 5px;

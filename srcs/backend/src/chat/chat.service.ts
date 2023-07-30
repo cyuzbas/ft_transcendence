@@ -9,7 +9,7 @@ import { DataSource, Repository } from 'typeorm';
 import { RoomUserEntity } from 'src/typeorm/roomUser.entity';
 import { NewRoomUserDto, RoomUserDto } from 'src/dto/roomUser.dto';
 import { UserDto } from 'src/dto/user.dto';
-// import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ChatService {
@@ -49,7 +49,7 @@ export class ChatService {
 			const newRoom = this.roomRepository.create({
 				roomName: room.roomName,
 				type: room.type,
-				password: room.type // RoomType.PROTECTED ? await bcrypt.hash(room.password, 10) : null,
+				password: room.type === RoomType.PROTECTED ? await bcrypt.hash(room.password, 10) : null,
 			});
 			return await this.roomRepository.save(newRoom) as RoomDto;
 		}
@@ -168,7 +168,7 @@ export class ChatService {
 		if (!room) {
 			throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
 		}
-		room.password = roomUpdate.type =  null;
+		room.password = roomUpdate.type === RoomType.PROTECTED ? await bcrypt.hash(roomUpdate.password, 10) : null;
 		room.type = roomUpdate.type;
 		await this.roomRepository.save(room);
 		const { password, ...roomData } = room;
@@ -182,7 +182,7 @@ export class ChatService {
 		if (!findRoom) {
 			throw new HttpException('Room Not Found', HttpStatus.NOT_FOUND)
 		}
-		const isMatch = true //  bcrypt.compare(room.password, findRoom.password);
+		const isMatch = bcrypt.compare(room.password, findRoom.password);
 		return isMatch;
 	}
 	

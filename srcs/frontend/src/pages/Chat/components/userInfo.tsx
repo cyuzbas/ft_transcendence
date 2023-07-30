@@ -48,15 +48,28 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 				</button>
 			}
 			{selectedMember && 
-				selectedMember.userName !== user.userName ?
+			selectedMember.userName !== user.userName ?
 				<h2 className="borderTop">
-					<BlockButton member={selectedMember}/>
 					{selectedMember?.userName}
+					<div className={selectedMember?.status === 'online' ? ' onlineDot' : ' offlineDot'}></div>
 				</h2>
 				: <h2 className="borderTop">Me</h2>
 			}
 			<div className="userInfo">
 				<div>
+					{selectedMember &&
+					<img src={selectedMember.avatar} alt="avatar" style={{margin:10,width:240, height:190, borderRadius:10}}/>
+					}
+				</div>
+				<div className="borderTop-small" />
+				<div>
+					{selectedMember && 
+					selectedMember.userName !== user.userName &&
+						<h2 style={{ display: 'inline' }}>
+							<BlockButton member={selectedMember}/>
+						</h2>
+					}
+
 					{selectedMember 
 						&& selectedMember.userName !== user.userName 
 						&& room.type !== RoomType.DIRECTMESSAGE 
@@ -78,11 +91,6 @@ export const UserInfo = ({ selectedMember, setSelectedMember }: Props) => {
 								<CgProfile size="3em"/>
 							</Link>
 							</>
-					}
-				</div>
-				<div>
-					{selectedMember &&
-					<img src={selectedMember.avatar} alt="avatar" style={{margin:10,width:190, height:150, borderRadius:10}}/>
 					}
 				</div>
 			</div>

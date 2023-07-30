@@ -153,7 +153,7 @@ export function Random() {
     return () => {
       window.removeEventListener('popstate', handler);
     };
-  }, [navigate, socket]);
+  }, [navigate, socket, end]);
 
   // useEffect(() => {
   //   return () => {

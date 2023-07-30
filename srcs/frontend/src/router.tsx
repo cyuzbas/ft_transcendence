@@ -4,7 +4,7 @@ import { GameMode, gameModes } from './pages/Game/logic/types';
 import { Game, Lobby, Home, Chat, Login } from './pages';
 import { SocketProvider } from './contexts/SocketContext/provider';
 import SettingsPage from './pages/SettingsPage';
-import FirstInfoPage from './pages/FirstInfoPage';
+// import FirstInfoPage from './pages/FirstInfoPage';
 import Create2fa from './pages/Create2fa';
 import Navbar from './components/Nav/NavBar/navBar';
 import SideBar from './components/Nav/SideBar/sideBar';
@@ -36,6 +36,7 @@ export function Router() {
               <Route path='/friendgame' element={<div className='NavContent'><Navbar /></div>} />
               <Route path='/findingopponentClassic' element={<div className='NavContent'><Navbar /></div> } />
               <Route path='/findingopponentCustom' element={<div className='NavContent'><Navbar /></div>} />
+              {/* <Route path='/findingopponentCustom2' element={<div className='NavContent'><Navbar /></div>} /> */}
               <Route path='/waitingreply' element={<div className='NavContent'><Navbar /></div>} />
             </Routes>
           </section>
@@ -54,6 +55,7 @@ export function Router() {
                   <Route path='/friendgame' element={<SideBar />} />
                   <Route path='/findingopponentClassic' element={<SideBar />} />
                   <Route path='/findingopponentCustom' element={<SideBar />} />
+                  {/* <Route path='/findingopponentCustom2' element={<SideBar />} /> */}
                   <Route path='/waitingreply' element={<SideBar />} />
                 </Routes>
               </div>
@@ -71,6 +73,7 @@ export function Router() {
                     <Route path='/friendgame' element={<Random />} />
                     <Route path='/findingopponentClassic' element={<WaitingPage1 />} />
                     <Route path='/findingopponentCustom' element={<WaitingPage3 />} />
+                    {/* <Route path='/findingopponentCustom2' element={<WaitingPage4 />} /> */}
                     <Route path='/waitingreply' element={<WaitingPage2 />} />
                     <Route path='/login' element={(user.isLogged) ? (<Home />) : (<Login />)} />
 

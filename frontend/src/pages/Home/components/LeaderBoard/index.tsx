@@ -54,21 +54,21 @@ function LeaderBoard() {
 			  localStorage.setItem('user', JSON.stringify(updatedUser));
 			}
 			
-			if(user.totalWin === 5){
+			if(user.totalWin > 4){
 				try{
 						await axios.post(`http://f1r1s3.codam.nl:3001/user/setAchievements/${user.intraId}/${AchievementType.PONG_WHISPERER}`, null,{withCredentials:true})
 						console.log("succes")
 					}
 				catch(error){console.log("error")}
 			}
-			if(user.totalWin === 1){
+			if(user.totalWin > 0){
 					try{
 							await axios.post(`http://f1r1s3.codam.nl:3001/user/setAchievements/${user.intraId}/${AchievementType.FIRST_VICTORY}`, null,{withCredentials:true})
 							console.log("succes")
 						}
 					catch(error){console.log("error")}
 				}
-				if(user.totalLoose === 1){
+				if(user.totalLoose > 0){
 						try{
 								await axios.post(`http://f1r1s3.codam.nl:3001/user/setAchievements/${user.intraId}/${AchievementType.EPIC_FAIL}`, null,{withCredentials:true})
 								console.log("succes")

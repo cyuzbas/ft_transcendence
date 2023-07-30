@@ -36,8 +36,26 @@ function SettingsPage() {
 
 			return;
 		}
+		if(inputText.length < 2){
+			swal({
+				title: "Error!",
+				text: "Your name is too short!",
+				icon: "warning",
+				dangerMode: true,
+			}).then()
 
+			return;
+		}
+		if(inputText.length > 15){
+			swal({
+				title: "Error!",
+				text: "Your name is too long!",
+				icon: "warning",
+				dangerMode: true,
+			}).then()
 
+			return;
+		}
 
 		try {
 			const response = await axios.post("http://f1r1s3.codam.nl:3001/user/update-user-profile", {

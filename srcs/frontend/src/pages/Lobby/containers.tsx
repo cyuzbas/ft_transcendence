@@ -5,9 +5,10 @@ interface ContainerProps {
 }
 
 export const Container = styled.div`
-background-color: #fff;
+background-color: #ffffff;;
 border-radius: 10px;
-box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+// box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+box-shadow: rgb(178,215,255, 0.2) 0px 54px 55px, var(--foreground-color) 0px -12px 30px, var(--foreground-color) 0px 4px 6px, var(--foreground-color) 0px 12px 13px, var(--foreground-color) 0px -3px 5px;
 position: relative;
 overflow: hidden;
 width: 678px;
@@ -38,24 +39,28 @@ export const OnlineContainer = styled.div<ContainerProps>`
 
 export const OfflineContainer = styled.div<ContainerProps>`
 position: absolute;
-
 height: 100%;
 transition: all 0.3s ease-in-out;
 left: 0;
 width: 50%;
+backgorund-color: rgb(178,215,255, 0.2);
 z-index: 2;
 ${props => (props.deneme !== "true" ? `transform: translateX(100%);` : null)}
 `;
 
 export const TopCard = styled.div`
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    // box-shadow: var(--background-color) 0px 5px 15px;
+    // box-shadow: var(--background-color) 0px 7px 29px 0px;
+    box-shadow: rgb(88, 110, 124, 0.3) 0px 54px 55px, rgb(88, 110, 124, 0.3) 0px -12px 30px, rgb(88, 110, 124, 0.3) 0px 4px 6px, rgb(88, 110, 124, 0.3) 0px 12px 13px, rgb(88, 110, 124, 0.3) 0px -3px 5px;
+    // box-shadow: rgb(178,215,255, 0.2) 0px 54px 55px, var(--background-color) 0px -12px 30px, var(--background-color) 0px 4px 6px, var(--background-color) 0px 12px 13px, var(--background-color) 0px -3px 5px;
     padding: 20px;
     margin: 10px;
-    background-color: white;
-    border-radius: 10px;
+    border-radius: 20px;
     width: 170px;
     height: 150px;
-    transition: transform 0.3s; /* Yeni satır */
+    transition: transform 0.3s;
+    background-color: rgb(178,215,255, 0.2);
+    border: 3px solid rgb(88, 110, 124, 0.7);
 
     &:hover {
       transform: scale(1.1);
@@ -63,14 +68,18 @@ export const TopCard = styled.div`
 `
 
 export const BottomCard = styled.div`
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    // box-shadow: var(--background-color) 0px 5px 15px;
+    // box-shadow: var(--background-color) 0px 7px 29px 0px;
+    box-shadow: rgb(88, 110, 124, 0.3) 0px 54px 55px, rgb(88, 110, 124, 0.3) 0px -12px 30px, rgb(88, 110, 124, 0.3) 0px 4px 6px, rgb(88, 110, 124, 0.3) 0px 12px 13px, rgb(88, 110, 124, 0.3) 0px -3px 5px;
     padding: 20px;
     margin: 10px;
-    background-color: white;
-    border-radius: 10px;
+    background-color: rgb(178,215,255, 0.2);
+    border-radius: 20px;
     width: 170px;
     height: 150px;
-    transition: transform 0.3s; /* Yeni satır */
+    transition: transform 0.3s;
+    // border-color: var(--foreground-color);
+    border: 3px solid rgb(88, 110, 124, 0.7);
 
     &:hover {
       transform: scale(1.1);
@@ -86,24 +95,20 @@ export const Card = styled.form`
   padding: 0 50px;
   height: 100%;
   text-align: center;
-  position: relative;
+  // position: relative;
+  // background: linear-gradient(to right, rgb(178,215,255),  rgb(88, 110, 124));
 
   .games1, .games2 {
-    color: #000000;
+    color: var(--foreground-color);
     text-decoration: none;
     font-family: Arial, sans-serif;
     font-size: 16px;
     margin-bottom:10px;
-  }
-
-  .img1 {
-    width: 130px;
-    height: 100px;
-  }
-
-  .img2 {
-    width: 100px;
-    height: 90px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    bottom: 0;
+    // position: absolute;
   }
 
   .game-container1, .game-container2 {
@@ -114,7 +119,7 @@ export const Card = styled.form`
     border-radius: 10px;
     width: 170px;
     height: 150px;
-    transition: transform 0.3s; /* Yeni satır */
+    transition: transform 0.3s;
 
     &:hover {
       transform: scale(1.1);
@@ -229,6 +234,7 @@ export const Button = styled.button`
 export const GhostButton = styled(Button)`
 background-color: transparent;
 border-color: #ffffff;
+border: 3px solid #ffffff;
 `;
 
 export const Anchor = styled.a`
@@ -252,8 +258,8 @@ ${props =>
 
 export const Overlay = styled.div<ContainerProps>`
 background:  rgb(88, 110, 124);
-background: -webkit-linear-gradient(to right, rgb(88, 110, 124, 0.1),  rgb(88, 110, 124));
-background: linear-gradient(to right, rgb(88, 110, 124, 0.1),  rgb(88, 110, 124));
+background: -webkit-linear-gradient(to right, rgb(178,215,255),  rgb(88, 110, 124));
+background: linear-gradient(to right, rgb(178,215,255),  rgb(88, 110, 124));
 background-repeat: no-repeat;
 background-size: cover;
 background-position: 0 0;

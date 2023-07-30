@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSocket } from '../../../../contexts';
 import { Timer } from '../Timer/index';
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import './styles.css'
 import { CloseIcon } from '../../../Lobby/assets';
 import { Net } from '../Net';
@@ -30,7 +30,7 @@ export function Random() {
   const [message, setMessage] = useState('');
   const { socket } = useSocket();
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
   
   useEffect(() => {
     const gameDataHandler = (data: GameState) => {
@@ -122,9 +122,11 @@ export function Random() {
     const handler = (event: BeforeUnloadEvent) => {
       event.preventDefault();
       event.returnValue = '';
-      socket.emit("gameExited");
+      ReactDOM.flushSync(() => {
+        socket.emit("gameExited");
+      });
     };
-    window.addEventListener('beforeunload', handler);  
+    window.addEventListener('beforeunload', handler, true);  
     return () => {
       window.removeEventListener('beforeunload', handler);
     };
@@ -147,7 +149,7 @@ export function Random() {
     return () => {
       window.removeEventListener('popstate', handler);
     };
-  }, [navigate]);
+  }, [navigate, socket]);
 
   // useEffect(() => {
   //   return () => {
@@ -234,7 +236,7 @@ export function Random() {
         {end && (
           <>
             <div className='result'>
-              {message}
+              <h2>{message}</h2>
               <button className='backlobby' onClick={handleClose}>
                 Turn back to Lobby
               </button>

@@ -33,6 +33,9 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 				</div>
 			}
 		<div>
+			{room.userRole === UserRole.ADMIN &&
+			<div className="borderTop" />
+			}
 			{(room.userRole === UserRole.OWNER ||
 				room.userRole === UserRole.ADMIN) &&
 				<button className="iconBtn" onClick={() => setPopupVisibility(!popupVisibility)}>

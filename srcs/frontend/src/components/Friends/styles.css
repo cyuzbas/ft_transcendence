@@ -62,5 +62,6 @@
   /* margin-right: 40px; */
   grid-column-start: 7;
   grid-column-end: 8;
+  cursor: pointer;
   }
 

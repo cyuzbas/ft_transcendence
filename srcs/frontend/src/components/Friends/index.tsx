@@ -28,7 +28,7 @@ export function Friends() {
 
   async function sendRequest(intraId: string) {
     try {
-      const response = await axios.post(`http://localhost:3001/friends/add/${user.intraId}/${intraId}`,null,{withCredentials:true})
+      await axios.post(`http://localhost:3001/friends/add/${user.intraId}/${intraId}`,null,{withCredentials:true})
       getData()
     }
     catch (error) {
@@ -40,7 +40,7 @@ export function Friends() {
 
   async function removeFriend(intraId: string) {
     try {
-      const response = await axios.post(`http://localhost:3001/friends/delete/${user.intraId}/${intraId}`,null,{withCredentials:true})
+      await axios.post(`http://localhost:3001/friends/delete/${user.intraId}/${intraId}`,null,{withCredentials:true})
       getData()
     }
     catch (error) {
@@ -69,11 +69,11 @@ export function Friends() {
   useEffect(() => {
     const fetchData = async () => {
       
-      getData()    
+      getData()
     };
 
     fetchData();
-  }, []);
+  });
 
   return (
     <>

@@ -1,19 +1,12 @@
 version: "3.7"
-
 x-db-envvars: &db-envvars
-  # DB_HOST: postgres
-  # DB_NAME: transcendence
-
   POSTGRES_DB: postgres
-  POSTGRES_DB_HOST: db
-  POSTGRES_DB_PORT: 5432
-
+  POSTGRES_HOST: db
+  POSTGRES_PORT: 5432
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
-
 x-default-envvars: &default-envvars
   <<: *db-envvars
-
 services:
   frontend:
     build:
@@ -22,16 +15,14 @@ services:
     volumes:
       - ./frontend/:/app
       - /app/node_modules
-
     environment:
       <<: *default-envvars
-      COMPOSE_HTTP_TIMEOUT: 120 # Burada ekledik
+      COMPOSE_HTTP_TIMEOUT: 120
     ports:
       - "3000:3000"
     restart: unless-stopped
     depends_on:
       - db
-
   backend:
     build:
       context: ./backend
@@ -43,13 +34,12 @@ services:
       - ./backend/.env
     environment:
       <<: *default-envvars
-      COMPOSE_HTTP_TIMEOUT: 120 # Burada ekledik
+      COMPOSE_HTTP_TIMEOUT: 120
     ports:
       - "3001:3000"
     restart: unless-stopped
     depends_on:
       - db
-
   db:
     image: postgres
     ports:
@@ -58,17 +48,13 @@ services:
       - transcendence:/var/lib/postgresql/data
     environment:
       <<: *db-envvars
-      COMPOSE_HTTP_TIMEOUT: 120 # Burada ekledik
-
+      COMPOSE_HTTP_TIMEOUT: 120
   adminer:
-      image: adminer
-      restart: always
-      ports: 
-        - 8080:8080
-      environment:
-        COMPOSE_HTTP_TIMEOUT: 120 # Burada ekledik
-
-
+    image: adminer
+    restart: always
+    ports: 
+      - "8080:8080"
+    environment:
+      COMPOSE_HTTP_TIMEOUT: 120
 volumes:
   transcendence:
-  app:

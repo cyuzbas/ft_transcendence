@@ -27,7 +27,7 @@ function LeaderBoard() {
 		const fetchData = async () => {
 		//   console.log(user.userName);
 		  try {
-			const response = await axios.get('http://localhost:3001/friends/allUsers', {withCredentials:true});
+			const response = await axios.get('http://f1r1s3.codam.nl:3001/friends/allUsers', {withCredentials:true});
 			setUsers(response.data);
 			// response.data.forEach((user1 :any) => {
 			// 	if(user1.intraId === user.intraId){
@@ -56,21 +56,21 @@ function LeaderBoard() {
 			
 			if(user.totalWin === 5){
 				try{
-						await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.PONG_WHISPERER}`, null,{withCredentials:true})
+						await axios.post(`http://f1r1s3.codam.nl:3001/user/setAchievements/${user.intraId}/${AchievementType.PONG_WHISPERER}`, null,{withCredentials:true})
 						console.log("succes")
 					}
 				catch(error){console.log("error")}
 			}
 			if(user.totalWin === 1){
 					try{
-							await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.FIRST_VICTORY}`, null,{withCredentials:true})
+							await axios.post(`http://f1r1s3.codam.nl:3001/user/setAchievements/${user.intraId}/${AchievementType.FIRST_VICTORY}`, null,{withCredentials:true})
 							console.log("succes")
 						}
 					catch(error){console.log("error")}
 				}
 				if(user.totalLoose === 1){
 						try{
-								await axios.post(`http://localhost:3001/user/setAchievements/${user.intraId}/${AchievementType.EPIC_FAIL}`, null,{withCredentials:true})
+								await axios.post(`http://f1r1s3.codam.nl:3001/user/setAchievements/${user.intraId}/${AchievementType.EPIC_FAIL}`, null,{withCredentials:true})
 								console.log("succes")
 							}
 						catch(error){console.log("error")}

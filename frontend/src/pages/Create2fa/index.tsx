@@ -27,12 +27,12 @@ function Auth2faPage() {
 		}
 		else {
 			try {
-				const response = await axios.get(`http://localhost:3001/auth/verify/${inputText}/${user.intraId}`, { withCredentials: true });
+				const response = await axios.get(`http://f1r1s3.codam.nl:3001/auth/verify/${inputText}/${user.intraId}`, { withCredentials: true });
 				if (response.data === true) {
 					const updatedUser = { ...user, twoFactorCorrect: true, TwoFactorAuth: true };
 					setUser(updatedUser);
 					localStorage.setItem('user', JSON.stringify(updatedUser));
-					window.location.href = 'http://localhost:3000/settings'
+					window.location.href = 'http://f1r1s3.codam.nl:3000/settings'
 
 				} else {
 					swal({

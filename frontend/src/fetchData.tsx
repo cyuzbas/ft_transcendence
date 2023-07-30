@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 export async function fetchData(path: string): Promise<any> {
   try {
-    const url = 'http://localhost:3001/' + path
+    const url = 'http://f1r1s3.codam.nl:3001/' + path
     // console.log(url)
     const response = await axios.get( url, { withCredentials: true });
     // console.log(JSON.stringify(response.data))

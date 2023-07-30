@@ -19,7 +19,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://f1r1s3.codam.nl:3000'],
     credentials: true,
   });
 

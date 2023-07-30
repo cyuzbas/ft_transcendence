@@ -6,13 +6,13 @@ import { useEffect } from 'react';
 export function Login(){
 
 	const goToLogin= async () =>{
-		window.location.href = 'http://localhost:3001/auth/login';
+		window.location.href = 'http://f1r1s3.codam.nl:3001/auth/login';
 	}
 
 	useEffect(() => {
 		const storedUser = localStorage.getItem('user');
 		if(storedUser){
-			window.location.href ='http://localhost:3000/home'
+			window.location.href ='http://f1r1s3.codam.nl:3000/home'
 		}
 	  }, );
 

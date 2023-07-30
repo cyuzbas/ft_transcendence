@@ -38,7 +38,7 @@ function FirstInfoPage() {
 		}
 
 		try {
-			const response = await axios.post("http://localhost:3001/user/update-user-profile", {
+			const response = await axios.post("http://f1r1s3.codam.nl:3001/user/update-user-profile", {
 				userName: inputText,
 				avatar: user.avatar,
 				intraId: user.intraId
@@ -77,10 +77,10 @@ function FirstInfoPage() {
 			const headers = { 'Content-Type': 'multipart/form-data' };
 			try {
 				 await axios
-					.post(`http://localhost:3001/user/avatar/${selectedFile.name + user.intraId}`,
+					.post(`http://f1r1s3.codam.nl:3001/user/avatar/${selectedFile.name + user.intraId}`,
 						formData, { withCredentials: true, headers })
 
-				const updatedUser = { ...user, avatar: `http://localhost:3001/user/avatar/${selectedFile.name + user.intraId}` };
+				const updatedUser = { ...user, avatar: `http://f1r1s3.codam.nl:3001/user/avatar/${selectedFile.name + user.intraId}` };
 				setUser(updatedUser)
 				localStorage.setItem('user', JSON.stringify(updatedUser));
 				if (inputRef.current) {

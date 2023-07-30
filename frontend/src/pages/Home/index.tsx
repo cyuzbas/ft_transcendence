@@ -15,7 +15,7 @@ export function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-      const response = await axios.get(`http://localhost:3001/user/${user?.intraId}`,{withCredentials:true})
+      const response = await axios.get(`http://f1r1s3.codam.nl:3001/user/${user?.intraId}`,{withCredentials:true})
       setUser(response.data);
       localStorage.setItem('user', JSON.stringify(response.data));
       } catch (error) {

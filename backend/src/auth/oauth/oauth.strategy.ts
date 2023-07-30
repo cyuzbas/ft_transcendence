@@ -19,7 +19,7 @@ export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
       tokenURL: 'https://api.intra.42.fr/oauth/token',
       clientID: config.get("intraId"),
       clientSecret: config.get("secretKey"),
-      callbackURL: 'http://localhost:3001/auth/redirect',
+      callbackURL: 'http://f1r1s3.codam.nl:3001/auth/redirect',
     });
 
   }

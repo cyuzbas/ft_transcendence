@@ -49,6 +49,7 @@ function SettingsPage() {
 				const updatedUser = { ...user, userName: inputText };
 				setUser(updatedUser)
 				localStorage.setItem('user', JSON.stringify(updatedUser));
+				setInputText("");
 				swal({
 					title: "Succes!",
 					text: "Your name has been saved! "
@@ -111,9 +112,7 @@ function SettingsPage() {
 
 
 	async function handleClick2FA() {
-		// console.log("handler start")
 		if (user.TwoFactorAuth) {
-			// console.log("handler if")
 
 			try {
 
@@ -132,6 +131,11 @@ function SettingsPage() {
 			window.location.href = 'http://localhost:3000/create2fa';
 		}
 	};
+
+	const onSubmit = (e: any) => {
+		e.preventDefault();
+		return false
+	}
 
 	return (
 
@@ -153,21 +157,22 @@ function SettingsPage() {
 					</div>
 				</div>
 				<div className="ChangeOthers">
-					<div className="EditName">
-						<form className="EnterName"
-							onSubmit={showAlert}>
+					<form className="EnterNameSttings"
+						onSubmit={(e) => {onSubmit(e)}}>
+						<div className="EditNameSettings">
 							<input
+								value={inputText}
 								onChange={handleChange}
 								className="NameInput"
 								type="text"
 								placeholder="* Change your name"
 							/>
-						</form>
-						<button type="submit" className="SubmitButton Edit" onClick={showAlert}>
-							<i className="bi bi-pencil-square fs-5"></i>
-							<h6>Edit</h6>
-						</button>
-					</div>
+							<button type="submit" className="SubmitButton Edit" onClick={showAlert}>
+								<i className="bi bi-pencil-square fs-5"></i>
+								<h6>Edit</h6>
+							</button>
+						</div>
+					</form>
 					<div className="Info2fa">
 						<h5>Secure your account with </h5>
 						<h5>Two-Factor Authentication</h5>

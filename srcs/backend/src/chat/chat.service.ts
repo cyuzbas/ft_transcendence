@@ -168,7 +168,7 @@ export class ChatService {
 		if (!room) {
 			throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
 		}
-		room.password = roomUpdate.password;
+		room.password = roomUpdate.type === RoomType.PROTECTED ? await bcrypt.hash(roomUpdate.password, 10) : null;
 		room.type = roomUpdate.type;
 		await this.roomRepository.save(room);
 		const { password, ...roomData } = room;
@@ -182,7 +182,7 @@ export class ChatService {
 		if (!findRoom) {
 			throw new HttpException('Room Not Found', HttpStatus.NOT_FOUND)
 		}
-		const isMatch = await bcrypt.compare(room.password, findRoom.password);
+		const isMatch = bcrypt.compare(room.password, findRoom.password);
 		return isMatch;
 	}
 	

@@ -90,7 +90,7 @@ export const FormJoinChannel = ({ setPopupVisibility }: Props) => {
         <>
             {joinableRooms.length > 0 &&
             <>
-                <h4 className="formTitleJoin">
+                <h4 className="formTitle borderTop">
                 Join Existing Channel
 
                 </h4>

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSocket } from '../../../../contexts';
 import { Timer } from '../Timer/index';
 import { useNavigate } from 'react-router-dom'
 import './styles.css'
 import { CloseIcon } from '../../../Lobby/assets';
 import { Net } from '../Net';
+import ReactDOM from 'react-dom';
 
 // import { usePrompt, Location } from 'react-router-dom';
 
@@ -121,9 +122,11 @@ export function Random() {
     const handler = (event: BeforeUnloadEvent) => {
       event.preventDefault();
       event.returnValue = '';
-      socket.emit("gameExited");
+      ReactDOM.flushSync(() => {
+        socket.emit("gameExited");
+      });
     };
-    window.addEventListener('beforeunload', handler);  
+    window.addEventListener('beforeunload', handler, true);  
     return () => {
       window.removeEventListener('beforeunload', handler);
     };
@@ -132,16 +135,30 @@ export function Random() {
   useEffect(() => {
     const handler = (event: PopStateEvent) => {
       event.preventDefault();
-      socket.emit("gameExited");
-      navigate(-1);
+      ReactDOM.flushSync(() => {
+        // First, make the socket.emit call
+        socket.emit("gameExited");
+
+        // Then, perform the navigation
+        navigate('/lobby');
+      });
     };
   
-    window.addEventListener('popstate', handler);
+    window.addEventListener('popstate', handler,true);
   
     return () => {
       window.removeEventListener('popstate', handler);
     };
-  }, );
+  }, [navigate, socket]);
+
+  // useEffect(() => {
+  //   return () => {
+  //     navigate(-1);
+  //     // socket.emit("gameExited");
+  //     // navigate('/lobby');
+
+  //   };
+  // }, [location]);
 
 
   return (
@@ -219,7 +236,7 @@ export function Random() {
         {end && (
           <>
             <div className='result'>
-              {message}
+              <h2>{message}</h2>
               <button className='backlobby' onClick={handleClose}>
                 Turn back to Lobby
               </button>

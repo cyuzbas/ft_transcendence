@@ -28,9 +28,14 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 	return (
 		<>
 			{room.userRole === UserRole.OWNER &&
+				<div className="borderTop">
 				<FormEditPassword />
+				</div>
 			}
 		<div>
+			{room.userRole === UserRole.ADMIN &&
+			<div className="borderTop" />
+			}
 			{(room.userRole === UserRole.OWNER ||
 				room.userRole === UserRole.ADMIN) &&
 				<button className="iconBtn" onClick={() => setPopupVisibility(!popupVisibility)}>
@@ -38,7 +43,7 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 					invite
 				</button>
 			}
-			<h4>
+			<h4 className="borderTop">
 				Members
 			</h4>
 			{popupVisibility &&
@@ -48,18 +53,18 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 				items={members}
 				renderItem={(member) => (
 					!member.isBanned ?
-						<p className="memberList">
+						<div className="memberList">
 							<div>
 								{member.userName !== user.userName &&
 									<BlockButton member={member} /> 
 								}
 							</div>
-							<div className="membersList avatar-status-wrapper">
-								<img src={member.avatar} alt="avatar" style={{margin:0,width:30, height:30, borderRadius:50}}/>
-								{member.status === 'online' ?
-								<span className="online-dot"></span> :
-								<span className="offline-dot"></span>
-								}
+							<div className="membersList">
+								<img 
+									src={member.avatar} 
+									alt="avatar" 
+									className={`avatar-small ${member.status === 'online' ? 'online' : 'offline'}`}
+								/> 
 								{member.userName}
 							</div >
 							<div>
@@ -87,7 +92,7 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 									: null	
 								}
 							</div>
-						</p>
+						</div>
 					: <></>
 				)}
 				onClickItem={(member) => handleMemberClick(member)}
@@ -98,23 +103,25 @@ export const RoomInfo = ({ setSelectedMember }: Props) => {
 			{(room.userRole === UserRole.OWNER || room.userRole === UserRole.ADMIN) &&
 				members.some(member => member.isBanned) &&
 				<>
-					<h5>Banned</h5>
+					<h5 className="borderTop">
+						Banned
+					</h5>
 					<ClickableList
 						items={members}
 						renderItem={(member) => (
 							member.isBanned ?
-								<p className={"memberList offline"}>
+								<div className="memberList">
 									<BlockButton member={member} />
 									<div className="avatar-status-wrapper">
-										<img src={member.avatar} alt="avatar" style={{margin:0,width:30, height:30, borderRadius:50}}/>
-										{member.status === 'online' ?
-											<span className="online-dot"></span> :
-											<span className="offline-dot"></span>
-										}
+										<img 
+											src={member.avatar} 
+											alt="avatar" 
+											className={`avatar-small ${member.status === 'online' ? 'online' : 'offline'}`}
+										/> 
 										{member.userName}
 									</div>
 									<BanButton member={member}/>
-								</p>
+								</div>
 							: <></>
 						)}
 						onClickItem={(member) => handleMemberClick(member)}

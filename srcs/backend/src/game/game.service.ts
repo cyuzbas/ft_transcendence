@@ -82,13 +82,13 @@ export class GameService {
             if (game.ball.x <= game.paddleLeft.x + game.paddleLeft.width &&
                 game.ball.x + game.ball.sizeX >= game.paddleLeft.x &&
                 game.ball.directionX < 0) {
-                this.isCollisionPaddle(game.paddleLeft, game.ball);
+                this.isCollisionPaddle(game.paddleLeft, game.ball, game, 1);
             }
 
             else if (game.ball.x + game.ball.sizeX >= game.paddleRight.x &&
                     game.ball.x <= game.paddleRight.x + game.paddleRight.width &&
                     game.ball.directionX > 0) {
-                this.isCollisionPaddle(game.paddleRight, game.ball);
+                this.isCollisionPaddle(game.paddleRight, game.ball, game, 1);
             }
 
             // Add velocity to ball
@@ -120,25 +120,25 @@ export class GameService {
                 if (game.ball.x <= game.blockA.x + game.blockA.width &&
                     game.ball.x + game.ball.sizeX >= game.blockA.x &&
                     game.ball.directionX < 0) {
-                    this.isCollisionPaddle(game.blockA, game.ball);
+                    this.isCollisionPaddle(game.blockA, game.ball, game, 0);
                 }
     
                 else if (game.ball.x + game.ball.sizeX >= game.blockA.x &&
                         game.ball.x <= game.blockA.x + game.blockA.width &&
                         game.ball.directionX > 0) {
-                    this.isCollisionPaddle(game.blockA, game.ball);
+                    this.isCollisionPaddle(game.blockA, game.ball, game, 0);
                 }
 
                 if (game.ball.x <= game.blockB.x + game.blockB.width &&
                     game.ball.x + game.ball.sizeX >= game.blockB.x &&
                     game.ball.directionX < 0) {
-                    this.isCollisionPaddle(game.blockB, game.ball);
+                    this.isCollisionPaddle(game.blockB, game.ball, game, 0);
                 }
     
                 else if (game.ball.x + game.ball.sizeX >= game.blockB.x &&
                         game.ball.x <= game.blockB.x + game.blockB.width &&
                         game.ball.directionX > 0) {
-                    this.isCollisionPaddle(game.blockB, game.ball);
+                    this.isCollisionPaddle(game.blockB, game.ball, game, 0);
                 }
                 // this.isCollisionWall(game.block);
 
@@ -207,9 +207,11 @@ export class GameService {
             game.ball.directionX = -game.ball.speed * Math.cos(Math.PI / 4);
         game.ball.directionY = game.ball.speed * Math.sin(Math.PI / 4);
         game.paddleLeft.y = 50;
+        game.paddleLeft.height = 20;
         game.paddleLeft.move = 0;
         game.paddleLeft.reversed = 1;
         game.paddleRight.y = 50;
+        game.paddleRight.height = 20;
         game.paddleRight.move = 0;
         game.paddleRight.reversed = 1;
 
@@ -231,7 +233,7 @@ export class GameService {
             ball.directionY = -ball.directionY;
     }
 
-    isCollisionPaddle(pad: Pad, ball: Ball) {
+    isCollisionPaddle(pad: Pad, ball: Ball, game: Game, isPlayer: number) {
         // check if the balls bottom edge < the paddle's top edge &&& balls bottom edge is < the paddle's top edge
         if ( ball.y + ball.sizeY > pad.y && ball.y < pad.y + pad.height) {
             // sifira yaklastikca tam ortaya gelmis olacak. arti dgerler paddlein ust kismi negativeler alt kismi
@@ -244,11 +246,15 @@ export class GameService {
             ball.directionY = ball.speed *
                 Math.sin((collidedAt * Math.PI) / 4 / (pad.height / 2));
             // her carptiginda biraz arttir bu swayiyi degistir kayboluyo top
-            ball.speed += ball.accel;
+            ball.speed += ball.accel + 0.1;
             // yada bu sorunu cozebilir mi acaba padin eninden sanki aaz olmasi yetecek onu yakalayacak
             if (ball.speed >= pad.width) {
                 ball.speed = pad.width - 0.05;
                 ball.accel = 0;
+            }
+            if(game.isCustom && isPlayer) {
+                if(pad.height > 5)
+                    pad.height = pad.height - 1;        
             }
         }
     }

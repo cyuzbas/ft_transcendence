@@ -12,8 +12,7 @@ export const MessageWindow = () => {
 
   useEffect(() => {
     const onMessage = (newMessage: Message) => {
-      const isBlocked = blocked
-        .some(blocked => blocked.userName === newMessage.userName);
+      const isBlocked = blocked.some(blocked => blocked.userName === newMessage.userName);
       if (!isBlocked) {
         if (newMessage.roomName === room.roomName) {
           setMessages(prevMessages => [...prevMessages, newMessage]);
@@ -42,18 +41,17 @@ export const MessageWindow = () => {
   
   return (
     <div id="chat-window">
-      <div id="chat-container">
         {messages.map((message) => 
           message.userName === user.userName ? (
             <div className="message-chats" key={message.id}>
-              <p className="sender-name">You</p>
+              <p className="sender-name-you">You</p>
               <div className="message-sender">
                 <p>{message.content}</p>
               </div>
             </div>
           ) : (
             <div className="message-chats" key={message.id}>
-              <p>{message.userName}</p>
+              <p className="sender-name">{message.userName}</p>
               <div className="message-recipient">
                 <p>{message.content}</p>
               </div>
@@ -61,7 +59,6 @@ export const MessageWindow = () => {
           )
         )}
         <div ref={lastMessageRef} />
-      </div>
     </div>
   )
 }

@@ -118,30 +118,34 @@ export function Random() {
   //   return true;  // Allow the navigation.
   // });
 
-  useEffect(() => {
-    const handler = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      event.returnValue = '';
-      ReactDOM.flushSync(() => {
-        socket.emit("gameExited");
-      });
-    };
-    window.addEventListener('beforeunload', handler, true);  
-    return () => {
-      window.removeEventListener('beforeunload', handler);
-    };
-  }, );
+  // useEffect(() => {
+  //   const handler = (event: BeforeUnloadEvent) => {
+  //     if (!end) {
+  //       event.preventDefault();
+  //       event.returnValue = '';
+  //       ReactDOM.flushSync(() => {
+  //         socket.emit("gameExited");
+  //       });
+  //     }
+  //   };
+  //   window.addEventListener('beforeunload', handler, true);  
+  //   return () => {
+  //     window.removeEventListener('beforeunload', handler);
+  //   };
+  // }, );
 
   useEffect(() => {
     const handler = (event: PopStateEvent) => {
-      event.preventDefault();
-      ReactDOM.flushSync(() => {
-        // First, make the socket.emit call
-        socket.emit("gameExited");
-
-        // Then, perform the navigation
-        navigate('/lobby');
-      });
+      if (!end) {
+        event.preventDefault();
+        ReactDOM.flushSync(() => {
+          // First, make the socket.emit call
+          socket.emit("gameExited");
+  
+          // Then, perform the navigation
+          navigate('/lobby');
+        });
+      }
     };
   
     window.addEventListener('popstate', handler,true);

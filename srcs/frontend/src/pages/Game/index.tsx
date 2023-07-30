@@ -49,13 +49,7 @@ export function Game({ gameMode = 'endless' }: GameProps) {
 
       start()
     }
-    // eslint-disable-next-line
-  }, [
-    ballRef.current,
-    playerPaddleRef.current,
-    computerPaddleRef.current,
-    gameState.isGameRunning,
-  ])
+  }, )
 
   useEffect(() => {
     if (gameMode === 'solo')

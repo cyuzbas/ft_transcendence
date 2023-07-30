@@ -220,7 +220,8 @@ export class GatewayService {
         // console.log(id);
         const game = await this.findUserGame(id);
         // console.log(game);
-		// await this.exitGame(id, game);
+        // if (game)
+    	await this.exitGame(id, game);
     }
     
     async handleInviteDisconnection (id: number) {
@@ -247,42 +248,45 @@ export class GatewayService {
 
     async exitGame(userId: number, game: Game) {
         // console.log(game.p1)
-        clearInterval(game.interval);
-        const winner = (userId === game.p1) ? game.p2 : game.p1;
-        const loser = (userId === game.p1) ? game.p1 : game.p2;
-        const winnerObj = await this.userService.findUserByUserId(winner);
-        let winnerUsername: String;
-        if (!winnerObj) winnerUsername = "unKnown";
-        else winnerUsername = winnerObj.userName;
-        game.server.to(`game${game.id}`).emit('gameEnd', `${winnerUsername} won the game ${3} - ${0}`);
-        game.server.socketsLeave(`game${game.id}`);
-        
-        await this.userRepository.update(winner, { inGame: false });
-		await this.userRepository.update(loser, { inGame: false });
-		await this.userRepository.increment({ id: winner }, 'totalWin', 1);
-		// // if game type a gore score
-		let score = game.isCustom ? 150 : 100;
-		await this.userRepository.increment({ id: winner }, 'score', score);
-		await this.userService.changeRank(winner);
-		await this.userService.changeRank(loser);
-
-		await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
-        if (winner === game.p1) {
-            // console.log('yess', game.dbIdP1)
-            await this.gameRepository.update(game.dbIdP1, { playerScore: 3 });
-            await this.gameRepository.update(game.dbIdP1, { opponentScore: 0 });
-            await this.gameRepository.update(game.dbIdP2, { playerScore: 0 });
-            await this.gameRepository.update(game.dbIdP2, { opponentScore: 3 });
+        if (game !== null && 'interval' in game && game.interval !== null) {
+            clearInterval(game.interval);
+            const winner = (userId === game.p1) ? game.p2 : game.p1;
+            const loser = (userId === game.p1) ? game.p1 : game.p2;
+            const winnerObj = await this.userService.findUserByUserId(winner);
+            let winnerUsername: String;
+            if (!winnerObj) winnerUsername = "unKnown";
+            else winnerUsername = winnerObj.userName;
+            game.server.to(`game${game.id}`).emit('gameEnd', `${winnerUsername} won the game ${3} - ${0}`);
+            game.server.socketsLeave(`game${game.id}`);
+            
+            await this.userRepository.update(winner, { inGame: false });
+            await this.userRepository.update(loser, { inGame: false });
+            await this.userRepository.increment({ id: winner }, 'totalWin', 1);
+            // // if game type a gore score
+            let score = game.isCustom ? 150 : 100;
+            await this.userRepository.increment({ id: winner }, 'score', score);
+            await this.userService.changeRank(winner);
+            await this.userService.changeRank(loser);
+    
+            await this.userRepository.increment({ id: loser }, 'totalLoose', 1);
+            if (winner === game.p1) {
+                // console.log('yess', game.dbIdP1)
+                await this.gameRepository.update(game.dbIdP1, { playerScore: 3 });
+                await this.gameRepository.update(game.dbIdP1, { opponentScore: 0 });
+                await this.gameRepository.update(game.dbIdP2, { playerScore: 0 });
+                await this.gameRepository.update(game.dbIdP2, { opponentScore: 3 });
+            }
+            else if (winner === game.p2) {
+                // console.log('no', game.dbIdP1)
+                await this.gameRepository.update(game.dbIdP1, { playerScore: 0 }) ;
+                await this.gameRepository.update(game.dbIdP1, { opponentScore: 3 }) ;
+                await this.gameRepository.update(game.dbIdP2, { playerScore: 3 }) ;
+                await this.gameRepository.update(game.dbIdP2, { opponentScore: 0 }) ;
+            }
+    
+            this.games.delete(game.id);
         }
-        else if (winner === game.p2) {
-            // console.log('no', game.dbIdP1)
-            await this.gameRepository.update(game.dbIdP1, { playerScore: 0 }) ;
-            await this.gameRepository.update(game.dbIdP1, { opponentScore: 3 }) ;
-            await this.gameRepository.update(game.dbIdP2, { playerScore: 3 }) ;
-            await this.gameRepository.update(game.dbIdP2, { opponentScore: 0 }) ;
-        }
-
-		this.games.delete(game.id);
+    
     }
 
 }
